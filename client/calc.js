@@ -12,11 +12,18 @@ export default class Calc{
             y: (j) * (tileSide + outlineWidth)
         }
     }
-    static getMousePos(canvas, evt) {
+    static CanvasToIndex(x, y, tileSide, outlineWidth)
+    {
+        return{
+            i: x / (tileSide + outlineWidth),
+            j: y / (tileSide + outlineWidth)
+        }
+    }
+    static getTouchEndPos(canvas, evt) {
         var rect = canvas.getBoundingClientRect();
         return {
-            x: evt.clientX - rect.left,
-            y: evt.clientY - rect.top,
+            x: evt.changedTouches[0].clientX - rect.left,
+            y: evt.changedTouches[0].clientY - rect.top,
         };
     }
     static getTouchPos(canvas, evt) {
@@ -45,6 +52,31 @@ export default class Calc{
         return (
             Math.sqrt((pos1.x - pos2.x) * (pos1.x - pos2.x) +
             (pos1.y - pos2.y) * (pos1.y - pos2.y))
+        )
+    }
+    static worldToScreen(x, y, camera, scale)
+    {
+        return (
+            {
+                x: (x - camera.x / scale) * scale,
+                y: (y - camera.y / scale) * scale,
+            }
+        )
+    }
+    static screenToWorld(x, y, camera, scale)
+    {
+        return (
+            {
+                x: x / scale + camera.x / scale,
+                y: y / scale + camera.y / scale,
+            }
+        )
+    }
+    static pointInBoudaries(x, y, rect)
+    {
+        return(
+            (x > rect.x) && (y > rect.y) &&
+            (x < rect.x + rect.w) && (y < rect.y + rect.h)
         )
     }
 }

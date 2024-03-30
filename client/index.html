@@ -7,8 +7,31 @@
     <title>svoGAME</title>
 </head>
 <body>
-    <h1 id="fps">fps: 0</h1>
-    <canvas id="canvas"/>
+    <canvas id="canvas"></canvas>
+    <div id="bar">
+        <h1 id="money">Money: 10</h1>
+        <button id="open-shop">
+            Shop
+        </button>
+        <button id="open-stash">
+            Stash
+        </button>
+    </div>
+    <div id="shop-wrap">
+        <div id="shop">
+            <button id="closeShop">X</button>
+        </div>
+    </div>
+    <div id="stash-wrap">
+        <div id="stash">
+            <div id="stash-bar">
+                <button id="closeStash">X</button>
+            </div>
+            <div id="stash-list">
+                
+            </div>
+        </div>
+    </div>
     <script src="client/index.js" type="module"></script>
 </body>
 </html>
