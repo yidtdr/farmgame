@@ -33,7 +33,10 @@ export default class PlantMenuItem extends Menu{
     onClick()
     {
         player._inventory[this._item]--;
-        tiles[player._chosenTile.i + 1][player._chosenTile.j]._plant = this._item;
-        tiles[player._chosenTile.i + 1][player._chosenTile.j].createPlant();
+        tiles[player._chosenTile.i][player._chosenTile.j]._plant = this._item;
+        tiles[player._chosenTile.i][player._chosenTile.j].createPlant();
+        // if (tiles[player._chosenTile.i][player._chosenTile.j].isCanPut("bakery")){
+        //     tiles[player._chosenTile.i][player._chosenTile.j].createBuilding("bakery"); //тут растение было
+        // }
     }
 }

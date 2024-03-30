@@ -23,8 +23,29 @@ class GlobalVars{
             collectAmount: 1
         }
 
+        this.sizes = new Array();
+        this.sizes["large"] = {
+            h: 3, //j
+            w: 2  //i
+        }
+        this.sizes["single"] = {
+            h: 1,
+            w: 1
+        }
+
+        this.buildings = new Array();
+        this.buildings["bakery"] = {
+            image: ASSETS.bakery,
+            workingTime: 6,
+            moneyReward: 500,
+            size: this.sizes["large"]
+            //shopCost: 3
+        }
+
         this.UI = new Array(0);    
-        this.PlantArr = new Array(); 
+        this.PlantArr = new Array();
+        this.buildingArr = new Array();
+        this.workingBuildingArr = new Array(); 
 
         this.scale = 4.5;
         this.rescale = true

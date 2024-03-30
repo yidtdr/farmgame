@@ -84,6 +84,20 @@ class Mouse{
                 Clicked = true;
             }
         })
+
+        GVAR.buildingArr.forEach((el) => {
+            el.checkRectHover();
+            if (el._hovered)
+            {
+                if (!el._isWorking){
+                    el.startWork();
+                    GVAR.workingBuildingArr.push(el);
+                }
+                el.collect();
+                Clicked = true;
+            }
+        })
+
         if (Clicked)
         {return};
         tiles[this._mapPos.i][this._mapPos.j].onClick();

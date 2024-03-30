@@ -30,6 +30,6 @@ export default class Sprite{
     checkRectHover(){
         const mousePos = mouse._screenPos;
         const worldMousePos = Calc.screenToWorld(mousePos.x, mousePos.y, camera.getPos(), GVAR.scale);
-        this._hovered = Calc.pointInBoudaries(worldMousePos.x, worldMousePos.y, this._rect);
+        this._hovered = Calc.pointInBoudaries(worldMousePos.x, worldMousePos.y, this.getRect());
     }
 }

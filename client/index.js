@@ -47,6 +47,10 @@ setInterval(() => {
         el.updateGrowTime();
         GVAR.redraw = true;  
     })
+    GVAR.workingBuildingArr.forEach((el) => {
+        el.updateGrowTime();
+        GVAR.redraw = true;
+    })
 }, 1000);
 
 
@@ -70,6 +74,10 @@ function animate(delta){
         }
 
         GVAR.PlantArr.forEach((el) => {
+            el.draw();
+        })
+
+        GVAR.buildingArr.forEach((el) => {
             el.draw();
         })
 
