@@ -48,7 +48,7 @@ export default class Tile extends Sprite{
         }
         return true;
     }
-    createBuilding(type)
+    createBuilding(type, a="")
     {
         let tileIndex = Calc.CanvasToIndex(this._x, this._y, CVAR.tileSide, CVAR.outlineWidth);
         for (let i = tileIndex.i; i < tileIndex.i + GVAR.buildings[type].size.w; i++) {
