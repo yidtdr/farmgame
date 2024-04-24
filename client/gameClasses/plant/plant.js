@@ -15,6 +15,10 @@ export default class Plant extends Sprite{
         this._growTimeStamp = Date.now() + GVAR.plants[plantType].growTime * 1000;
         this._timeToGrow = GVAR.plants[plantType].growTime * 1000;
         this._grown = false;
+        this._prevPosition = {
+            i: -1,
+            j: -1
+        }
     }
     draw(){
         if (this._grown)
@@ -22,7 +26,7 @@ export default class Plant extends Sprite{
             ctx.shadowBlur = 20;
             ctx.shadowColor = "yellow";
         }
-        ctx.drawImage(this._image, this._rect.x, this._rect.y, this._rect.w, this._rect.h);
+        ctx.drawImage(this._image, this._x, this._y, this._w, this._h);
         ctx.shadowBlur = 0;
         ctx.fillStyle = "rgb(0,200,0)"
         ctx.fillRect(this._rect.x, this._rect.y - this._rect.h / 3, this._rect.w * this._timeToGrow /(1000 * GVAR.plants[this._plantType].growTime), CVAR.tileSide / 5);
@@ -37,11 +41,17 @@ export default class Plant extends Sprite{
     }
     collect()
     {
-        GVAR.UI.pop();
+        
         if (this._grown)
         {
             const index = Calc.CanvasToIndex(this._rect.x, this._rect.y, CVAR.tileSide, CVAR.outlineWidth);
-            tiles[index.i][index.j].plantCollected();
+            GVAR.fieldArr.forEach((el) => {
+                el.checkRectHover();
+                if (el._hovered)
+                {
+                    el.plantCollected();
+                }
+            })
             player.pushStash(this._plantType, GVAR.plants[this._plantType].collectAmount);
             GVAR.PlantArr = GVAR.PlantArr.filter((el) => el !== this);
         }

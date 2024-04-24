@@ -11,6 +11,8 @@ class Assets{
         this.grass2.src = 'client/assets/grass_2.png';
         this.pscenica.src = 'client/assets/pshenica.png';
         this.pizdec.src = 'client/assets/pizdec.png';
+        this.field = new Image();
+        this.field.src = 'client/assets/field.jpg';
     }
 }
 

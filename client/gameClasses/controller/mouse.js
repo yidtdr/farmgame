@@ -48,22 +48,48 @@ class Mouse{
                 el._y = pos.y;
             }
         })
+        GVAR.fieldArr.forEach((el) => {
+            if (el._isMoving)
+            {
+                let pos = Calc.indexToCanvas(this._mapPos.i, this._mapPos.j, CVAR.tileSide, CVAR.outlineWidth);
+                el._x = pos.x;
+                el._y = pos.y;
+                let prevPos = el._prevPosition;
+                GVAR.PlantArr.forEach((el) => {
+                    if (el._prevPosition.i == prevPos.i && el._prevPosition.j == prevPos.j){
+                        el._x = pos.x;
+                        el._y = pos.y;
+                    }
+                })
+            }
+        })
     }
     onMouseDown(e)
     {
+        this._movedDist=0;
         this.onMouseMove(e);
         console.log("down");
-        this._movedDist = 0;
         this._LMBdown = true;
-
+        if (this._movedDist < 10)
+        {
         this._LMBhold = setTimeout(() => {
-            // GVAR.PlantArr.forEach((el) => {
-            //     el.checkRectHover();
-            //     if (el._hovered)
-            //     {
-                    
-            //     }
-            // })
+            GVAR.UI.pop();
+            GVAR.fieldArr.forEach((el) => {
+                el.checkRectHover();
+                if (el._hovered)
+                {
+                    el._isMoving=true;
+                    this._isDragging = true;
+                    el._prevPosition = Calc.CanvasToIndex(el._x, el._y, CVAR.tileSide, CVAR.outlineWidth);
+                    let prevPos = el._prevPosition;
+                    let prevCoords = Calc.indexToCanvas(prevPos.i, prevPos.j, CVAR.tileSide, CVAR.outlineWidth);
+                    GVAR.PlantArr.forEach((el) => {
+                        if (el._x==prevCoords.x && el._y==prevCoords.y){
+                            el._prevPosition = prevPos;
+                        }
+                    })
+                }
+            })
             
             GVAR.buildingArr.forEach((el) => {
                 el.checkRectHover();
@@ -71,19 +97,55 @@ class Mouse{
                 {
                     el._isMoving=true;
                     this._isDragging = true;
-                    console.log("start");
                     el._prevPosition = Calc.CanvasToIndex(el._x, el._y, CVAR.tileSide, CVAR.outlineWidth);
                 }
             })
         }, 500); // time
+        }
+        this._movedDist=0;
     }
     onMouseUp(e)
     {
-        GVAR.buildingArr.forEach((el) => {
-            // el.checkRectHover();
+        GVAR.fieldArr.forEach((el) => {
             if (el._isMoving)
             {
-                console.log(tiles[this._mapPos.i][this._mapPos.j].isCanPut(el._buildingType));
+                if (!tiles[this._mapPos.i][this._mapPos.j]._isOccupied){
+                    //очистка прошлой территории
+                    tiles[el._prevPosition.i][el._prevPosition.j]._isOccupied = false
+                    //заполняем новую терр
+                    tiles[this._mapPos.i][this._mapPos.j]._isOccupied = true
+                    let pos = Calc.indexToCanvas(this._mapPos.i, this._mapPos.j, CVAR.tileSide, CVAR.outlineWidth);
+                    el._x = pos.x;
+                    el._y = pos.y;//убрать
+                    let prevPos = Calc.indexToCanvas(el._prevPosition.i, el._prevPosition.j, CVAR.tileSide, CVAR.outlineWidth);
+                    GVAR.PlantArr.forEach((el) => {
+                        if (el._x==prevPos.x && el._y==prevPos.y){
+                            console.log('растение ',el._x, el._y)
+                            el._x = pos.x;
+                            el._y = pos.y;
+                        }
+                    })
+                }
+                else {
+                    let prevCoords = Calc.indexToCanvas(el._prevPosition.i, el._prevPosition.j, CVAR.tileSide, CVAR.outlineWidth);
+                    el._x = prevCoords.x;
+                    el._y = prevCoords.y;
+                    let prevPos = el._prevPosition;
+                    GVAR.PlantArr.forEach((el) => {
+                        if (el._prevPosition.i== prevPos.i && el._prevPosition.j== prevPos.j){
+                            el._x = prevCoords.x;
+                            el._y = prevCoords.y;
+                        }
+                    })
+                }
+                el._isMoving=false;
+                this._isDragging = false;
+            }
+        })
+
+        GVAR.buildingArr.forEach((el) => {
+            if (el._isMoving)
+            {
                 if (tiles[this._mapPos.i][this._mapPos.j].isCanPut(el._buildingType)){
                     //очистка прошлой территории
                     let size = GVAR.buildings[el._buildingType].size;
@@ -109,10 +171,9 @@ class Mouse{
                 }
                 el._isMoving=false;
                 this._isDragging = false;
-                console.log("поднял")
             }
         })
-        
+
         this._LMBdown = false;
         clearTimeout(this._LMBhold);        
         const mousePos = Calc.getTouchEndPos(canvas, e);
@@ -144,6 +205,7 @@ class Mouse{
         }
         if (Clicked)
         {return};
+
         GVAR.PlantArr.forEach((el) => {
             el.checkRectHover();
             if (el._hovered)
@@ -152,10 +214,24 @@ class Mouse{
                 Clicked = true;
             }
         })
+        if (Clicked)
+        {return};
+
+        GVAR.fieldArr.forEach((el) => {
+            el.checkRectHover();
+            if (el._hovered)
+            {
+                el.onClick();
+                Clicked = true;
+            }
+        })
+
+        if (Clicked)
+        {return};
 
         GVAR.buildingArr.forEach((el) => {
             el.checkRectHover();
-            if (el._hovered && !el._isMoving)
+            if (el._hovered)
             {
                 console.log(el._isMoving);
                 if (!el._isWorking){

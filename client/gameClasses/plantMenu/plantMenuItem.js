@@ -4,7 +4,6 @@ import GVAR from "../../globalVars/global.js";
 import player from "../player/player.js";
 import tiles from "../../globalVars/tiles.js";
 
-
 export default class PlantMenuItem extends Menu{
     constructor(x, y, w, h, item, amount) {
         super(x, y, w, h);
@@ -32,11 +31,19 @@ export default class PlantMenuItem extends Menu{
     }
     onClick()
     {
-        // player._inventory[this._item]--;
+        player._inventory[this._item]--;
+        GVAR.fieldArr.forEach((el) => {
+            el.checkRectHover();
+            if (el._hovered)
+            {
+                el._plant = this._item;
+                el.createPlant();
+            }
+        })
         // tiles[player._chosenTile.i][player._chosenTile.j]._plant = this._item;
         // tiles[player._chosenTile.i][player._chosenTile.j].createPlant();
-        if (tiles[player._chosenTile.i][player._chosenTile.j].isCanPut("bakery")){
-            tiles[player._chosenTile.i][player._chosenTile.j].createBuilding("bakery"); //тут растение было
-        }
+        // if (tiles[player._chosenTile.i][player._chosenTile.j].isCanPut("bakery")){
+        //     tiles[player._chosenTile.i][player._chosenTile.j].createBuilding("bakery"); //тут растение было
+        // }
     }
 }

@@ -19,7 +19,7 @@ export default class Building extends Sprite{
         this._timeToComplete =  GVAR.buildings[buildingType].workingTime * 1000;
         this._isReady = false;
         this._isWorking = false;
-        this._isMoving=false;
+        this._isMoving = false;
         this._prevPosition = {
             i: -1,
             j: -1

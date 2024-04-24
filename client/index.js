@@ -4,6 +4,8 @@ import tiles from './globalVars/tiles.js';
 import mouse from './gameClasses/controller/mouse.js';
 import camera from './gameClasses/controller/camera.js';
 import shop from './gameClasses/shop/shop.js';
+import player from './gameClasses/player/player.js';
+import Order from './gameClasses/orders/order.js';
 
 //      [WINDOW STUFF]
 window.onresize = () => {
@@ -53,6 +55,17 @@ setInterval(() => {
     })
 }, 1000);
 
+setInterval(() => {
+    let newOrders = new Array();
+    for (let i = 0; i < player._maxOrderAmount; i++) {
+        newOrders.push(new Order(player._inventory))
+    }
+    player._orderArr = newOrders;
+    player._orderArr.forEach(el => {
+        console.log(el)
+    });
+}, 10000); //таймер обновления ордеров
+
 
 //      [ANIMATE]
 function animate(delta){
@@ -72,6 +85,10 @@ function animate(delta){
                 tiles[i][j].draw();
             }
         }
+
+        GVAR.fieldArr.forEach((el) => {
+            el.draw();
+        })
 
         GVAR.PlantArr.forEach((el) => {
             el.draw();
