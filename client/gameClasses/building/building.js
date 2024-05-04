@@ -27,12 +27,14 @@ export default class Building extends Sprite{
     }
     startWork(){
         console.log("start"+this._buildingType)
-        this._buildingTimeStamp = Date.now();
-        this._workingTimeStamp = Date.now() +  GVAR.buildings[this._buildingType].workingTime * 1000;
-        this._isWorking = true;
-        for (let i = 0; i < 5; i++) {
-            for (let j = 0; j < 5; j++) {
-                console.log(tiles[i][j]._building)
+        if (!this._isWorking) { 
+            this._buildingTimeStamp = Date.now();
+            this._workingTimeStamp = Date.now() +  GVAR.buildings[this._buildingType].workingTime * 1000;
+            this._isWorking = true;
+            for (let i = 0; i < 5; i++) {
+                for (let j = 0; j < 5; j++) {
+                    console.log(tiles[i][j]._building)
+                }
             }
         }
     }
@@ -73,5 +75,9 @@ export default class Building extends Sprite{
         else{
             console.log(`notgrown ${this._timeToComplete / 1000}`)
         }
+    }
+    onClick() {
+        this.startWork()
+        this.collect()
     }
 }

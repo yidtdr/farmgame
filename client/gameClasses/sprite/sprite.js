@@ -1,5 +1,4 @@
 import { ctx } from "../../globalVars/canvas.js";
-import mouse from "../controller/mouse.js";
 import camera from "../controller/camera.js";
 import Calc from "../../calc.js";
 import GVAR from "../../globalVars/global.js";
@@ -27,8 +26,7 @@ export default class Sprite{
     draw(){
         ctx.drawImage(this._image, this._rect.x, this._rect.y, this._rect.w, this._rect.h);
     }
-    checkRectHover(){
-        const mousePos = mouse._screenPos;
+    checkRectHover(mousePos){
         const worldMousePos = Calc.screenToWorld(mousePos.x, mousePos.y, camera.getPos(), GVAR.scale);
         this._hovered = Calc.pointInBoudaries(worldMousePos.x, worldMousePos.y, this.getRect());
     }

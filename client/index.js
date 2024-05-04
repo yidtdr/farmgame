@@ -6,6 +6,8 @@ import camera from './gameClasses/controller/camera.js';
 import shop from './gameClasses/shop/shop.js';
 import player from './gameClasses/player/player.js';
 import Order from './gameClasses/orders/order.js';
+import { orderManager } from './gameClasses/orders/orders.js';
+import { spin } from './gameClasses/spin/spin.js';
 
 //      [WINDOW STUFF]
 window.onresize = () => {
@@ -57,13 +59,15 @@ setInterval(() => {
 
 setInterval(() => {
     let newOrders = new Array();
-    for (let i = 0; i < player._maxOrderAmount; i++) {
+
+    for (let i = 0; i < player._maxOrderAmount+10; i++) {
         newOrders.push(new Order(player._inventory))
     }
     player._orderArr = newOrders;
-    player._orderArr.forEach(el => {
-        console.log(el)
-    });
+    orderManager.renderOrders()
+    // player._orderArr.forEach(el => {
+    //     console.log(el)
+    // });
 }, 10000); //таймер обновления ордеров
 
 

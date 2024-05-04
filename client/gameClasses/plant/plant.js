@@ -41,21 +41,15 @@ export default class Plant extends Sprite{
     }
     collect()
     {
-        
         if (this._grown)
         {
             const index = Calc.CanvasToIndex(this._rect.x, this._rect.y, CVAR.tileSide, CVAR.outlineWidth);
-            GVAR.fieldArr.forEach((el) => {
-                el.checkRectHover();
-                if (el._hovered)
-                {
-                    el.plantCollected();
-                }
-            })
+            tiles[player._chosenTile.i][player._chosenTile.j]._structure.plantCollected();
             player.pushStash(this._plantType, GVAR.plants[this._plantType].collectAmount);
             GVAR.PlantArr = GVAR.PlantArr.filter((el) => el !== this);
         }
-        else{
+        else
+        {
             console.log(`notgrown ${this._timeToGrow / 1000}`)
         }
     }

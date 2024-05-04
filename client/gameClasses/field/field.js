@@ -34,11 +34,14 @@ export default class Field extends Sprite{
         else if (this._plant == "none")
         {
             GVAR.UI.push(new PlantMenu(this._x, this._y, 30, 30));
+        } else {
+            this._plant.collect();
         }
     }
-    createPlant()
+    createPlant(type)
     {
-        GVAR.PlantArr.push(new Plant(this._x, this._y, this._w, this._h, this._plant));
+        this._plant = new Plant(this._x, this._y, this._w, this._h, type)
+        GVAR.PlantArr.push(this._plant);
     }
     plantCollected()
     {

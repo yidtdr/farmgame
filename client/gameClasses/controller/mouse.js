@@ -1,4 +1,5 @@
 import Calc from "../../calc.js";
+import Building from "../building/building.js";
 import tiles from "../../globalVars/tiles.js";
 import camera from "./camera.js";
 import GVAR from "../../globalVars/global.js";
@@ -75,7 +76,7 @@ class Mouse{
         this._LMBhold = setTimeout(() => {
             GVAR.UI.pop();
             GVAR.fieldArr.forEach((el) => {
-                el.checkRectHover();
+                el.checkRectHover(mouse._screenPos);
                 if (el._hovered)
                 {
                     el._isMoving=true;
@@ -100,7 +101,7 @@ class Mouse{
                     el._prevPosition = Calc.CanvasToIndex(el._x, el._y, CVAR.tileSide, CVAR.outlineWidth);
                 }
             })
-        }, 500); // time
+        }, 300); // time
         }
         this._movedDist=0;
     }
@@ -189,7 +190,6 @@ class Mouse{
     }
     onClick()
     {
-        console.log("click");
         let Clicked = false;
         GVAR.UI.forEach((el) => {
             el.checkRectHover();
@@ -206,46 +206,13 @@ class Mouse{
         if (Clicked)
         {return};
 
-        GVAR.PlantArr.forEach((el) => {
-            el.checkRectHover();
-            if (el._hovered)
-            {
-                el.collect();
-                Clicked = true;
-            }
-        })
-        if (Clicked)
-        {return};
-
-        GVAR.fieldArr.forEach((el) => {
-            el.checkRectHover();
-            if (el._hovered)
-            {
-                el.onClick();
-                Clicked = true;
-            }
-        })
-
-        if (Clicked)
-        {return};
-
-        GVAR.buildingArr.forEach((el) => {
-            el.checkRectHover();
-            if (el._hovered)
-            {
-                console.log(el._isMoving);
-                if (!el._isWorking){
-                    el.startWork();
-                    GVAR.workingBuildingArr.push(el);
-                }
-                el.collect();
-                Clicked = true;
-            }
-        })
-
-        if (Clicked)
-        {return};
-        tiles[this._mapPos.i][this._mapPos.j].onClick();
+        if (tiles[player._chosenTile.i][player._chosenTile.j]._structure != "none"){
+            console.log("click");
+            tiles[player._chosenTile.i][player._chosenTile.j]._structure.onClick();
+            // if (tiles[player._chosenTile.i][player._chosenTile.j]._structure instanceof Building)
+            //     GVAR.workingBuildingArr.push(tiles[player._chosenTile.i][player._chosenTile.j]._structure);
+        } else
+            tiles[this._mapPos.i][this._mapPos.j].onClick();
     }
     onScaleStart(e)
     {

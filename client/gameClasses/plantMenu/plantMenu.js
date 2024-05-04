@@ -6,6 +6,7 @@ import PlantMenuItem from "./plantMenuItem.js";
 import mouse from "../controller/mouse.js";
 import Calc from "../../calc.js";
 import camera from "../controller/camera.js";
+import CVAR from "../../globalVars/const.js";
 
 export default class PlantMenu extends Menu
 {
@@ -38,18 +39,14 @@ export default class PlantMenu extends Menu
         const mousePos = mouse._screenPos;
         const worldMousePos = Calc.screenToWorld(mousePos.x, mousePos.y, camera.getPos(), GVAR.scale);
         this._hovered = Calc.pointInBoudaries(worldMousePos.x, worldMousePos.y, this._rect);
-
-        this._items.forEach((el) => {
-            el.checkRectHover();
-        })
     }
     onClick(){
-        this._items.forEach((el) => {
-            if (el._hovered)
-            {
-                el.onClick();
-            }
-        })
+        const pos = Calc.CanvasToIndex(this._x, this._y, CVAR.tileSide, CVAR.outlineWidth);
+        const itemPos = {
+            i: mouse._mapPos.i - pos.i,
+            j: mouse._mapPos.j - pos.j
+        }
+        this._items[itemPos.i + 3 * itemPos.j].onClick();
         GVAR.UI.pop();
     }
 }

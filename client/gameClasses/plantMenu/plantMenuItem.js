@@ -3,6 +3,8 @@ import { ctx } from "../../globalVars/canvas.js";
 import GVAR from "../../globalVars/global.js";
 import player from "../player/player.js";
 import tiles from "../../globalVars/tiles.js";
+import Calc from "../../calc.js";
+import CVAR from "../../globalVars/const.js";
 
 export default class PlantMenuItem extends Menu{
     constructor(x, y, w, h, item, amount) {
@@ -32,14 +34,8 @@ export default class PlantMenuItem extends Menu{
     onClick()
     {
         player._inventory[this._item]--;
-        GVAR.fieldArr.forEach((el) => {
-            el.checkRectHover();
-            if (el._hovered)
-            {
-                el._plant = this._item;
-                el.createPlant();
-            }
-        })
+        let pos = Calc.indexToCanvas(player._chosenTile.i,player._chosenTile.j, CVAR.tileSide, CVAR.outlineWidth)
+        tiles[player._chosenTile.i][player._chosenTile.j]._structure.createPlant(this._item)
         // tiles[player._chosenTile.i][player._chosenTile.j]._plant = this._item;
         // tiles[player._chosenTile.i][player._chosenTile.j].createPlant();
         // if (tiles[player._chosenTile.i][player._chosenTile.j].isCanPut("bakery")){

@@ -10,9 +10,7 @@ export default class Tile extends Sprite{
     constructor(x, y, w, h, image)
     {
         super(x, y, w, h, image);
-        this._plant = "none";
-        this._building = "none";
-        this._isOccupied = false
+        this._structure = "none";
     }
     onClick()
     {  
@@ -20,8 +18,8 @@ export default class Tile extends Sprite{
         {
             GVAR.UI.pop();
         }
-        GVAR.fieldArr.push(new Field(this._x,this._y,CVAR.tileSide, CVAR.tileSide)); //спавн грядки(потом убрать)
-        this._isOccupied = true
+        this._structure = new Field(this._x, this._y, CVAR.tileSide, CVAR.tileSide);
+        GVAR.fieldArr.push(this._structure); //спавн грядки(потом убрать)
     }
     isCanPut(type){
         let size = GVAR.buildings[type].size;
@@ -30,8 +28,8 @@ export default class Tile extends Sprite{
             return false;
         for (let i = tileIndex.i; i < tileIndex.i + size.w; i++) {
             for (let j = tileIndex.j; j < tileIndex.j + size.h; j++) {
-                if (tiles[i][j]._plant!="none" || tiles[i][j]._building!="none") { //в будущем растения не будет
-                    console.log(i,j,tiles[i][j]._building, tiles[i][j]._plant)
+                if (tiles[i][j]._occupied != "none") {
+                    console.log(i,j)
                     return false;
                 }
             }
@@ -40,16 +38,13 @@ export default class Tile extends Sprite{
     }
     createBuilding(type)
     {
+        this._structure = new Building(this._rect.x, this._rect.y, this._rect.w, this._rect.h, type)
         let tileIndex = Calc.CanvasToIndex(this._x, this._y, CVAR.tileSide, CVAR.outlineWidth);
         for (let i = tileIndex.i; i < tileIndex.i + GVAR.buildings[type].size.w; i++) {
             for (let j = tileIndex.j; j < tileIndex.j + GVAR.buildings[type].size.h; j++) {
-                tiles[i][j]._building = type;
+                tiles[i][j]._structure = this._structure;
             }
         }
-        GVAR.buildingArr.push(new Building(this._rect.x, this._rect.y, this._rect.w, this._rect.h, this._building));
-    }
-    buildingCollected()
-    {
-        this._building = "none";
+        GVAR.buildingArr.push(this._structure);
     }
 }
