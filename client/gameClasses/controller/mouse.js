@@ -69,40 +69,45 @@ class Mouse{
     {
         this._movedDist=0;
         this.onMouseMove(e);
-        console.log("down");
         this._LMBdown = true;
-        if (this._movedDist < 10)
-        {
+        this._movedDist=0;
+        console.log(this._movedDist)
         this._LMBhold = setTimeout(() => {
-            GVAR.UI.pop();
-            GVAR.fieldArr.forEach((el) => {
-                el.checkRectHover(mouse._screenPos);
-                if (el._hovered)
-                {
-                    el._isMoving=true;
-                    this._isDragging = true;
-                    el._prevPosition = Calc.CanvasToIndex(el._x, el._y, CVAR.tileSide, CVAR.outlineWidth);
-                    let prevPos = el._prevPosition;
-                    let prevCoords = Calc.indexToCanvas(prevPos.i, prevPos.j, CVAR.tileSide, CVAR.outlineWidth);
-                    GVAR.PlantArr.forEach((el) => {
-                        if (el._x==prevCoords.x && el._y==prevCoords.y){
-                            el._prevPosition = prevPos;
-                        }
-                    })
-                }
-            })
-            
-            GVAR.buildingArr.forEach((el) => {
-                el.checkRectHover();
-                if (el._hovered)
-                {
-                    el._isMoving=true;
-                    this._isDragging = true;
-                    el._prevPosition = Calc.CanvasToIndex(el._x, el._y, CVAR.tileSide, CVAR.outlineWidth);
-                }
-            })
+            const mousePos = Calc.getTouchPos(canvas, e);
+            this._deltaMove.x = mousePos.x - this._screenPos.x;
+            this._deltaMove.y = mousePos.y - this._screenPos.y;
+            if (Math.sqrt((this._deltaMove.x) * (this._deltaMove.x) + (this._deltaMove.y) * (this._deltaMove.y))<10){
+                console.log("start")
+                GVAR.UI.pop();
+                GVAR.fieldArr.forEach((el) => {
+                    el.checkRectHover(mouse._screenPos);
+                    if (el._hovered)
+                    {
+                        el._isMoving=true;
+                        GVAR.redraw = true;
+                        this._isDragging = true;
+                        el._prevPosition = Calc.CanvasToIndex(el._x, el._y, CVAR.tileSide, CVAR.outlineWidth);
+                        let prevPos = el._prevPosition;
+                        let prevCoords = Calc.indexToCanvas(prevPos.i, prevPos.j, CVAR.tileSide, CVAR.outlineWidth);
+                        GVAR.PlantArr.forEach((el) => {
+                            if (el._x==prevCoords.x && el._y==prevCoords.y){
+                                el._prevPosition = prevPos;
+                            }
+                        })
+                    }
+                })
+                
+                GVAR.buildingArr.forEach((el) => {
+                    el.checkRectHover(mouse._screenPos);
+                    if (el._hovered)
+                    {
+                        el._isMoving=true;
+                        this._isDragging = true;
+                        el._prevPosition = Calc.CanvasToIndex(el._x, el._y, CVAR.tileSide, CVAR.outlineWidth);
+                    }
+                })
+            }   
         }, 300); // time
-        }
         this._movedDist=0;
     }
     onMouseUp(e)
@@ -111,21 +116,16 @@ class Mouse{
             if (el._isMoving)
             {
                 if (!tiles[this._mapPos.i][this._mapPos.j]._isOccupied){
+                    tiles[this._mapPos.i][this._mapPos.j]._structure = tiles[el._prevPosition.i][el._prevPosition.j]._structure
+                    tiles[el._prevPosition.i][el._prevPosition.j]._structure = "none"
                     //очистка прошлой территории
                     tiles[el._prevPosition.i][el._prevPosition.j]._isOccupied = false
                     //заполняем новую терр
                     tiles[this._mapPos.i][this._mapPos.j]._isOccupied = true
                     let pos = Calc.indexToCanvas(this._mapPos.i, this._mapPos.j, CVAR.tileSide, CVAR.outlineWidth);
                     el._x = pos.x;
-                    el._y = pos.y;//убрать
+                    el._y = pos.y; //убрать (добавить мув)
                     let prevPos = Calc.indexToCanvas(el._prevPosition.i, el._prevPosition.j, CVAR.tileSide, CVAR.outlineWidth);
-                    GVAR.PlantArr.forEach((el) => {
-                        if (el._x==prevPos.x && el._y==prevPos.y){
-                            console.log('растение ',el._x, el._y)
-                            el._x = pos.x;
-                            el._y = pos.y;
-                        }
-                    })
                 }
                 else {
                     let prevCoords = Calc.indexToCanvas(el._prevPosition.i, el._prevPosition.j, CVAR.tileSide, CVAR.outlineWidth);
