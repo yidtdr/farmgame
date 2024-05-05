@@ -11,6 +11,7 @@ export default class Tile extends Sprite{
     {
         super(x, y, w, h, image);
         this._structure = "none";
+        this._isOccupied = false;
     }
     onClick()
     {  
@@ -20,6 +21,7 @@ export default class Tile extends Sprite{
         }
         this._structure = new Field(this._x, this._y, CVAR.tileSide, CVAR.tileSide);
         GVAR.fieldArr.push(this._structure); //спавн грядки(потом убрать)
+        this._isOccupied = true;
     }
     isCanPut(type){
         let size = GVAR.buildings[type].size;
@@ -38,7 +40,7 @@ export default class Tile extends Sprite{
     }
     createBuilding(type)
     {
-        this._structure = new Building(this._rect.x, this._rect.y, this._rect.w, this._rect.h, type)
+        this._structure = new Building(this._rect.x, this._rect.y, this._rect.w, this._rect.h, type) //убрать this._rect.w, this._rect.h
         let tileIndex = Calc.CanvasToIndex(this._x, this._y, CVAR.tileSide, CVAR.outlineWidth);
         for (let i = tileIndex.i; i < tileIndex.i + GVAR.buildings[type].size.w; i++) {
             for (let j = tileIndex.j; j < tileIndex.j + GVAR.buildings[type].size.h; j++) {

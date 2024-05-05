@@ -51,7 +51,6 @@ class GlobalVars{
         this.scale = 4.5;
         this.rescale = true
         this.redraw = true;
-        this.a = ASSETS;
     }
 }
 

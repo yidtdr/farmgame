@@ -132,12 +132,14 @@ class Mouse{
                     el._x = prevCoords.x;
                     el._y = prevCoords.y;
                     let prevPos = el._prevPosition;
-                    GVAR.PlantArr.forEach((el) => {
-                        if (el._prevPosition.i== prevPos.i && el._prevPosition.j== prevPos.j){
-                            el._x = prevCoords.x;
-                            el._y = prevCoords.y;
-                        }
-                    })
+                    tiles[el._prevPosition.i][el._prevPosition.j]._structure._plant._x = prevCoords.x;
+                    tiles[el._prevPosition.i][el._prevPosition.j]._structure._plant._y = prevCoords.y;
+                    // GVAR.PlantArr.forEach((el) => {
+                    //     if (el._prevPosition.i== prevPos.i && el._prevPosition.j== prevPos.j){
+                    //         el._x = prevCoords.x;
+                    //         el._y = prevCoords.y;
+                    //     }
+                    // })
                 }
                 el._isMoving=false;
                 this._isDragging = false;

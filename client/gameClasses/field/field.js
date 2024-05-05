@@ -8,20 +8,19 @@ import CVAR from "../../globalVars/const.js";
 import Building from "../building/building.js";
 import ASSETS from "../../globalVars/assets.js";
 import { ctx } from "../../globalVars/canvas.js";
+import Buildable from "../building/buildable.js";
 
-export default class Field extends Sprite{
+export default class Field extends Buildable{
     constructor(x, y, w, h)
     {
-        super(x, y, w, h);
+        super(x, y, w, h, ASSETS.field);
         this._plant = "none";
-        this._image = ASSETS.field;
-        this._isMoving = false;
-        this._prevPosition = {
-            i: -1,
-            j: -1
-        }
     }
     draw(){
+        if (this._isMoving){
+            ctx.shadowBlur = 30;
+            ctx.shadowColor = "rgb(0,230,0)"
+        }
         ctx.drawImage(this._image, this._x, this._y, this._w, this._h);
         ctx.shadowBlur = 0;
     }
@@ -47,5 +46,11 @@ export default class Field extends Sprite{
     {
         this._plant = "none";
     }
-
+    move(pos) {
+        this._x = pos.x;
+        this._y = pos.y;
+        if (this._plant != "none"){
+            this._plant.move(pos);
+        }
+    }
 }

@@ -5,8 +5,9 @@ import CVAR from "../../globalVars/const.js";
 import Calc from "../../calc.js";
 import tiles from "../../globalVars/tiles.js";
 import player from "../player/player.js";
+import Buildable from "../building/buildable.js";
 
-export default class Plant extends Sprite{
+export default class Plant extends Buildable{
     constructor(x, y, w, h, plantType)
     {
         super(x, y, w, h, GVAR.plants[plantType].image);
@@ -15,10 +16,6 @@ export default class Plant extends Sprite{
         this._growTimeStamp = Date.now() + GVAR.plants[plantType].growTime * 1000;
         this._timeToGrow = GVAR.plants[plantType].growTime * 1000;
         this._grown = false;
-        this._prevPosition = {
-            i: -1,
-            j: -1
-        }
     }
     draw(){
         if (this._grown)

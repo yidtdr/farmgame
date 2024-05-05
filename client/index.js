@@ -16,6 +16,10 @@ window.onresize = () => {
     GVAR.rescale = true;
 }
 
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+});
+
 //      [GLOBAL VARS]
 let prevdelta = 0.001;
 
