@@ -12,6 +12,7 @@ class Player{
         this._maxOrderAmount = 6;
         this._ordersArr = new Array();
         this._expLevel = 1;
+        this.phantonBuilding = "none";
     }
     updateOrders(newOrders)
     {

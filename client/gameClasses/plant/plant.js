@@ -1,16 +1,18 @@
-import Sprite from "../sprite/sprite.js";
 import GVAR from "../../globalVars/global.js";
 import { ctx } from "../../globalVars/canvas.js";
 import CVAR from "../../globalVars/const.js";
 import Calc from "../../calc.js";
 import tiles from "../../globalVars/tiles.js";
 import player from "../player/player.js";
-import Buildable from "../building/buildable.js";
+import Sprite from "../sprite/sprite.js";
 
-export default class Plant extends Buildable{
+export default class Plant extends Sprite{
     constructor(x, y, w, h, plantType)
     {
-        super(x, y, w, h, GVAR.plants[plantType].image);
+        super(x, y, w, h, plantType);
+        console.log(GVAR.plants)
+        this._image = GVAR.plants[plantType].image;
+        console.log(GVAR.plants[plantType].image)
         this._plantType = plantType;
         this._plantTimeStamp = Date.now();
         this._growTimeStamp = Date.now() + GVAR.plants[plantType].growTime * 1000;
@@ -49,5 +51,9 @@ export default class Plant extends Buildable{
         {
             console.log(`notgrown ${this._timeToGrow / 1000}`)
         }
+    }
+    move(pos) {
+        this._x = pos.x;
+        this._y = pos.y;
     }
 }

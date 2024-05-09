@@ -1,19 +1,15 @@
 import GVAR from "../../globalVars/global.js";
-import Sprite from "../sprite/sprite.js";
 import PlantMenu from "../plantMenu/plantMenu.js";
 import Plant from "../plant/plant.js";
-import tiles from "../../globalVars/tiles.js";
-import Calc from "../../calc.js";
-import CVAR from "../../globalVars/const.js";
-import Building from "../building/building.js";
 import ASSETS from "../../globalVars/assets.js";
 import { ctx } from "../../globalVars/canvas.js";
 import Buildable from "../building/buildable.js";
 
 export default class Field extends Buildable{
-    constructor(x, y, w, h)
+    constructor(x, y, type)
     {
-        super(x, y, w, h, ASSETS.field);
+        super(x, y, type);
+        this._image = ASSETS.pictures[type].image
         this._plant = "none";
     }
     draw(){

@@ -7,7 +7,6 @@ import shop from './gameClasses/shop/shop.js';
 import player from './gameClasses/player/player.js';
 import Order from './gameClasses/orders/order.js';
 import { orderManager } from './gameClasses/orders/orders.js';
-import { spin } from './gameClasses/spin/spin.js';
 
 //      [WINDOW STUFF]
 window.onresize = () => {
@@ -25,6 +24,13 @@ let prevdelta = 0.001;
 
 shop.drawStash();
 
+document.addEventListener('touchmove', (e) => {
+    if (player.phantonBuilding!="none")
+    {
+        mouse.onMouseMove(e);
+    }
+}, false);
+
 //      [EVENTS]
 canvas.addEventListener('touchmove', (e) => {
     if (e.touches.length == 1)
@@ -37,6 +43,7 @@ canvas.addEventListener('touchmove', (e) => {
     }
 }, false);
 canvas.addEventListener('touchstart', (e) => {
+    console.log('touchstart')
     if (e.touches.length == 1)
     {
         mouse.onMouseDown(e);
@@ -47,6 +54,7 @@ canvas.addEventListener('touchstart', (e) => {
     }
 })
 canvas.addEventListener('touchend', (e) => {
+    console.log('touchend')
     mouse.onMouseUp(e);
 })
 
@@ -55,7 +63,7 @@ setInterval(() => {
         el.updateGrowTime();
         GVAR.redraw = true;  
     })
-    GVAR.workingBuildingArr.forEach((el) => {
+    GVAR.workingBuildingArr.forEach((el) => { //сделать проход по всем зданиям и убрать этот массив
         el.updateGrowTime();
         GVAR.redraw = true;
     })
@@ -99,6 +107,10 @@ function animate(delta){
         })
 
         GVAR.PlantArr.forEach((el) => {
+            el.draw();
+        })
+
+        GVAR.movingBuildable.forEach((el) => {
             el.draw();
         })
 

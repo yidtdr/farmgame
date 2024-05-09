@@ -5,6 +5,7 @@ import camera from "./camera.js";
 import GVAR from "../../globalVars/global.js";
 import CVAR from "../../globalVars/const.js";
 import player from "../player/player.js";
+import Buildable from "../building/buildable.js";
 
 class Mouse{
     constructor() {
@@ -28,6 +29,7 @@ class Mouse{
         this._isDragging = false;
     }
     onMouseMove(e){
+        console.log(1)
         const mousePos = Calc.getTouchPos(canvas, e);
         const index = Calc.screenToIndex(mousePos, camera.getPos(), GVAR.scale, CVAR.tileSide, CVAR.outlineWidth);
         GVAR.redraw = true;
@@ -41,27 +43,25 @@ class Mouse{
             camera.move(this._deltaMove.x, this._deltaMove.y);
             camera.updateBoundingBox();
         }
-        GVAR.buildingArr.forEach((el) => {
+        GVAR.buildingArr.forEach((el) => { //уже готово к объединению
             if (el._isMoving)
             {
                 let pos = Calc.indexToCanvas(this._mapPos.i, this._mapPos.j, CVAR.tileSide, CVAR.outlineWidth);
-                el._x = pos.x;
-                el._y = pos.y;
+                el.move(pos)
             }
         })
         GVAR.fieldArr.forEach((el) => {
             if (el._isMoving)
             {
                 let pos = Calc.indexToCanvas(this._mapPos.i, this._mapPos.j, CVAR.tileSide, CVAR.outlineWidth);
-                el._x = pos.x;
-                el._y = pos.y;
-                let prevPos = el._prevPosition;
-                GVAR.PlantArr.forEach((el) => {
-                    if (el._prevPosition.i == prevPos.i && el._prevPosition.j == prevPos.j){
-                        el._x = pos.x;
-                        el._y = pos.y;
-                    }
-                })
+                el.move(pos)
+            }
+        })
+        GVAR.movingBuildable.forEach((el) => {
+            if (el._isMoving)
+            {
+                let pos = Calc.indexToCanvas(this._mapPos.i, this._mapPos.j, CVAR.tileSide, CVAR.outlineWidth);
+                el.move(pos)
             }
         })
     }
@@ -71,13 +71,19 @@ class Mouse{
         this.onMouseMove(e);
         this._LMBdown = true;
         this._movedDist=0;
-        console.log(this._movedDist)
+        // if (player.phantonBuilding!="none"){ // временно
+        //     let pos = Calc.indexToCanvas(mouse._mapPos.i, mouse._mapPos.j, CVAR.tileSide, CVAR.outlineWidth)
+        //     player.phantonBuilding.building = new Buildable(pos.x, pos.y, CVAR.tileSide, CVAR.tileSide, 'bakery')
+        //     player.phantonBuilding.building._isMoving = true
+        //     GVAR.movingBuildable.push(player.phantonBuilding.building) //просто Buildable
+        //     this._isDragging = true
+        //     return
+        // }
         this._LMBhold = setTimeout(() => {
             const mousePos = Calc.getTouchPos(canvas, e);
             this._deltaMove.x = mousePos.x - this._screenPos.x;
             this._deltaMove.y = mousePos.y - this._screenPos.y;
             if (Math.sqrt((this._deltaMove.x) * (this._deltaMove.x) + (this._deltaMove.y) * (this._deltaMove.y))<10){
-                console.log("start")
                 GVAR.UI.pop();
                 GVAR.fieldArr.forEach((el) => {
                     el.checkRectHover(mouse._screenPos);
@@ -112,6 +118,17 @@ class Mouse{
     }
     onMouseUp(e)
     {
+        if (player.phantonBuilding!="none"){ // добавить проверку на возможность установить
+            let pos = Calc.indexToCanvas(mouse._mapPos.i, mouse._mapPos.j, CVAR.tileSide, CVAR.outlineWidth)
+            if (player._money>= player.phantonBuilding.cost){
+                tiles[mouse._mapPos.i][mouse._mapPos.j].createBuilding(player.phantonBuilding.type)
+                player._money -= player.phantonBuilding.cost
+                player.updateMoney()
+                player.phantonBuilding = "none"
+            }
+            GVAR.movingBuildable.pop()
+        }
+
         GVAR.fieldArr.forEach((el) => {
             if (el._isMoving)
             {
@@ -123,35 +140,25 @@ class Mouse{
                     //заполняем новую терр
                     tiles[this._mapPos.i][this._mapPos.j]._isOccupied = true
                     let pos = Calc.indexToCanvas(this._mapPos.i, this._mapPos.j, CVAR.tileSide, CVAR.outlineWidth);
-                    el._x = pos.x;
-                    el._y = pos.y; //убрать (добавить мув)
+                    el.move(pos)
                     let prevPos = Calc.indexToCanvas(el._prevPosition.i, el._prevPosition.j, CVAR.tileSide, CVAR.outlineWidth);
                 }
                 else {
                     let prevCoords = Calc.indexToCanvas(el._prevPosition.i, el._prevPosition.j, CVAR.tileSide, CVAR.outlineWidth);
-                    el._x = prevCoords.x;
-                    el._y = prevCoords.y;
+                    el.move(prevCoords)
                     let prevPos = el._prevPosition;
-                    tiles[el._prevPosition.i][el._prevPosition.j]._structure._plant._x = prevCoords.x;
-                    tiles[el._prevPosition.i][el._prevPosition.j]._structure._plant._y = prevCoords.y;
-                    // GVAR.PlantArr.forEach((el) => {
-                    //     if (el._prevPosition.i== prevPos.i && el._prevPosition.j== prevPos.j){
-                    //         el._x = prevCoords.x;
-                    //         el._y = prevCoords.y;
-                    //     }
-                    // })
+                    tiles[el._prevPosition.i][el._prevPosition.j]._structure._plant.move(prevCoords);
                 }
-                el._isMoving=false;
-                this._isDragging = false;
+                el._isMoving=false;  
             }
         })
 
-        GVAR.buildingArr.forEach((el) => {
+        GVAR.buildingArr.forEach((el) => {  // всё переписать под нвоое
             if (el._isMoving)
             {
-                if (tiles[this._mapPos.i][this._mapPos.j].isCanPut(el._buildingType)){
+                if (tiles[this._mapPos.i][this._mapPos.j].isCanPut(el._type)){
                     //очистка прошлой территории
-                    let size = GVAR.buildings[el._buildingType].size;
+                    let size = GVAR.buildings[el._type].size;
                     for (let i = el._prevPosition.i; i < el._prevPosition.i + size.w; i++) {
                         for (let j = el._prevPosition.j; j < el._prevPosition.j + size.h; j++) {
                             tiles[i][j]._building="none";
@@ -164,16 +171,13 @@ class Mouse{
                         }
                     }
                     let pos = Calc.indexToCanvas(this._mapPos.i, this._mapPos.j, CVAR.tileSide, CVAR.outlineWidth);
-                    el._x = pos.x;
-                    el._y = pos.y;
+                    el.move(pos)
                 }
                 else {
                     let prevPos = Calc.indexToCanvas(el._prevPosition.i, el._prevPosition.j, CVAR.tileSide, CVAR.outlineWidth);
-                    el._x = prevPos.x;
-                    el._y = prevPos.y;
+                    el.move(prevCoords)
                 }
                 el._isMoving=false;
-                this._isDragging = false;
             }
         })
 
@@ -184,6 +188,7 @@ class Mouse{
         GVAR.redraw = true;
         this._screenPos = mousePos;
         this._mapPos = index;
+        this._isDragging = false;
         if (this._movedDist < 10)
         {
            this.onClick();
@@ -211,8 +216,8 @@ class Mouse{
         if (tiles[player._chosenTile.i][player._chosenTile.j]._structure != "none"){
             console.log("click");
             tiles[player._chosenTile.i][player._chosenTile.j]._structure.onClick();
-            // if (tiles[player._chosenTile.i][player._chosenTile.j]._structure instanceof Building)
-            //     GVAR.workingBuildingArr.push(tiles[player._chosenTile.i][player._chosenTile.j]._structure);
+            if (tiles[player._chosenTile.i][player._chosenTile.j]._structure instanceof Building)
+                GVAR.workingBuildingArr.push(tiles[player._chosenTile.i][player._chosenTile.j]._structure);
         } else
             tiles[this._mapPos.i][this._mapPos.j].onClick();
     }

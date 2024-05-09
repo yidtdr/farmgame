@@ -76,6 +76,7 @@ body{
     height: 5vh;
 }
 .buybutton, .complete-order{
+    user-select: none;
     border: none;
     background-color: gainsboro;
     width: 100%;

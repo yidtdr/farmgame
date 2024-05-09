@@ -1,16 +1,30 @@
 import player from "../player/player.js";
 import GVAR from "../../globalVars/global.js";
+import mouse from "../controller/mouse.js";
+import Calc from "../../calc.js";
+import CVAR from "../../globalVars/const.js";
+import Buildable from "../building/buildable.js";
 
 class Shop{
     constructor() {
         const shop = document.getElementById('shop');
-        for (let plant in GVAR.plants)
+        for (let building in GVAR.buildings)
         {
             const button = document.createElement('button');
-            button.innerText = `Buy ${plant} seeds`;
-            button.onclick = () => {
-                this.buy(plant);
-            }
+            button.innerText = `Buy ${building} seeds`;
+            button.addEventListener("touchstart", function(e) {
+                document.getElementById("shop-wrap").style.display = "none";
+                player.phantonBuilding = {
+                    cost: 10,
+                    type: building
+                }
+                let pos = Calc.indexToCanvas(mouse._mapPos.i, mouse._mapPos.j, CVAR.tileSide, CVAR.outlineWidth)
+                player.phantonBuilding.building = new Buildable(pos.x, pos.y, 'bakery')
+                player.phantonBuilding.building._isMoving = true
+                GVAR.movingBuildable.push(player.phantonBuilding.building) //просто Buildable
+                mouse._isDragging = true
+                mouse.onMouseMove(e)
+            });
             button.className = "buybutton";
             shop.appendChild(button);
         }
