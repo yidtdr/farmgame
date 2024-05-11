@@ -1,17 +1,17 @@
 import Menu from "../menu/menu.js";
 import { ctx } from "../../globalVars/canvas.js";
-import GVAR from "../../globalVars/global.js";
 import player from "../player/player.js";
 import tiles from "../../globalVars/tiles.js";
 import Calc from "../../calc.js";
 import CVAR from "../../globalVars/const.js";
+import ASSETS from "../../globalVars/assets.js";
 
 export default class PlantMenuItem extends Menu{
     constructor(x, y, w, h, item, amount) {
         super(x, y, w, h);
         this._item = item;
         this._amount = amount;
-        this._image = GVAR.plants[item].image;
+        this._image = ASSETS.pictures[item].image;
     }
     draw()
     {

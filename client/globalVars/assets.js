@@ -25,8 +25,15 @@ class Assets{
         this.bakery.src = 'client/assets/bakery.jpg';
 
         this.pictures = new Array();
-        this.pictures['psheno'] = { //для растений size не нужен
+        this.pictures['PSHENO'] = { //для растений size не нужен
             image: this.pscenica,
+            stages: {
+                // 1: this.pscenica1,
+                // 2: this.pscenica2,
+            }
+        }
+        this.pictures['PIZDEC'] = {
+            image: this.pizdec,
             stages: {
                 // 1: this.pscenica1,
                 // 2: this.pscenica2,

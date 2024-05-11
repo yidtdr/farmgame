@@ -16,6 +16,7 @@ export default class PlantMenu extends Menu
         let k = 0;
         for (let item in player._inventory)
         {
+            console.log(item)
             if (player._inventory[item] > 0)
             {
             this._items.push(new PlantMenuItem(

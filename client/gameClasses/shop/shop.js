@@ -61,7 +61,7 @@ class Shop{
             {
                 const div = document.createElement('div');
                 div.className = 'stash-item'
-                div.style.backgroundImage = `url(${GVAR.plants[item].image.src})`;
+                div.style.backgroundImage = `url(${GVAR.plants[item].imageSrc})`;
                 const name = document.createElement('h3');
                 name.innerHTML = item;
                 const sellWrap = document.createElement('div');

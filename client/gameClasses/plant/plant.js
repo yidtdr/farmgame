@@ -5,14 +5,14 @@ import Calc from "../../calc.js";
 import tiles from "../../globalVars/tiles.js";
 import player from "../player/player.js";
 import Sprite from "../sprite/sprite.js";
+import ASSETS from "../../globalVars/assets.js";
 
 export default class Plant extends Sprite{
     constructor(x, y, w, h, plantType)
     {
-        super(x, y, w, h, plantType);
-        console.log(GVAR.plants)
-        this._image = GVAR.plants[plantType].image;
-        console.log(GVAR.plants[plantType].image)
+        super(x, y, w, h);
+        console.log(plantType)
+        this._image = ASSETS.pictures[plantType].image
         this._plantType = plantType;
         this._plantTimeStamp = Date.now();
         this._growTimeStamp = Date.now() + GVAR.plants[plantType].growTime * 1000;

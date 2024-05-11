@@ -5,7 +5,6 @@ class GlobalVars{
     {
         this.plants = new Array();
         this.plants["PSHENO"] = {
-            image: ASSETS.pscenica,
             imageSrc: 'assets/pshenica.png',
             growTime: 6,
             moneyReward: 5,
@@ -13,7 +12,6 @@ class GlobalVars{
             collectAmount: 2
         }
         this.plants["PIZDEC"] = {
-            image: ASSETS.pizdec,
             imageSrc: 'assets/pizdec.png',
             growTime: 10,
             moneyReward: 15,
