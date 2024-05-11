@@ -27,8 +27,6 @@ export default class Plant extends Sprite{
         }
         ctx.drawImage(this._image, this._x, this._y, this._w, this._h);
         ctx.shadowBlur = 0;
-        ctx.fillStyle = "rgb(0,200,0)"
-        ctx.fillRect(this._rect.x, this._rect.y - this._rect.h / 3, this._rect.w * this._timeToGrow /(1000 * GVAR.plants[this._plantType].growTime), CVAR.tileSide / 5);
     }
     updateGrowTime()
     {
@@ -45,7 +43,6 @@ export default class Plant extends Sprite{
             const index = Calc.CanvasToIndex(this._rect.x, this._rect.y, CVAR.tileSide, CVAR.outlineWidth);
             tiles[player._chosenTile.i][player._chosenTile.j]._structure.plantCollected();
             player.pushStash(this._plantType, GVAR.plants[this._plantType].collectAmount);
-            GVAR.PlantArr = GVAR.PlantArr.filter((el) => el !== this);
         }
         else
         {

@@ -1,4 +1,3 @@
-import Sprite from "../sprite/sprite.js";
 import GVAR from "../../globalVars/global.js";
 import { ctx } from "../../globalVars/canvas.js";
 import CVAR from "../../globalVars/const.js";
@@ -22,11 +21,6 @@ export default class Building extends Buildable{
             this._buildingTimeStamp = Date.now();
             this._workingTimeStamp = Date.now() +  this._timeToComplete;
             this._isWorking = true;
-            for (let i = 0; i < 5; i++) {
-                for (let j = 0; j < 5; j++) {
-                    console.log(tiles[i][j]._building) //беее
-                }
-            }
         }
     }
     draw(){
@@ -38,13 +32,14 @@ export default class Building extends Buildable{
         ctx.drawImage(this._image, this._x, this._y, this._w, this._h);
         ctx.shadowBlur = 0;
     }
-    updateGrowTime()
+    update()
     {
+        if (this._isWorking){
         this._timeToComplete = ((this._workingTimeStamp - Date.now()) > 0 ? (this._workingTimeStamp - Date.now()) : 0);
         if ((this._workingTimeStamp - Date.now()) < 0)
         {
-            console.log("ready")
             this._isReady = true;
+        }
         }
     }
     collect()
@@ -53,13 +48,10 @@ export default class Building extends Buildable{
         if (this._isReady)
         {
             this._isWorking = false;
-            console.log("nice");
-            player._money +=  GVAR.buildings[this._type].moneyReward;
+            player._money +=  GVAR.buildings[this._type].moneyReward; // позже изменить
             player.updateMoney();
             const index = Calc.CanvasToIndex(this._rect.x, this._rect.y, CVAR.tileSide, CVAR.outlineWidth);
-            tiles[index.i][index.j].buildingCollected(); //уже нет
             this._isReady=false;
-            GVAR.workingBuildingArr = GVAR.workingBuildingArr.filter((el) => el !== this);
         }
         else{
             console.log(`notgrown ${this._timeToComplete / 1000}`)

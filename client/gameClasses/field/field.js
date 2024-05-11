@@ -36,7 +36,6 @@ export default class Field extends Buildable{
     createPlant(type)
     {
         this._plant = new Plant(this._x, this._y, this._w, this._h, type)
-        GVAR.PlantArr.push(this._plant);
     }
     plantCollected()
     {
@@ -48,5 +47,9 @@ export default class Field extends Buildable{
         if (this._plant != "none"){
             this._plant.move(pos);
         }
+    }
+    update(){
+        if (this._plant!="none")
+            this._plant.updateGrowTime()
     }
 }

@@ -36,8 +36,6 @@ export default class PlantMenuItem extends Menu{
         player._inventory[this._item]--;
         let pos = Calc.indexToCanvas(player._chosenTile.i,player._chosenTile.j, CVAR.tileSide, CVAR.outlineWidth)
         tiles[player._chosenTile.i][player._chosenTile.j]._structure.createPlant(this._item)
-        // tiles[player._chosenTile.i][player._chosenTile.j]._plant = this._item;
-        // tiles[player._chosenTile.i][player._chosenTile.j].createPlant();
         // if (tiles[player._chosenTile.i][player._chosenTile.j].isCanPut("bakery")){
         //     tiles[player._chosenTile.i][player._chosenTile.j].createBuilding("bakery"); //тут растение было
         // }

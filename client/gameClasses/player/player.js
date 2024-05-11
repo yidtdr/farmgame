@@ -6,13 +6,13 @@ class Player{
         this._inventory = new Array();
         this._inventory["PSHENO"] = 10;
         this._inventory["PIZDEC"] = 5;
-        //this._inventory["potato"] = 5;
+
         this._stash = new Array();
         this._stash['PIZDEC'] = 10;
         this._maxOrderAmount = 6;
         this._ordersArr = new Array();
-        this._expLevel = 1;
-        this.phantonBuilding = "none";
+        this._networth = 0;
+        this._phantomBuilding = "none";
     }
     updateOrders(newOrders)
     {

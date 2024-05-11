@@ -14,14 +14,13 @@ class Shop{
             button.innerText = `Buy ${building} seeds`;
             button.addEventListener("touchstart", function(e) {
                 document.getElementById("shop-wrap").style.display = "none";
-                player.phantonBuilding = {
-                    cost: 10,
-                    type: building
+                player._phantomBuilding = {
+                    cost: 10
                 }
                 let pos = Calc.indexToCanvas(mouse._mapPos.i, mouse._mapPos.j, CVAR.tileSide, CVAR.outlineWidth)
-                player.phantonBuilding.building = new Buildable(pos.x, pos.y, 'bakery')
-                player.phantonBuilding.building._isMoving = true
-                GVAR.movingBuildable.push(player.phantonBuilding.building) //просто Buildable
+                player._phantomBuilding.building = new Buildable(pos.x, pos.y, building)
+                player._phantomBuilding.building._isMoving = true
+                GVAR.phantomBildingArr.push(player._phantomBuilding.building)
                 mouse._isDragging = true
                 mouse.onMouseMove(e)
             });
@@ -30,18 +29,22 @@ class Shop{
         }
         document.getElementById("closeShop").onclick = () => {
             document.getElementById("shop-wrap").style.display = "none";
+            GVAR.isCanvasActive = true;
         }
         document.getElementById("open-shop").onclick = () => {
             GVAR.UI.pop();
+            GVAR.isCanvasActive = false;
             document.getElementById("shop-wrap").style.display = "flex";
             document.getElementById("stash-wrap").style.display = "none";
         }        
 
         document.getElementById("closeStash").onclick = () => {
+            GVAR.isCanvasActive = true;
             document.getElementById("stash-wrap").style.display = "none";
         }
         document.getElementById("open-stash").onclick = () => {
             GVAR.UI.pop();
+            GVAR.isCanvasActive = false;
             document.getElementById("shop-wrap").style.display = "none";
             document.getElementById("stash-wrap").style.display = "flex";
             this.drawStash();

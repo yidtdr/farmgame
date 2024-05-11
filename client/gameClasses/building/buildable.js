@@ -3,11 +3,12 @@ import ASSETS from "../../globalVars/assets.js";
 import { ctx } from "../../globalVars/canvas.js";
 import CVAR from "../../globalVars/const.js";
 
-export default class Buildable extends Sprite{ // нужно переименовтаь
+export default class Buildable extends Sprite{
     constructor(x, y, type)
     {
         super(x, y);
         this._type = type
+        console.log(type)
         this._image = ASSETS.pictures[type].image
         this._isMoving = false;
         this._prevPosition = {

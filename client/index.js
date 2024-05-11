@@ -7,6 +7,7 @@ import shop from './gameClasses/shop/shop.js';
 import player from './gameClasses/player/player.js';
 import Order from './gameClasses/orders/order.js';
 import { orderManager } from './gameClasses/orders/orders.js';
+import { spin } from './gameClasses/spin/spin.js';
 
 //      [WINDOW STUFF]
 window.onresize = () => {
@@ -24,26 +25,30 @@ let prevdelta = 0.001;
 
 shop.drawStash();
 
+//      [EVENTS]
+
 document.addEventListener('touchmove', (e) => {
-    if (player.phantonBuilding!="none")
-    {
-        mouse.onMouseMove(e);
+    const touchX = e.touches[0].clientX;
+    const touchY = e.touches[0].clientY;
+    const touchedElement = document.elementFromPoint(touchX, touchY);
+    if (canvas === touchedElement){
+        if (e.touches.length == 1)
+            {
+                mouse.onMouseMove(e);
+            }
+            else
+            {
+                //mouse.onScale(e);
+            }
+    } else {
+        if (player.phantonBuilding!="none")
+            {
+                mouse.onMouseMove(e);
+            }
     }
 }, false);
 
-//      [EVENTS]
-canvas.addEventListener('touchmove', (e) => {
-    if (e.touches.length == 1)
-    {
-        mouse.onMouseMove(e);
-    }
-    else
-    {
-        //mouse.onScale(e);
-    }
-}, false);
 canvas.addEventListener('touchstart', (e) => {
-    console.log('touchstart')
     if (e.touches.length == 1)
     {
         mouse.onMouseDown(e);
@@ -53,19 +58,20 @@ canvas.addEventListener('touchstart', (e) => {
         //mouse.onScaleStart(e);
     }
 })
-canvas.addEventListener('touchend', (e) => {
-    console.log('touchend')
-    mouse.onMouseUp(e);
-})
+
+document.addEventListener('touchend', (e) => {
+    const touchX = e.changedTouches[0].clientX;
+    const touchY = e.changedTouches[0].clientY;
+    const touchedElement = document.elementFromPoint(touchX, touchY);
+    if (canvas === touchedElement){
+        mouse.onMouseUp(e);
+    }
+}, false);
 
 setInterval(() => {
-    GVAR.PlantArr.forEach((el) => {
-        el.updateGrowTime();
+    GVAR.buildableArr.forEach((el) => {
+        el.update();
         GVAR.redraw = true;  
-    })
-    GVAR.workingBuildingArr.forEach((el) => { //сделать проход по всем зданиям и убрать этот массив
-        el.updateGrowTime();
-        GVAR.redraw = true;
     })
 }, 1000);
 
@@ -77,9 +83,6 @@ setInterval(() => {
     }
     player._orderArr = newOrders;
     orderManager.renderOrders()
-    // player._orderArr.forEach(el => {
-    //     console.log(el)
-    // });
 }, 10000); //таймер обновления ордеров
 
 
@@ -102,19 +105,16 @@ function animate(delta){
             }
         }
 
-        GVAR.fieldArr.forEach((el) => {
+        GVAR.buildableArr.forEach((el) => {
             el.draw();
         })
 
-        GVAR.PlantArr.forEach((el) => {
-            el.draw();
+        GVAR.buildableArr.forEach((el) => { //отрисовка растений
+            if (el._plant != "none" && el._plan != undefined) //тут ещё будет item от building
+                el._plant.draw();
         })
 
-        GVAR.movingBuildable.forEach((el) => {
-            el.draw();
-        })
-
-        GVAR.buildingArr.forEach((el) => {
+        GVAR.phantomBildingArr.forEach((el) => {
             el.draw();
         })
 

@@ -1,7 +1,4 @@
 import ASSETS from "./assets.js";
-import CVAR from "./const.js";
-import Calc from "../calc.js";
-// import EVAR from "../../envars.mjs";
 
 class GlobalVars{
     constructor()
@@ -24,24 +21,22 @@ class GlobalVars{
             collectAmount: 1
         }
 
-        this.buildings = new Array();    //нужен массив assets
+        this.buildings = new Array();
         this.buildings["bakery"] = {
             workingTime: 6,
             moneyReward: 500,
             //shopCost: 3
         }
 
-        this.movingBuildable = new Array();
-
         this.UI = new Array(0);    
-        this.PlantArr = new Array();
-        this.buildingArr = new Array();
-        this.workingBuildingArr = new Array();
-        this.fieldArr = new Array();
+
+        this.buildableArr = new Array();
+        this.phantomBildingArr = new Array(0);
 
         this.scale = 4.5;
         this.rescale = true
         this.redraw = true;
+        this.isCanvasActive = true;
     }
 }
 
