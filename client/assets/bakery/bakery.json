@@ -1,0 +1,21 @@
+{
+  "bakery": {
+    "price": 30,
+    "maxSlots": 3,
+    "size": {
+      "w": 2,
+      "h": 3
+    },
+    "workTypes": {
+      "bread": { 
+        "timeToFinish": 15,
+        "items": {
+          "wheat": 3
+        },
+        "products": {
+          "bread": 1
+        }
+      }
+    }
+  }
+}

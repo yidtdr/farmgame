@@ -14,7 +14,6 @@ body{
 #canvas{
     position: absolute;
     image-rendering: pixelated;
-    image-rendering: optimizespeed;
     background: darkblue;
     width: 100%;
     height: 100%;
@@ -46,7 +45,7 @@ body{
     height: 5vh;
     font-family: VCR;
 }
-#shop-wrap, #stash-wrap, #orders-wrap, #spin-wrap{
+#shop-wrap, #stash-wrap, #orders-wrap, #spin-wrap, #building-menu-wrap{
     width: 100%;
     height: 100%;
     position: absolute;
@@ -56,13 +55,13 @@ body{
     z-index: 50;
     background-color: rgba(255, 255, 255, 0.244)
 }
-#shop, #stash, #orders, #spin{
+#shop, #stash, #orders, #spin, #building-menu{
     background-color: aliceblue;
     width: 80%;
     height: 80%;
     overflow-y: scroll;
 }
-#closeShop, #closeStash, #closeOrders, #closeSpin{
+#closeShop, #closeStash, #closeOrders, #closeSpin, #close-building-menu{
     float: right;
     border: none;
     background-color: rgb(225, 75, 75);
@@ -71,7 +70,7 @@ body{
     height: 5vh;
     font-family: VCR;
 }
-#stash-bar, #orders-bar{
+#stash-bar, #orders-bar, #building-menu-bar{
     width: 100%;
     height: 5vh;
 }
@@ -200,4 +199,50 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
+}
+#building-menu-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.craft {
+    width: 25%;
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+.item-image {
+    display: block;
+    max-width: 100%;
+    height: 80px;
+    margin: 0 auto 10px;
+}
+
+.craft-drop-list {
+    margin-bottom: 10px;
+}
+
+.drop-item {
+    margin-bottom: 5px;
+}
+
+.create-item {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50; /* Зеленый цвет фона */
+    color: white; /* Цвет текста */
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.create-item.unlocked {
+    background-color: #45a049; /* Более темный зеленый цвет для разблокированных элементов */
+}
+
+.create-item:hover {
+    background-color: #3e8e41; /* Еще темнее при наведении */
 }

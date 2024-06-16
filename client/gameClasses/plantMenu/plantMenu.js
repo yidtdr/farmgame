@@ -7,6 +7,7 @@ import mouse from "../controller/mouse.js";
 import Calc from "../../calc.js";
 import camera from "../controller/camera.js";
 import CVAR from "../../globalVars/const.js";
+import RES from "../../resources.js";
 
 export default class PlantMenu extends Menu
 {
@@ -14,11 +15,11 @@ export default class PlantMenu extends Menu
         super(x, y, w, h, null);
         this._items = new Array();
         let k = 0;
-        for (let item in player._inventory)
+        for (let item in RES.plants)
         {
-            console.log(item)
             if (player._inventory[item] > 0)
             {
+                console.log(item)
             this._items.push(new PlantMenuItem(
              this._rect.x + (k % 3) * this._rect.w / 3,
              this._rect.y + Math.floor(k / 3) * this._rect.h / 3,

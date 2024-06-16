@@ -53,7 +53,7 @@ class Orders{
                 res.className = "res-wrap"
                 res.id = `res${item}`
                 const resImg = document.createElement("img")
-                resImg.src = `client/${GVAR.plants[item].imageSrc}`
+                resImg.src = `client/assets/${item}/${item}.png`
                 resImg.className = "res-img"
                 const amount = document.createElement("h3")
                 amount.innerText = `${player._inventory[item]}/${ord._info.items[item]}`

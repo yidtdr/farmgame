@@ -89,15 +89,13 @@ class Mouse{
             } else {
                 console.log("недостаточно денег")
             }
-            GVAR.phantomBildingArr.pop()
-        } else {
-            GVAR.phantomBildingArr.pop()
         }
+        GVAR.phantomBildingArr.pop()
 
         GVAR.buildableArr.forEach((el) => {
             if (el._isMoving)
             {
-                if (tiles[this._mapPos.i][this._mapPos.j].isCanPut(el)){
+                if (el._x>=0 && el._y>=0 && tiles[this._mapPos.i][this._mapPos.j].isCanPut(el)){
                     tiles[el._prevPosition.i][el._prevPosition.j].moveStructure(this._mapPos)
                 }
                 else {
@@ -142,6 +140,7 @@ class Mouse{
         {return};
 
         if (tiles[player._chosenTile.i][player._chosenTile.j]._structure != "none"){
+            player._lastStructure = tiles[player._chosenTile.i][player._chosenTile.j]._structure
             tiles[player._chosenTile.i][player._chosenTile.j]._structure.onClick();
         } else
             tiles[this._mapPos.i][this._mapPos.j].onClick();

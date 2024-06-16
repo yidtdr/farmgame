@@ -41,7 +41,7 @@ document.addEventListener('touchmove', (e) => {
                 //mouse.onScale(e);
             }
     } else {
-        if (player.phantonBuilding!="none")
+        if (player._phantomBuilding!="none")
             {
                 mouse.onMouseMove(e);
             }
@@ -78,7 +78,7 @@ setInterval(() => {
 setInterval(() => {
     let newOrders = new Array();
 
-    for (let i = 0; i < player._maxOrderAmount+10; i++) {
+    for (let i = 0; i < player._maxOrderAmount; i++) {
         newOrders.push(new Order(player._inventory))
     }
     player._orderArr = newOrders;
@@ -107,11 +107,6 @@ function animate(delta){
 
         GVAR.buildableArr.forEach((el) => {
             el.draw();
-        })
-
-        GVAR.buildableArr.forEach((el) => { //отрисовка растений
-            if (el._plant != "none" && el._plan != undefined) //тут ещё будет item от building
-                el._plant.draw();
         })
 
         GVAR.phantomBildingArr.forEach((el) => {

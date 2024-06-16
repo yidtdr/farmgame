@@ -1,0 +1,9 @@
+{
+    "pizdec": {
+      "imageSrc": "assets/pizdec.png",
+      "growTime": 10,
+      "moneyReward": 15,
+      "shopCost": 6,
+      "collectAmount": 1
+    }
+}

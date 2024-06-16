@@ -1,0 +1,10 @@
+{
+    "bread": {
+      "minCost": 2,
+      "maxCost": 6,
+      "size": {
+        "w": 1,
+        "h": 1
+      }
+    }
+}

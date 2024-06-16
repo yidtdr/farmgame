@@ -4,14 +4,14 @@ import player from "../player/player.js";
 import tiles from "../../globalVars/tiles.js";
 import Calc from "../../calc.js";
 import CVAR from "../../globalVars/const.js";
-import ASSETS from "../../globalVars/assets.js";
+import RES from "../../resources.js";
 
 export default class PlantMenuItem extends Menu{
     constructor(x, y, w, h, item, amount) {
         super(x, y, w, h);
         this._item = item;
         this._amount = amount;
-        this._image = ASSETS.pictures[item].image;
+        this._image = RES.plants[item].image.stages[3]
     }
     draw()
     {
@@ -36,8 +36,5 @@ export default class PlantMenuItem extends Menu{
         player._inventory[this._item]--;
         let pos = Calc.indexToCanvas(player._chosenTile.i,player._chosenTile.j, CVAR.tileSide, CVAR.outlineWidth)
         tiles[player._chosenTile.i][player._chosenTile.j]._structure.createPlant(this._item)
-        // if (tiles[player._chosenTile.i][player._chosenTile.j].isCanPut("bakery")){
-        //     tiles[player._chosenTile.i][player._chosenTile.j].createBuilding("bakery"); //тут растение было
-        // }
     }
 }

@@ -1,7 +1,7 @@
 class ConstVar{
     constructor() {
         this.tileSide = 10; this.outlineWidth = 0;
-        this.tileRows = 1000; this.tileCols = 1000;
+        this.tileRows = 100; this.tileCols = 100;
         this.mapBoundingBox = {
             top: -50,
             bottom: this.tileCols * (this.tileSide+this.outlineWidth) + 50,

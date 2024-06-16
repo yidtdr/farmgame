@@ -1,7 +1,7 @@
 import GVAR from "../../globalVars/global.js";
 import PlantMenu from "../plantMenu/plantMenu.js";
 import Plant from "../plant/plant.js";
-import ASSETS from "../../globalVars/assets.js";
+import RES from "../../resources.js";
 import { ctx } from "../../globalVars/canvas.js";
 import Buildable from "../building/buildable.js";
 
@@ -9,7 +9,7 @@ export default class Field extends Buildable{
     constructor(x, y, type)
     {
         super(x, y, type);
-        this._image = ASSETS.pictures[type].image
+        this._image = RES.buildings[type].image
         this._plant = "none";
     }
     draw(){
@@ -18,6 +18,7 @@ export default class Field extends Buildable{
             ctx.shadowColor = "rgb(0,230,0)"
         }
         ctx.drawImage(this._image, this._x, this._y, this._w, this._h);
+        if (this._plant!="none") this._plant.draw()
         ctx.shadowBlur = 0;
     }
     onClick()

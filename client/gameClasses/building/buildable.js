@@ -1,5 +1,5 @@
 import Sprite from "../sprite/sprite.js";
-import ASSETS from "../../globalVars/assets.js";
+import RES from "../../resources.js";
 import { ctx } from "../../globalVars/canvas.js";
 import CVAR from "../../globalVars/const.js";
 
@@ -8,14 +8,13 @@ export default class Buildable extends Sprite{
     {
         super(x, y);
         this._type = type
-        console.log(type)
-        this._image = ASSETS.pictures[type].image
+        this._image = RES.buildings[type].image
         this._isMoving = false;
         this._prevPosition = {
             i: 0,
             j: 0
         }
-        this._size =  ASSETS.pictures[type].size;
+        this._size = RES.buildings[type].size;
         this._w = this._size.w * CVAR.tileSide;
         this._h = this._size.h * CVAR.tileSide;
     }
@@ -24,6 +23,8 @@ export default class Buildable extends Sprite{
         this._y = pos.y;
     }
     draw () {
-        ctx.drawImage(this._image, this._x, this._y, this._w, this._h);
+        const out = (this._image.height - 16 * this._size.h)*CVAR.tileSide/16
+        console.log(this._x, this._y, this._image.height, this._size.h, out)
+        ctx.drawImage(this._image, this._x, this._y - out, this._w, this._h + out);
     }
 }
