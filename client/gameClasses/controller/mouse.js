@@ -80,7 +80,7 @@ class Mouse{
     }
     onMouseUp(e)
     {
-        if (player._phantomBuilding!="none" && tiles[mouse._mapPos.i][mouse._mapPos.j].isCanPut(player._phantomBuilding.building)){
+        if (player._phantomBuilding!="none" && player._phantomBuilding.building._x>=0 && player._phantomBuilding.building._y>=0 && tiles[mouse._mapPos.i][mouse._mapPos.j].isCanPut(player._phantomBuilding.building)){
             if (player._money >= player._phantomBuilding.cost){
                 tiles[mouse._mapPos.i][mouse._mapPos.j].createBuilding(player._phantomBuilding.building._type)
                 player._money -= player._phantomBuilding.cost

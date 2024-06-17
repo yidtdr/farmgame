@@ -1,3 +1,5 @@
+import RES from "../../resources.js";
+
 export default class Order{
     constructor(inventory)
     {

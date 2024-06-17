@@ -1,9 +1,11 @@
 {
     "wheat": {
-      "imageSrc": "assets/pshenica.png",
       "growTime": 6,
       "moneyReward": 5,
       "shopCost": 3,
-      "collectAmount": 2
+      "collectAmount": 2,
+      "price": 5,
+      "minCost": 2,
+      "maxCost": 6
     }
 }

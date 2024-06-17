@@ -29,7 +29,7 @@ class BuildingMenu{
 
             const craftImg = document.createElement("img")
 
-            craftImg.src = `client/assets/${product}.png`
+            craftImg.src = `client/assets/${product}/${product}.png`
             craftImg.className = "item-image"
 
             const dropList = document.createElement("div")
