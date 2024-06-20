@@ -9,6 +9,28 @@ import Order from './gameClasses/orders/order.js';
 import { orderManager } from './gameClasses/orders/orders.js';
 import { spin } from './gameClasses/spin/spin.js';
 
+// Ensure the document is scrollable
+function ensureDocumentIsScrollable() {
+    const isScrollable =
+        document.documentElement.scrollHeight > window.innerHeight;
+    if (!isScrollable) {
+        document.documentElement.style.setProperty(
+            "height",
+            "calc(100vh + 1px)",
+            "important"
+        );
+    }
+}
+
+// Prevent window.scrollY from becoming zero
+function preventCollapse(event) {
+    if (window.scrollY === 0) {
+        window.scrollTo(0, 1);
+    }
+}
+
+window.addEventListener("load", ensureDocumentIsScrollable);
+
 //      [WINDOW STUFF]
 window.onresize = () => {
     canvas.setAttribute('width', window.innerWidth);
@@ -49,6 +71,7 @@ document.addEventListener('touchmove', (e) => {
 }, false);
 
 canvas.addEventListener('touchstart', (e) => {
+    preventCollapse(e)
     if (e.touches.length == 1)
     {
         mouse.onMouseDown(e);
