@@ -5,8 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
     <title>svoGAME</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
+    <div id="loading-screen">
+        Loading...
+    </div>
+
     <canvas id="canvas"></canvas>
     <div id="bar">
         <h1 id="money">Money: 10</h1>
@@ -25,7 +30,12 @@
     </div>
     <div id="shop-wrap">
         <div id="shop">
-            <button id="closeShop">X</button>
+            <div id="shop-bar">
+                <button id="closeShop">X</button>
+                <button id="buy-building">1</button>
+                <button id="buy-plant">2</button>
+            </div>
+            <div id="shop-list"></div>
         </div>
     </div>
     <div id="spin-wrap">
@@ -117,7 +127,6 @@
             </div>
         </div>
     </div>
-    
     <script src="client/resources.js" type="module"></script>
 </body>
 </html>

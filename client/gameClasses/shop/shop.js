@@ -8,25 +8,50 @@ import RES from "../../resources.js";
 
 class Shop{
     constructor() {
-        const shop = document.getElementById('shop');
-        RES.names.buildings.forEach(building => {
-            const button = document.createElement('button');
-            button.innerText = `Buy ${building}`;
-            button.addEventListener("touchstart", function(e) {
-                document.getElementById("shop-wrap").style.display = "none";
-                player._phantomBuilding = {
-                    cost: RES.buildings[building].price
-                }
-                let pos = Calc.indexToCanvas(mouse._mapPos.i, mouse._mapPos.j, CVAR.tileSide, CVAR.outlineWidth)
-                player._phantomBuilding.building = new Buildable(pos.x, pos.y, building)
-                player._phantomBuilding.building._isMoving = true
-                GVAR.phantomBildingArr.push(player._phantomBuilding.building)
-                mouse._isDragging = true
-                mouse.onMouseMove(e)
+        const shop = document.getElementById('shop-list');
+        document.getElementById("buy-building").onclick = () => {
+            shop.innerHTML = '';
+            RES.names.buildings.forEach(building => {
+                const button = document.createElement('button');
+                button.innerText = `Buy ${building}`;
+                button.addEventListener("touchstart", function(e) {
+                    document.getElementById("shop-wrap").style.display = "none";
+                    player._phantomBuilding = {
+                        cost: RES.buildings[building].price
+                    }
+                    let pos = Calc.indexToCanvas(mouse._mapPos.i, mouse._mapPos.j, CVAR.tileSide, CVAR.outlineWidth)
+                    player._phantomBuilding.building = new Buildable(pos.x, pos.y, building)
+                    player._phantomBuilding.building._isMoving = true
+                    GVAR.phantomBildingArr.push(player._phantomBuilding.building)
+                    mouse._isDragging = true
+                    mouse.onMouseMove(e)
+                });
+                button.className = "buybutton";
+                shop.appendChild(button);
             });
-            button.className = "buybutton";
-            shop.appendChild(button);
-        });
+        }
+
+        document.getElementById("buy-plant").onclick = () => {
+            shop.innerHTML = '';
+            RES.names.plants.forEach(plant => {
+                const button = document.createElement('button');
+                button.innerText = `Buy ${plant}`;
+                button.addEventListener("touchstart", function(e) {
+                    if (player._money >= RES.plants[plant].price)
+                    {
+                        player.buy(RES.plants[plant].price)
+                        player.pushInventory(plant, 1)
+                    }
+                    else
+                    {
+                        console.log("no money")
+                    }
+                });
+                button.className = "buybutton";
+                shop.appendChild(button);
+            });
+        }
+    
         document.getElementById("closeShop").onclick = () => {
             document.getElementById("shop-wrap").style.display = "none";
         }
@@ -67,28 +92,6 @@ class Shop{
                 div.appendChild(name);
                 stashList.appendChild(div);
             }
-        }
-    }
-    sell(plant, amount)
-    {
-        if (player._stash[plant] >= amount)
-        {
-            player._stash[plant] -= amount;
-            player._money += GVAR.plants[plant].moneyReward * amount;
-            player.updateMoney();
-        }
-    }
-    buy(plant)
-    {
-        if (player._money > GVAR.plants[plant].shopCost)
-        {
-            player._money-=GVAR.plants[plant].shopCost;
-            player._inventory[plant]++;
-            player.updateMoney();
-        }
-        else
-        {
-            console.log("no money")
         }
     }
 }

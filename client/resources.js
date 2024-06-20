@@ -93,6 +93,8 @@ RES.loadRes().then(() => {
   script.src = 'client/index.js';
   script.type = 'module'
   document.body.appendChild(script);
+  document.getElementById('loading-screen').style.display = 'none';
+
 }).catch((error) => {
   console.error('Failed to load resources:', error);
 });

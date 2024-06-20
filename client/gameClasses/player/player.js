@@ -12,6 +12,10 @@ class Player{
         this._networth = 0;
         this._phantomBuilding = "none";
     }
+    buy(cost) {
+        this._money -= cost;
+        player.updateMoney();
+    }
     getInvFullness(){
         let sum = 0;
         for (const el in this._inventory) {
