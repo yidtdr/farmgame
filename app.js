@@ -3,7 +3,7 @@ var bodyParser = require('body-parser');
 var TelegramBot = require('node-telegram-bot-api');
 var app = express();
 
-const TOKEN = 'YOUR_TELEGRAM_BOT_TOKEN'; // Замените на ваш токен
+const TOKEN = '7106833924:AAHUplflybYnlTaizULr4HDmQtRbEy5k6pY';
 const _DEBUG = false;
 
 // Создаем бота
@@ -30,7 +30,7 @@ bot.onText(/\/start/, (msg) => {
     const options = {
         reply_markup: {
             inline_keyboard: [
-                [{ text: 'Open Web App', web_app: { url: 'https://yourdomain.com' } }]
+                [{ text: 'Open Web App', web_app: { url: 'https://farmgame-rclc.onrender.com' } }]
             ]
         }
     };

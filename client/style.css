@@ -2,6 +2,10 @@
     padding: 0;
     margin: 0;
 }
+* {
+    user-select: none
+}
+    
 @font-face {
     font-family: VCR;
     src: url("assets/fonts/VCR_OSD_MONO_1.001.ttf");
@@ -34,7 +38,6 @@ body{
     -webkit-user-select: none; /* Chrome, Safari, Opera */
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* IE 10+ */
-    user-select: none; /* Standard syntax */
 }
 #open-shop, #open-stash, #open-orders, #open-spin{
     margin-right: 15px;
@@ -75,7 +78,6 @@ body{
     height: 5vh;
 }
 .buybutton, .complete-order{
-    user-select: none;
     border: none;
     background-color: gainsboro;
     width: 100%;
