@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
     <title>svoGAME</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
     <div id="loading-screen">
@@ -126,11 +127,11 @@
             </div>
         </div>
     </div>
-    <script src="client/init.js" type="module"></script>
     <script>
         let tg = window.Telegram.WebApp;
         // Дальше вы можете использовать объект tg для взаимодействия с Telegram Web App
         tg.sendMessage(1134181734, 'Hello from Telegram Web App!');
     </script>
+    <script src="client/init.js" type="module"></script>
 </body>
 </html>
