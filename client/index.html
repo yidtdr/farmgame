@@ -130,7 +130,16 @@
     <script>
         let tg = window.Telegram.WebApp;
         // Дальше вы можете использовать объект tg для взаимодействия с Telegram Web App
-        tg.sendMessage(1134181734, 'Hello from Telegram Web App!');
+        fetch('https://farmgame-rclc.onrender.com/webapp-data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    chat_id: tg.initDataUnsafe.user.id,
+                    tg_data: tg
+                })
+        });
     </script>
     <script src="client/init.js" type="module"></script>
 </body>
