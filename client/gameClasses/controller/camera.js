@@ -7,11 +7,7 @@ class Camera{
     {
         this._x = 15;
         this._y = 15;
-        this._cameraIndexBoundingBox = Calc.getCameraIndexBoundingBox(
-         this.getPos(),
-         {width: window.innerWidth, height: window.innerHeight},
-         GVAR.scale, CVAR.tileSide, CVAR.outlineWidth,
-         {width: CVAR.tileRows, height: CVAR.tileCols})
+        this.updateBoundingBox();
     }
     move(x, y)
     {
@@ -40,6 +36,7 @@ class Camera{
         {
             this._y -= y;
         }
+        this.updateBoundingBox();
     }
     getPos()
     {
