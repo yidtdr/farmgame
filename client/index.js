@@ -10,7 +10,7 @@ import { orderManager } from './gameClasses/orders/orders.js';
 import { spin } from './gameClasses/spin/spin.js';
 
 document.body.style.overflow = 'hidden';
-
+console.log(4)
 // Ensure the document is scrollable
 function ensureDocumentIsScrollable() {
     const isScrollable =
@@ -32,8 +32,7 @@ function preventCollapse(event) {
 }
 
 window.addEventListener("load", () => {
-    setTimeout(ensureDocumentIsScrollable, 100);
-    window.scrollTo(0, document.body.scrollHeight);  // Прокрутка вниз при загрузке
+    ensureDocumentIsScrollable()
 });
 
 
