@@ -60,7 +60,7 @@ document.addEventListener('touchmove', (e) => {
             }
             else
             {
-                //mouse.onScale(e);
+                mouse.onScale(e);
             }
     } else {
         if (player._phantomBuilding!="none")
@@ -78,7 +78,7 @@ canvas.addEventListener('touchstart', (e) => {
     }
     else
     {
-        //mouse.onScaleStart(e);
+        mouse.onScaleStart(e);
     }
 })
 
