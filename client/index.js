@@ -22,6 +22,8 @@ function ensureDocumentIsScrollable() {
     }
 }
 
+window.scrollTo(0, 1);
+
 // Prevent window.scrollY from becoming zero
 function preventCollapse(event) {
     if (window.scrollY === 0) {
@@ -50,6 +52,7 @@ shop.drawStash();
 //      [EVENTS]
 
 document.addEventListener('touchmove', (e) => {
+    preventCollapse(e)
     const touchX = e.touches[0].clientX;
     const touchY = e.touches[0].clientY;
     const touchedElement = document.elementFromPoint(touchX, touchY);
