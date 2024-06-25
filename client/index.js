@@ -22,8 +22,6 @@ function ensureDocumentIsScrollable() {
     }
 }
 
-window.scrollTo(0, 1);
-
 // Prevent window.scrollY from becoming zero
 function preventCollapse(event) {
     if (window.scrollY === 0) {
@@ -31,7 +29,9 @@ function preventCollapse(event) {
     }
 }
 
-window.addEventListener("load", ensureDocumentIsScrollable);
+window.addEventListener("load", () => {
+    setTimeout(ensureDocumentIsScrollable, 100);  // Add slight delay to ensure the DOM is fully loaded
+});
 
 //      [WINDOW STUFF]
 window.onresize = () => {
@@ -72,10 +72,6 @@ document.addEventListener('touchmove', (e) => {
             }
     }
 }, false);
-
-document.addEventListener('touchstart', (e) =>{
-    preventCollapse(e)
-})
 
 canvas.addEventListener('touchstart', (e) => {
     preventCollapse(e)
