@@ -30,8 +30,10 @@ function preventCollapse(event) {
 }
 
 window.addEventListener("load", () => {
-    setTimeout(ensureDocumentIsScrollable, 100);  // Add slight delay to ensure the DOM is fully loaded
+    setTimeout(ensureDocumentIsScrollable, 100);
+    window.scrollTo(0, document.body.scrollHeight);  // Прокрутка вниз при загрузке
 });
+
 
 //      [WINDOW STUFF]
 window.onresize = () => {
