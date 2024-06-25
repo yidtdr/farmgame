@@ -9,8 +9,8 @@ import Order from './gameClasses/orders/order.js';
 import { orderManager } from './gameClasses/orders/orders.js';
 import { spin } from './gameClasses/spin/spin.js';
 
-document.body.style.overflow = 'hidden';
-console.log(4)
+console.log(5)
+
 // Ensure the document is scrollable
 function ensureDocumentIsScrollable() {
     const isScrollable =
@@ -31,10 +31,7 @@ function preventCollapse(event) {
     }
 }
 
-window.addEventListener("load", () => {
-    ensureDocumentIsScrollable()
-});
-
+window.addEventListener("load", ensureDocumentIsScrollable)
 
 //      [WINDOW STUFF]
 window.onresize = () => {
@@ -55,7 +52,6 @@ shop.drawStash();
 //      [EVENTS]
 
 document.addEventListener('touchmove', (e) => {
-    preventCollapse(e)
     const touchX = e.touches[0].clientX;
     const touchY = e.touches[0].clientY;
     const touchedElement = document.elementFromPoint(touchX, touchY);
