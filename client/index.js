@@ -9,6 +9,8 @@ import Order from './gameClasses/orders/order.js';
 import { orderManager } from './gameClasses/orders/orders.js';
 import { spin } from './gameClasses/spin/spin.js';
 
+document.body.style.overflow = 'hidden';
+
 // Ensure the document is scrollable
 function ensureDocumentIsScrollable() {
     const isScrollable =
