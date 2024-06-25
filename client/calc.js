@@ -54,6 +54,13 @@ export default class Calc{
             (pos1.y - pos2.y) * (pos1.y - pos2.y))
         )
     }
+    static getApproximationCenter(e)
+    {
+        const pos1 = {x: e.touches[0].clientX, y: e.touches[0].clientY};
+        const pos2 = {x: e.touches[1].clientX, y: e.touches[1].clientY};
+        console.log(pos1,pos2)
+        return {x: (pos1.x + pos2.x)/2,y: (pos1.y + pos2.y)/2}
+    }
     static worldToScreen(x, y, camera, scale)
     {
         return (

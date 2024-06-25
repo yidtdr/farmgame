@@ -151,21 +151,18 @@ class Mouse{
     }
     onScale(e)
     {
-        console.log(camera._x,camera._y)
         const newScale = Calc.getTouchesDistance(e) / 100;
         this._deltaScale = newScale - this._scale;
         this._scale = newScale;
         let otn = (GVAR.scale + this._deltaScale) / GVAR.scale ;
         GVAR.scale = (GVAR.scale + this._deltaScale) > 0.5 ? (GVAR.scale + this._deltaScale) : 0.5;
         // GVAR.scale = (GVAR.scale + this._deltaScale) < 6 ? (GVAR.scale + this._deltaScale) : 6;
-        let screenValues = {
-            innerWidth: window.innerWidth,
-            innerHeight: window.innerHeight - document.getElementById("bar").getBoundingClientRect().height
-        }
-        let d = Math.sqrt(screenValues.innerWidth*screenValues.innerWidth + screenValues.innerHeight*screenValues.innerHeight)
-        let s = d/2 - d/(2 * otn)   
-        camera._x = (camera._x + s * screenValues.innerWidth /(d))*otn
-        camera._y = (camera._y + s * screenValues.innerHeight /(d))*otn
+        const approximationCenter = Calc.getApproximationCenter(e);
+        approximationCenter.y -= document.getElementById("bar").getBoundingClientRect().height //для того чтобы учитывать только размеры канваса, когда уберется bar убрать
+        let d = Math.sqrt((approximationCenter.x)*(approximationCenter.x) + (approximationCenter.y)*(approximationCenter.y))
+        let s = d - d/(otn)
+        camera._x = (camera._x + s * (approximationCenter.x) /(d))*otn
+        camera._y = (camera._y + s * (approximationCenter.y ) /(d))*otn
         camera.updateBoundingBox();
         GVAR.redraw = true;
     }
