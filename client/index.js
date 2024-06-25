@@ -73,6 +73,10 @@ document.addEventListener('touchmove', (e) => {
     }
 }, false);
 
+document.addEventListener('touchstart', (e) =>{
+    preventCollapse(e)
+})
+
 canvas.addEventListener('touchstart', (e) => {
     preventCollapse(e)
     if (e.touches.length == 1)
