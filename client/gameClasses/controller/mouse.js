@@ -165,7 +165,6 @@ class Mouse{
         GVAR.scale = (GVAR.scale + this._deltaScale) > 0.5 ? (GVAR.scale + this._deltaScale) : 0.5;
         // GVAR.scale = (GVAR.scale + this._deltaScale) < 6 ? (GVAR.scale + this._deltaScale) : 6;
         const approximationCenter = Calc.getApproximationCenter(e);
-        approximationCenter.y -= document.getElementById("bar").getBoundingClientRect().height //для того чтобы учитывать только размеры канваса, когда уберется bar убрать
         let d = Math.sqrt((approximationCenter.x)*(approximationCenter.x) + (approximationCenter.y)*(approximationCenter.y))
         let s = d - d/(otn)
         camera._x = (camera._x + s * (approximationCenter.x) /(d))*otn
