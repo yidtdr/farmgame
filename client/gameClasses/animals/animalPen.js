@@ -46,6 +46,7 @@ export default class AnimalPen extends Buildable{
     }
     addAnimal(){
         this._animals.push(new Animal(this._x + this._w/2, this._y + this._h/2,RES.buildings[this._type].animal,{x: this._x, y: this._y, w: this._w, h: this._h}))
+        animalMenu.renderMenu()
     }
     update(){
         if (this._isWork){

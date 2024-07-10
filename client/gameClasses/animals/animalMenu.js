@@ -90,6 +90,8 @@ class AnimalMenu{
             }
         } else {
             startButton.style.filter = 'grayscale(100%)';
+            startButton.removeEventListener('touchstart', startButtonTouchStartHandler);
+            startButton.dataset.handlerAdded = 'false';
         }
     
         function startButtonTouchStartHandler(e) {
