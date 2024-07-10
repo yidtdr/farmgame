@@ -81,14 +81,16 @@ class AnimalMenu{
         const startButton = document.getElementById("animal-start-button");
         startButton.className = 'item-image';
         startButton.src = `client/assets/${RES.buildings[type].feedType}/${RES.buildings[type].feedType}.png`;
-        
+
         if (this.animalPen.canStartWork()) {
+            console.log('can')
             if (startButton.dataset.handlerAdded !== 'true') {
                 startButton.style.filter = 'grayscale(0%)';
                 startButton.addEventListener('touchstart', startButtonTouchStartHandler);
                 startButton.dataset.handlerAdded = 'true';
             }
         } else {
+            console.log('can2',startButton.dataset.handlerAdded)
             startButton.style.filter = 'grayscale(100%)';
             startButton.removeEventListener('touchstart', startButtonTouchStartHandler);
             startButton.dataset.handlerAdded = 'false';
@@ -121,13 +123,13 @@ class AnimalMenu{
                 const imgRect = document.getElementById('animal-img').getBoundingClientRect();
                 if (isIntersecting(cloneRect, imgRect)) {
                     animalPen.startWork();
-                    if (!animalPen.canStartWork()){
-                        // Применяем CSS фильтр для черно-белого изображения
-                        startButton.style.filter = 'grayscale(100%)';
-                        // Удаляем обработчик события, чтобы запретить перемещение
-                        startButton.removeEventListener('touchstart', startButtonTouchStartHandler);
-                        startButton.dataset.handlerAdded = 'false';
-                    }
+                    // if (!animalPen.canStartWork()){
+                    //     // Применяем CSS фильтр для черно-белого изображения
+                    //     startButton.style.filter = 'grayscale(100%)';
+                    //     // Удаляем обработчик события, чтобы запретить перемещение
+                    //     startButton.removeEventListener('touchstart', startButtonTouchStartHandler);
+                    //     startButton.dataset.handlerAdded = 'false';
+                    // }
                 }
                 clone.remove();
             };
