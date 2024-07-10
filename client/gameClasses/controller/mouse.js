@@ -80,12 +80,19 @@ class Mouse{
     }
     onMouseUp(e)
     {
-        if (player._phantomBuilding!="none" && player._phantomBuilding.building._x>=0 && player._phantomBuilding.building._y>=0 && tiles[mouse._mapPos.i][mouse._mapPos.j].isCanPut(player._phantomBuilding.building)){
+        if (player._phantomBuilding!="none" && player._phantomBuilding.building._x>=0 && player._phantomBuilding.building._y>=0){
             if (player._money >= player._phantomBuilding.cost){
-                tiles[mouse._mapPos.i][mouse._mapPos.j].createBuilding(player._phantomBuilding.building._type)
-                player._money -= player._phantomBuilding.cost
-                player.updateMoney()
-                player._phantomBuilding = "none"
+                if (player._phantomBuilding.structureType == 'building' && tiles[mouse._mapPos.i][mouse._mapPos.j].isCanPut(player._phantomBuilding.building)){
+                    tiles[mouse._mapPos.i][mouse._mapPos.j].createBuilding(player._phantomBuilding.building._type)
+                    player._money -= player._phantomBuilding.cost
+                    player.updateMoney()
+                    player._phantomBuilding = "none"
+                }else if (player._phantomBuilding.structureType == 'animal' && tiles[mouse._mapPos.i][mouse._mapPos.j]._structure._type =='coop'){ //потом буде проверка на то подходит ли животное и на то можно ли добавить
+                    tiles[mouse._mapPos.i][mouse._mapPos.j]._structure.addAnimal()
+                    player._money -= player._phantomBuilding.cost
+                    player.updateMoney()
+                    player._phantomBuilding = "none"
+                }
             } else {
                 console.log("недостаточно денег")
             }

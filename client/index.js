@@ -8,8 +8,10 @@ import player from './gameClasses/player/player.js';
 import Order from './gameClasses/orders/order.js';
 import { orderManager } from './gameClasses/orders/orders.js';
 import { spin } from './gameClasses/spin/spin.js';
+import { buildingMenu } from './gameClasses/building/buildingMenu.js';
+import { animalMenu } from './gameClasses/animals/animalMenu.js';
 
-console.log(5)
+tiles[2][2].createBuilding('coop')
 
 // Ensure the document is scrollable
 function ensureDocumentIsScrollable() {
@@ -98,7 +100,18 @@ setInterval(() => {
         el.update();
         GVAR.redraw = true;  
     })
+    if (buildingMenu.building!='none')
+        buildingMenu.renderQueue()
+    if (animalMenu.animalPen != 'none')
+        animalMenu.renderMenu()
 }, 1000);
+
+setInterval(() => {
+    GVAR.penArr.forEach((el) => {
+        el.update();
+        GVAR.redraw = true;  
+    })
+}, 100);
 
 setInterval(() => {
     let newOrders = new Array();

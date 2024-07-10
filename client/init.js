@@ -3,6 +3,8 @@ import tiles from "./globalVars/tiles.js";
 import Tile from "./gameClasses/tile/tile.js";
 import Calc from "./calc.js";
 import CVAR from "./globalVars/const.js";
+import mapData from "./test.js";
+import player from "./gameClasses/player/player.js";
 
 class Init {
     constructor() {
@@ -19,6 +21,32 @@ class Init {
                 tiles[i][j] = new Tile(tileCoords.x, tileCoords.y, CVAR.tileSide, CVAR.tileSide, ((i + j) % 2) ? RES.map["grass_1"].image : RES.map["grass_2"].image);
             }
         }
+        for (let i = 0; i < 5; i++)
+        {
+            for (let j = 0; j < 5; j++)
+            {
+                if (mapData.world.tileArray[i][j].place.name!="none"){
+                  tiles[i][j].createBuilding(mapData.world.tileArray[i][j].place.name)
+                }
+            }
+        }
+        for (const key in mapData.player.SeedsInventory.map) {
+          player._inventory[key] = mapData.player.SeedsInventory.map[key]
+        }
+        for (const key in mapData.player.ItemInventory.map) {
+          player._inventory[key] = mapData.player.ItemInventory.map[key]
+        }
+
+        player._spinItems = mapData.player.spin.items
+        player._isSpinActivated = mapData.player.spin.activated
+        for (const i in player._spinItems) {
+          if (player._spinItems[i].item == mapData.player.spin.drop.item && player._spinItems[i].amount == mapData.player.spin.drop.amount){
+            player._spinDropIndex = i
+            break
+          }
+        }
+
+        console.log("map loaded")
     }
 
     async loadRes() {
@@ -66,6 +94,7 @@ class Init {
           });
           await Promise.all(stagesPromises);
         } else {
+          console.log(data)
           data[name].image = await loadImage(`client/assets/${name}/${name}.png`);
         }
         RES[type][name] = data[name];
@@ -80,13 +109,13 @@ class Init {
             allAssetPromises.push(loadAssets(type, name));
           });
         }
-        await this.initMap();
   
         await Promise.all(allAssetPromises);
         console.log('All resources loaded');
   
         // Возвращаем экземпляр класса Resources, чтобы его можно было использовать
         // после загрузки в других модулях
+        await this.initMap();
         return RES;
       } catch (error) {
         console.error('Error loading resources:', error);

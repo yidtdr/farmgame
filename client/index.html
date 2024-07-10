@@ -9,7 +9,7 @@
 </head>
 <body>
     <div id="loading-screen">
-        Loading4...
+        Loading5...
     </div>
 
     <canvas id="canvas"></canvas>
@@ -31,9 +31,9 @@
     <div id="shop-wrap">
         <div id="shop">
             <div id="shop-bar">
-                <button id="closeShop">X</button>
                 <button id="buy-building">1</button>
                 <button id="buy-plant">2</button>
+                <button id="buy-animal">3</button>
             </div>
             <div id="shop-list"></div>
         </div>
@@ -47,7 +47,7 @@
                 <div id="centered-content">
                     <button id="spin-button">Spin</button>
                     <span class="arrow"></span>
-                    <div id="container"></div>
+                    <div id="spin-container"></div>
                 </div>
             </div>
         </div>
@@ -66,54 +66,7 @@
             <div id="orders-bar">
                 <button id="closeOrders">X</button>
             </div>
-            <div id="orders-list">
-                <div class="order">
-                    <h3 class="order-price">50000</h3>
-                    <div class="order-res">
-                        <!-- <div id="res1" class="res-wrap">
-                            <img src="client/assets/pshenica.png" alt="" class="res-img">
-                            <h3>3/5</h3>
-                        </div>
-                        <div id="res1" class="res-wrap">
-                            <img src="client/assets/pshenica.png" alt="" class="res-img">
-                            <h3>3/5</h3>
-                        </div>
-                        <div id="res1" class="res-wrap">
-                            <img src="client/assets/pshenica.png" alt="" class="res-img">
-                            <h3>3/5</h3>
-                        </div>
-                        <div id="res1" class="res-wrap">
-                            <img src="client/assets/pshenica.png" alt="" class="res-img">
-                            <h3>3/5</h3>
-                        </div> -->
-                        
-                    </div>
-                    <button id="complete1" class="complete-order">Complete</button>
-                </div>
-                <div class="order">
-                    <h3 class="order-price">50000</h3>
-                    <div class="order-res">
-                        <!-- <div id="res1" class="res-wrap">
-                            <img src="client/assets/pshenica.png" alt="" class="res-img">
-                            <h3>3/5</h3>
-                        </div>
-                        <div id="res1" class="res-wrap">
-                            <img src="client/assets/pshenica.png" alt="" class="res-img">
-                            <h3>3/5</h3>
-                        </div>
-                        <div id="res1" class="res-wrap">
-                            <img src="client/assets/pshenica.png" alt="" class="res-img">
-                            <h3>3/5</h3>
-                        </div>
-                        <div id="res1" class="res-wrap">
-                            <img src="client/assets/pshenica.png" alt="" class="res-img">
-                            <h3>3/5</h3>
-                        </div> -->
-                        
-                    </div>
-                    <button id="complete1" class="complete-order">Complete</button>
-                </div>
-            </div>
+            <div id="orders-list"></div>
         </div>
     </div>
 
@@ -122,9 +75,31 @@
             <div id="building-menu-bar">
                 <button id="close-building-menu">X</button>
             </div>
-            <div id="building-menu-list">
-                
+            <div id="building-visual">
+                <img id="building-img">
+                <div id="building-queue"></div>
             </div>
+            <div id="building-menu-list"></div>
+        </div>
+    </div>
+    <div id="animal-menu-wrap">
+        <div id="animal-menu">
+            <div id="animal-menu-bar">
+                <button id="close-animal-menu">X</button>
+            </div>
+            <img id="animal-img">
+            <h3 id="animal-timeToFinish"></h3>
+            <div id="process-line"></div>
+            <img id="animal-start-button">
+        </div>
+    </div>
+    <div id="field-menu-wrap">
+        <div id="field-menu">
+            <div id="field-menu-bar">
+                <button id="close-field-menu">X</button>
+            </div>
+            <img id="field-img">
+            <div id="field-menu-list"></div>
         </div>
     </div>
     <script>
@@ -155,12 +130,6 @@
         // Обработка событий прокрутки
         Telegram.WebApp.onEvent('viewportChanged', function() {
             Telegram.WebApp.expand();
-        });
-        // Убедитесь, что кнопка закрытия работает правильно
-        document.querySelectorAll('button[id^="close"]').forEach(button => {
-            button.addEventListener('click', () => {
-                Telegram.WebApp.expand();
-            });
         });
     </script>
     <script src="client/init.js" type="module"></script>

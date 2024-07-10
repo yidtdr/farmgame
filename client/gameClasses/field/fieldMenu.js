@@ -2,18 +2,18 @@ import player from "../player/player.js";
 import GVAR from "../../globalVars/global.js";
 import RES from "../../resources.js";
 
-class BuildingMenu{
+class FieldMenu{
     constructor() {
-        document.getElementById("close-building-menu").onclick = () => {
-            document.getElementById("building-menu-wrap").style.display = "none";
+        document.getElementById("close-field-menu").onclick = () => {
+            document.getElementById("field-menu-wrap").style.display = "none";
         }
-        this.building = 'none'
+        this.field = 'none'
     }
-    show(building){
-        this.building = building
+    show(field){
+        this.field = field
         GVAR.closeAllWindows()
-        document.getElementById("building-menu-wrap").style.display = "flex";
-        this.renderCrafts()
+        document.getElementById("field-menu-wrap").style.display = "flex";
+        this.renderPlants()
     }
     _formatTime(seconds) {
         let hours = Math.floor(seconds / 3600);
@@ -32,48 +32,24 @@ class BuildingMenu{
         }
         return result.join(' ');
     }
-    renderQueue(){
-        const queue = this.building._craftingItems
-        const size = RES.buildings[this.building._type].slotsAmount
-        const buildingQueue = document.getElementById('building-queue');
-        buildingQueue.innerHTML = ''
-        for (let i = 0; i < size; i++) {
-            const queueElem = document.createElement("div")
-            queueElem.className = "queue-elem"
-            if (queue[i]!=undefined){
-                const img = document.createElement("img")
-                img.className = "item-image"
-                const key = Object.keys(queue[i].products)[0]
-                img.src = `client/assets/${key}/${key}.png`
-                queueElem.appendChild(img)
-
-                const time = document.createElement("h3")
-                time.className = "queue-text"
-                time.innerText = this._formatTime(Math.trunc(queue[i].timeToComplete/1000))
-                queueElem.appendChild(time)
-            }
-            buildingQueue.appendChild(queueElem)
-        }
-    }
-    renderCrafts(){
-        const type = this.building._type
-        const queue = this.building._craftingItems
-        this.renderQueue()
-        const buildingImg = document.getElementById('building-img')
-        buildingImg.src = `client/assets/${type}/${type}.png`
-        buildingImg.className = 'menu-big-img'
-        const buildingMenuList = document.getElementById('building-menu-list');
-        buildingMenuList.innerHTML = ""
-        for (let product in RES.buildings[type].workTypes)
+    renderPlants(){
+        const fieldImg = document.getElementById('field-img')
+        fieldImg.src = `client/assets/field/field.png`
+        fieldImg.className = 'menu-big-img'
+        const fieldMenuList = document.getElementById('field-menu-list');
+        fieldMenuList.innerHTML = ""
+        for (let plant in RES.names.plants)
         {
             const craft = document.createElement("div")
             craft.className = "craft"
-            craft.id = `${product}-craftItem`
+            craft.id = `${plant}-craftItem`
 
             const craftImg = document.createElement("div")
-            craftImg.style.backgroundImage = `url(client/assets/${product}/${product}.png)`
+            craftImg.style.backgroundImage = `url(client/assets/${plant}/${plant}.png)`
             craftImg.className = "craft-item-image"
-            const buildingQueue = document.getElementById('building-queue');
+            const amount = document.createElement("h3")
+            amount.innerText = player._inventory[plant]
+            amount.className = 'queue-text' //потом замениться
 
             const isIntersecting = (rect1, rect2) => {
                 return (
@@ -84,8 +60,8 @@ class BuildingMenu{
                 );
             };
             const thisMenu = this;
-            const building = this.building;
-            craftImg.addEventListener('touchstart', function (e) {
+            const field = this.field;
+            craftImg.addEventListener('touchstart', function (e) { //добавить штуку с запретом крафта сюда и в здание, везде показывать дроп меню но картинку серую
                 e.preventDefault();
                 const clone = this.cloneNode(true);
                 const chosenElem = craft.id.substring(0, craft.id.indexOf('-'));
@@ -112,8 +88,8 @@ class BuildingMenu{
                     const cloneRect = clone.getBoundingClientRect();
                     const visualRect = document.getElementById('building-visual').getBoundingClientRect();
                     if (isIntersecting(cloneRect, visualRect)) {
-                        building.startWork(RES.buildings[type].workTypes[chosenElem])
-                        thisMenu.renderQueue()
+                        player._inventory[chosenElem] -= 1;
+                        field.createPlant(chosenElem)
                     }
                     clone.remove();
                 };
@@ -166,9 +142,10 @@ class BuildingMenu{
             });
 
             craft.appendChild(craftImg)
+            craft.appendChild(amount)
 
-            buildingMenuList.appendChild(craft)
+            fieldMenuList.appendChild(craft)
         }
     }
 }
-export const buildingMenu = new BuildingMenu();
+export const fieldMenu = new FieldMenu();

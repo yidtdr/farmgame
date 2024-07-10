@@ -6,15 +6,30 @@ class Player{
         this._inventory = new Array();
         this._inventory["pizdec"] = 9;
         this._inventory["wheat"] = 10;
+        this._inventory["chickenFeed"] = 3;
         this._inventorySize = 20;
         this._maxOrderAmount = 6;
         this._ordersArr = new Array();
         this._networth = 0;
         this._phantomBuilding = "none";
+        this._spinItems = new Array()
+        this._isSpinActivated = false;
+        this._spinDropIndex = 0
+    }
+    canBuy(cost, count){
+        return (this._money >= cost && this.getInvFullness() >= count)
+    }
+    canBuy(cost){
+        return (this._money >= cost)
     }
     buy(cost) {
-        this._money -= cost;
-        player.updateMoney();
+        if (this._money >= cost){
+            this._money -= cost;
+            player.updateMoney();
+            return true
+        } else {
+            return false
+        }
     }
     getInvFullness(){
         let sum = 0;
@@ -50,6 +65,7 @@ class Player{
         this._inventory[item]+= n
         :
         this._inventory[item] = n;
+        console.log(this._inventory)
     }
 }
 const player = new Player();

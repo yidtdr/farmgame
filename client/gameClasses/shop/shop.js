@@ -5,71 +5,133 @@ import Calc from "../../calc.js";
 import CVAR from "../../globalVars/const.js";
 import Buildable from "../building/buildable.js";
 import RES from "../../resources.js";
+import Phantom from "../sprite/phantom.js";
 
 class Shop{
     constructor() {
-        const shop = document.getElementById('shop-list');
-        document.getElementById("buy-building").onclick = () => {
-            shop.innerHTML = '';
-            RES.names.buildings.forEach(building => {
-                const button = document.createElement('button');
-                button.innerText = `Buy ${building}`;
-                button.addEventListener("touchstart", function(e) {
+        const shopWrap = document.getElementById('shop-wrap');
+        const shopBar = document.getElementById('shop-bar');
+        shopWrap.addEventListener('click', function(event) {
+            if (!(event.target.closest('#shop-bar') || event.target.closest('#shop-list'))) {
+                const slidableDiv = document.getElementById('shop');
+                slidableDiv.classList.add('slide-out');
+                setTimeout(() => {
                     document.getElementById("shop-wrap").style.display = "none";
-                    player._phantomBuilding = {
-                        cost: RES.buildings[building].price
-                    }
-                    let pos = Calc.indexToCanvas(mouse._mapPos.i, mouse._mapPos.j, CVAR.tileSide, CVAR.outlineWidth)
-                    player._phantomBuilding.building = new Buildable(pos.x, pos.y, building)
-                    player._phantomBuilding.building._isMoving = true
-                    GVAR.phantomBildingArr.push(player._phantomBuilding.building)
-                    mouse._isDragging = true
-                    mouse.onMouseMove(e)
-                });
-                button.className = "buybutton";
-                shop.appendChild(button);
-            });
+                }, 450);
+            }
+        });
+        this.drawBuildingShop();
+
+        document.getElementById("buy-building").onclick = () => {
+            this.drawBuildingShop();
         }
 
         document.getElementById("buy-plant").onclick = () => {
-            shop.innerHTML = '';
-            RES.names.plants.forEach(plant => {
-                const button = document.createElement('button');
-                button.innerText = `Buy ${plant}`;
-                button.addEventListener("touchstart", function(e) {
-                    if (player._money >= RES.plants[plant].price)
-                    {
-                        player.buy(RES.plants[plant].price)
-                        player.pushInventory(plant, 1)
-                    }
-                    else
-                    {
-                        console.log("no money")
-                    }
-                });
-                button.className = "buybutton";
-                shop.appendChild(button);
-            });
+            this.drawPlantShop();
+        }
+
+        document.getElementById("buy-animal").onclick = () => {
+            this.drawAnimalShop();
         }
     
-        document.getElementById("closeShop").onclick = () => {
-            document.getElementById("shop-wrap").style.display = "none";
-        }
         document.getElementById("open-shop").onclick = () => {
-            GVAR.UI.pop();
+            const slidableDiv = document.getElementById('shop');
+            slidableDiv.classList.remove('slide-out');
+            GVAR.closeAllWindows();
             document.getElementById("shop-wrap").style.display = "flex";
-            document.getElementById("stash-wrap").style.display = "none";
         }        
 
         document.getElementById("closeStash").onclick = () => {
             document.getElementById("stash-wrap").style.display = "none";
         }
         document.getElementById("open-stash").onclick = () => {
-            GVAR.UI.pop();
-            document.getElementById("shop-wrap").style.display = "none";
+            GVAR.closeAllWindows();
             document.getElementById("stash-wrap").style.display = "flex";
             this.drawStash();
         }
+    }
+    drawBuildingShop(){
+        const shop = document.getElementById('shop-list');
+        shop.innerHTML = '';
+        RES.names.buildings.forEach(building => {
+            const shopItem = document.createElement('div');
+            const img = document.createElement('img');
+            img.src = `client/assets/${building}/${building}.png`
+            img.className = "item-image"
+            const price = document.createElement('h3');
+            price.innerText = `${RES.buildings[building].price}$`;
+            shopItem.appendChild(img)
+            shopItem.appendChild(price)
+            shopItem.addEventListener("touchstart", function(e) {
+                document.getElementById("shop-wrap").style.display = "none";
+                player._phantomBuilding = {
+                    cost: RES.buildings[building].price,
+                    structureType: 'building'
+                }
+                let pos = Calc.indexToCanvas(mouse._mapPos.i, mouse._mapPos.j, CVAR.tileSide, CVAR.outlineWidth)
+                player._phantomBuilding.building = new Buildable(pos.x, pos.y, building)
+                player._phantomBuilding.building._isMoving = true
+                GVAR.phantomBildingArr.push(player._phantomBuilding.building)
+                mouse._isDragging = true
+                mouse.onMouseMove(e)
+            });
+            shopItem.className = "shop-item";
+            shop.appendChild(shopItem);
+        });
+    }
+    drawPlantShop(){
+        const shop = document.getElementById('shop-list');
+        shop.innerHTML = '';
+        RES.names.plants.forEach(plant => {
+            const shopItem = document.createElement('div');
+            const img = document.createElement('img');
+            img.src = `client/assets/${plant}/${plant}.png`
+            img.className = "item-image"
+            const price = document.createElement('h3');
+            price.innerText = `${RES.plants[plant].price}$`;
+            shopItem.appendChild(img)
+            shopItem.appendChild(price)
+            shopItem.addEventListener("click", function(e) {
+                if (player.canBuy(RES.plants[plant].price, 1))
+                {
+                    player.buy(RES.plants[plant].price)
+                    player.pushInventory(plant, 1)
+                }else{
+                    console.log("нет денег или места в инвентаре")
+                }
+            });
+            shopItem.className = "shop-item";
+            shop.appendChild(shopItem);
+        });
+    }
+    drawAnimalShop(){
+        const shop = document.getElementById('shop-list');
+        shop.innerHTML = '';
+        RES.names.animals.forEach(animal => {
+            const shopItem = document.createElement('div');
+            const img = document.createElement('img');
+            img.src = `client/assets/${animal}/${animal}.png`
+            img.className = "item-image"
+            const price = document.createElement('h3');
+            price.innerText = `${RES.animals[animal].price}$`;
+            shopItem.appendChild(img)
+            shopItem.appendChild(price)
+            shopItem.addEventListener("touchstart", function(e) {
+                document.getElementById("shop-wrap").style.display = "none"; //везде заменить на плавное закрывание
+                player._phantomBuilding = {
+                    cost: RES.animals[animal].price,
+                    structureType: 'animal'
+                }
+                let pos = Calc.indexToCanvas(mouse._mapPos.i, mouse._mapPos.j, CVAR.tileSide, CVAR.outlineWidth)
+                player._phantomBuilding.building = new Phantom(pos.x, pos.y, RES.animals[animal].size, animal, RES.animals[animal].image)
+                player._phantomBuilding.building._isMoving = true
+                GVAR.phantomBildingArr.push(player._phantomBuilding.building)
+                mouse._isDragging = true
+                mouse.onMouseMove(e)
+            });
+            shopItem.className = "shop-item";
+            shop.appendChild(shopItem);
+        });
     }
     drawStash()
     {

@@ -14,23 +14,28 @@ export default class Building extends Buildable{
         this._craftingItems = new Array()
     }
     startWork(item){
-        if (this._craftingItems.length < RES.buildings[this._type].maxSlots && player.canCraft(item)) {
-
+        if (this._craftingItems.length < RES.buildings[this._type].slotsAmount && player.canCraft(item)) {
             const itemCopy = JSON.parse(JSON.stringify(item));
             player.craftItem(itemCopy)
             this._craftingItems.push(itemCopy);
             if (this._craftingItems.length > 1){
-                this._craftingItems[this._craftingItems.length-1]._workingTimeStamp = this._craftingItems[this._craftingItems.length-2]._workingTimeStamp + itemCopy.timeToFinish * 1000;
+                this._craftingItems[this._craftingItems.length-1].workingTimeStamp = this._craftingItems[this._craftingItems.length-2].workingTimeStamp + itemCopy.timeToFinish * 1000;
             } else {
-                this._craftingItems[this._craftingItems.length-1]._workingTimeStamp = Date.now() +  itemCopy.timeToFinish * 1000;
+                this._craftingItems[this._craftingItems.length-1].workingTimeStamp = Date.now() +  itemCopy.timeToFinish * 1000;
             }
+            this._craftingItems[this._craftingItems.length-1].timeToComplete = itemCopy.timeToFinish * 1000
         } else {
             console.log("заняты слоты или недостаточно ресурсов");
         }
     }    
     draw(){
         const out = (this._image.height - 16 * this._size.h)*CVAR.tileSide/16
+        if (this._isMoving){
+            ctx.shadowBlur = 30;
+            ctx.shadowColor = "rgb(0,230,0)"
+        }
         ctx.drawImage(this._image, this._x, this._y - out, this._w, this._h + out);
+        ctx.shadowBlur = 0;
         if (this._products.length != 0){
             let key = Object.keys(this._products[0])[0]
             ctx.drawImage(RES.items[key].image, this._x, this._y, RES.items[key].size.w*8, RES.items[key].size.h*8)
@@ -39,8 +44,8 @@ export default class Building extends Buildable{
     update()
     {
         if (this._craftingItems.length != 0){
-            // this._timeToComplete = ((this._workingTimeStamp - Date.now()) > 0 ? (this._workingTimeStamp - Date.now()) : 0);
-            if ((this._craftingItems[0]._workingTimeStamp - Date.now()) < 0)
+            this._craftingItems[0].timeToComplete = ((this._craftingItems[0].workingTimeStamp - Date.now()) > 0 ? (this._craftingItems[0].workingTimeStamp - Date.now()) : 0);
+            if (this._craftingItems[0].timeToComplete == 0)
             {
                 this._products.push(this._craftingItems[0].products) // пусть всегда будет крафтиться 1 предмет
                 console.log(this._craftingItems[0].products)
@@ -74,6 +79,6 @@ export default class Building extends Buildable{
     }
     onClick() {
         if (!this.collect())
-            buildingMenu.show(this._type)
+            buildingMenu.show(this)
     }
 }

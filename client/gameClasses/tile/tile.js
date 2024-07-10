@@ -6,6 +6,7 @@ import CVAR from "../../globalVars/const.js";
 import Building from "../building/building.js";
 import Field from "../field/field.js";
 import RES from "../../resources.js";
+import AnimalPen from "../animals/animalPen.js";
 
 export default class Tile extends Sprite{
     constructor(x, y, w, h, image)
@@ -37,7 +38,11 @@ export default class Tile extends Sprite{
     }
     createBuilding(type)
     {
-        if (type=="field"){
+        if (["coop"].includes(type)){
+            this._structure = new AnimalPen(this._x, this._y, type)
+            GVAR.penArr.push(this._structure);
+        }
+        else if (type=="field"){
             this._structure = new Field(this._x, this._y, type)
         } else {
             this._structure = new Building(this._x, this._y, type)

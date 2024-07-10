@@ -1,0 +1,14 @@
+{
+    "coop": {
+      "price": 30,
+      "size": {
+        "w": 3,
+        "h": 3
+      },
+      "animal": "chicken",
+      "maxCount": 6,
+      "workTime": 10,
+      "product": "egg",
+      "feedType": "chickenFeed"
+    }
+  }
