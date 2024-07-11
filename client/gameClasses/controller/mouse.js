@@ -48,7 +48,7 @@ class Mouse{
             }
         })
 
-        GVAR.phantomBildingArr.forEach((el) => {
+        GVAR.phantomStructureArr.forEach((el) => {
             let pos = Calc.indexToCanvas(this._mapPos.i, this._mapPos.j, CVAR.tileSide, CVAR.outlineWidth);
             el.move(pos)
         })
@@ -73,31 +73,31 @@ class Mouse{
                     GVAR.redraw = true;
                     this._isDragging = true;
                     el._prevPosition = Calc.CanvasToIndex(el._x, el._y, CVAR.tileSide, CVAR.outlineWidth);
-                    GVAR.phantomBildingArr.push(el)
+                    GVAR.phantomStructureArr.push(el)
                 }
             }   
         }, 300); // time
     }
     onMouseUp(e)
     {
-        if (player._phantomBuilding!="none" && player._phantomBuilding.building._x>=0 && player._phantomBuilding.building._y>=0){
-            if (player._money >= player._phantomBuilding.cost){
-                if (player._phantomBuilding.structureType == 'building' && tiles[mouse._mapPos.i][mouse._mapPos.j].isCanPut(player._phantomBuilding.building)){
-                    tiles[mouse._mapPos.i][mouse._mapPos.j].createBuilding(player._phantomBuilding.building._type)
-                    player._money -= player._phantomBuilding.cost
+        if (player._phantomStructure!="none" && player._phantomStructure.structure._x>=0 && player._phantomStructure.structure._y>=0){
+            if (player._money >= player._phantomStructure.cost){
+                if (player._phantomStructure.structureType == 'building' && tiles[mouse._mapPos.i][mouse._mapPos.j].isCanPut(player._phantomStructure.structure)){
+                    tiles[mouse._mapPos.i][mouse._mapPos.j].createBuilding(player._phantomStructure.structure._type)
+                    player._money -= player._phantomStructure.cost
                     player.updateMoney()
-                    player._phantomBuilding = "none"
-                }else if (player._phantomBuilding.structureType == 'animal' && tiles[mouse._mapPos.i][mouse._mapPos.j]._structure._type =='coop'){ //потом буде проверка на то подходит ли животное и на то можно ли добавить
+                    player._phantomStructure = "none"
+                }else if (player._phantomStructure.structureType == 'animal' && tiles[mouse._mapPos.i][mouse._mapPos.j]._structure.canAddAnimal(player._phantomStructure.structure._type)){ //потом буде проверка на то подходит ли животное и на то можно ли добавить
                     tiles[mouse._mapPos.i][mouse._mapPos.j]._structure.addAnimal()
-                    player._money -= player._phantomBuilding.cost
+                    player._money -= player._phantomStructure.cost
                     player.updateMoney()
-                    player._phantomBuilding = "none"
+                    player._phantomStructure = "none"
                 }
             } else {
                 console.log("недостаточно денег")
             }
         }
-        GVAR.phantomBildingArr.pop()
+        GVAR.phantomStructureArr.pop()
 
         GVAR.buildableArr.forEach((el) => {
             if (el._isMoving)
@@ -110,7 +110,7 @@ class Mouse{
                     el.move(prevPos)
                 }
                 el._isMoving=false;
-                GVAR.phantomBildingArr.pop()
+                GVAR.phantomStructureArr.pop()
             }
         })
 

@@ -11,7 +11,7 @@ class Player{
         this._maxOrderAmount = 6;
         this._ordersArr = new Array();
         this._networth = 0;
-        this._phantomBuilding = "none";
+        this._phantomStructure = "none";
         this._spinItems = new Array()
         this._isSpinActivated = false;
         this._spinDropIndex = 0

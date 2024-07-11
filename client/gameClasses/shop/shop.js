@@ -3,7 +3,6 @@ import GVAR from "../../globalVars/global.js";
 import mouse from "../controller/mouse.js";
 import Calc from "../../calc.js";
 import CVAR from "../../globalVars/const.js";
-import Buildable from "../building/buildable.js";
 import RES from "../../resources.js";
 import Phantom from "../sprite/phantom.js";
 
@@ -64,14 +63,14 @@ class Shop{
             shopItem.appendChild(price)
             shopItem.addEventListener("touchstart", function(e) {
                 document.getElementById("shop-wrap").style.display = "none";
-                player._phantomBuilding = {
+                player._phantomStructure = {
                     cost: RES.buildings[building].price,
                     structureType: 'building'
                 }
                 let pos = Calc.indexToCanvas(mouse._mapPos.i, mouse._mapPos.j, CVAR.tileSide, CVAR.outlineWidth)
-                player._phantomBuilding.building = new Buildable(pos.x, pos.y, building)
-                player._phantomBuilding.building._isMoving = true
-                GVAR.phantomBildingArr.push(player._phantomBuilding.building)
+                player._phantomStructure.structure = new Phantom(pos.x, pos.y, RES.buildings[building].size, building, RES.buildings[building].image)
+                player._phantomStructure.structure._isMoving = true
+                GVAR.phantomStructureArr.push(player._phantomStructure.structure)
                 mouse._isDragging = true
                 mouse.onMouseMove(e)
             });
@@ -118,14 +117,14 @@ class Shop{
             shopItem.appendChild(price)
             shopItem.addEventListener("touchstart", function(e) {
                 document.getElementById("shop-wrap").style.display = "none"; //везде заменить на плавное закрывание
-                player._phantomBuilding = {
+                player._phantomStructure = {
                     cost: RES.animals[animal].price,
                     structureType: 'animal'
                 }
                 let pos = Calc.indexToCanvas(mouse._mapPos.i, mouse._mapPos.j, CVAR.tileSide, CVAR.outlineWidth)
-                player._phantomBuilding.building = new Phantom(pos.x, pos.y, RES.animals[animal].size, animal, RES.animals[animal].image)
-                player._phantomBuilding.building._isMoving = true
-                GVAR.phantomBildingArr.push(player._phantomBuilding.building)
+                player._phantomStructure.structure = new Phantom(pos.x, pos.y, RES.animals[animal].size, animal, RES.animals[animal].image)
+                player._phantomStructure.structure._isMoving = true
+                GVAR.phantomStructureArr.push(player._phantomStructure.structure)
                 mouse._isDragging = true
                 mouse.onMouseMove(e)
             });

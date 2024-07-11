@@ -5,7 +5,7 @@ class GlobalVars{
 
         this.buildableArr = new Array();
         this.penArr = new Array();
-        this.phantomBildingArr = new Array(0);
+        this.phantomStructureArr = new Array(0);
 
         this.scale = 4.5;
         this.rescale = true

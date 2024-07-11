@@ -19,7 +19,6 @@ export default class Phantom extends Sprite{
     }
     draw () {
         const out = (this._image.height - 16 * this._size.h)*CVAR.tileSide/16
-        console.log(this._x, this._y, this._image.height, this._size.h, out)
         ctx.drawImage(this._image, this._x, this._y - out, this._w, this._h + out);
     }
 }

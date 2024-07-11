@@ -147,7 +147,7 @@ function animate(delta){
             el.draw();
         })
 
-        GVAR.phantomBildingArr.forEach((el) => {
+        GVAR.phantomStructureArr.forEach((el) => {
             el.draw();
         })
 
