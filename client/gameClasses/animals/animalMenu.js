@@ -10,11 +10,17 @@ class AnimalMenu{
     }
     close(){
         document.getElementById("animal-menu-wrap").style.display = "none";
+        this.animalPen = 'none'
+        if (document.getElementById("animal-start-button"))
+            document.getElementById("animal-start-button").remove()
     }
     show(animalPen){
         this.animalPen = animalPen
         GVAR.closeAllWindows()
         document.getElementById("animal-menu-wrap").style.display = "flex";
+        const startButton = document.createElement('img')
+        startButton.id = 'animal-start-button'
+        document.getElementById('animal-menu').appendChild(startButton)
         this.renderMenu()
     }
     _formatTime(seconds) {
@@ -58,7 +64,6 @@ class AnimalMenu{
         
         // Ensure the percentage is within the bounds of 0 to 100
         percentage = Math.max(0, Math.min(100, percentage));
-        
         progressBar.style.width = percentage + '%';
     }
     renderMenu() {
@@ -81,16 +86,13 @@ class AnimalMenu{
         const startButton = document.getElementById("animal-start-button");
         startButton.className = 'item-image';
         startButton.src = `client/assets/${RES.buildings[type].feedType}/${RES.buildings[type].feedType}.png`;
-
         if (this.animalPen.canStartWork()) {
-            console.log('can')
             if (startButton.dataset.handlerAdded !== 'true') {
                 startButton.style.filter = 'grayscale(0%)';
                 startButton.addEventListener('touchstart', startButtonTouchStartHandler);
                 startButton.dataset.handlerAdded = 'true';
             }
-        } else {
-            console.log('can2',startButton.dataset.handlerAdded)
+        }else {
             startButton.style.filter = 'grayscale(100%)';
             startButton.removeEventListener('touchstart', startButtonTouchStartHandler);
             startButton.dataset.handlerAdded = 'false';
@@ -98,7 +100,6 @@ class AnimalMenu{
     
         function startButtonTouchStartHandler(e) {
             e.preventDefault();
-            console.log('touchstart');
             const clone = this.cloneNode(true);
             clone.classList.add('clone-image');
             document.body.appendChild(clone);
@@ -106,7 +107,6 @@ class AnimalMenu{
             const moveAt = (pageX, pageY) => {
                 clone.style.left = pageX - clone.offsetWidth / 2 + 'px';
                 clone.style.top = pageY - clone.offsetHeight / 2 + 'px';
-                console.log("move", pageX, pageY);
             };
     
             const touch = e.touches[0];
@@ -123,13 +123,11 @@ class AnimalMenu{
                 const imgRect = document.getElementById('animal-img').getBoundingClientRect();
                 if (isIntersecting(cloneRect, imgRect)) {
                     animalPen.startWork();
-                    // if (!animalPen.canStartWork()){
-                    //     // Применяем CSS фильтр для черно-белого изображения
-                    //     startButton.style.filter = 'grayscale(100%)';
-                    //     // Удаляем обработчик события, чтобы запретить перемещение
-                    //     startButton.removeEventListener('touchstart', startButtonTouchStartHandler);
-                    //     startButton.dataset.handlerAdded = 'false';
-                    // }
+                    // Применяем CSS фильтр для черно-белого изображения
+                    startButton.style.filter = 'grayscale(100%)';
+                    // Удаляем обработчик события, чтобы запретить перемещение
+                    startButton.removeEventListener('touchstart', startButtonTouchStartHandler);
+                    startButton.dataset.handlerAdded = 'false';
                 }
                 clone.remove();
             };

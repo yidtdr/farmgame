@@ -13,6 +13,7 @@ export default class AnimalPen extends Buildable{
         this._animals = [];
         this._isWork = false;
         this._image = RES.buildings[type].image
+        this._timeStamp = RES.buildings[this._type].workTime * 1000;
     }
     draw(){
         if (this._isMoving){
@@ -30,13 +31,10 @@ export default class AnimalPen extends Buildable{
         });
     }
     canStartWork(){
-        console.log(player._inventory[RES.buildings[this._type].feedType], this._animals.length, !this._isWork)
         return (player._inventory[RES.buildings[this._type].feedType] >= this._animals.length && !this._isWork && this._animals.length!=0)
     }
     startWork(){
-        console.log("start", player._inventory)
         player._inventory[RES.buildings[this._type].feedType] -= this._animals.length;
-        this._timeStamp = RES.buildings[this._type].workTime * 1000;
         this._finishTime = Date.now() + this._timeStamp;
         this._timeToFinish = this._timeStamp;
         this._isWork = true;
@@ -46,7 +44,9 @@ export default class AnimalPen extends Buildable{
     }
     addAnimal(){
         this._animals.push(new Animal(this._x + this._w/2, this._y + this._h/2,RES.buildings[this._type].animal,{x: this._x, y: this._y, w: this._w, h: this._h}))
-        // animalMenu.renderMenu()
+        if (animalMenu.animalPen!='none'){
+            animalMenu.renderMenu()
+        }
     }
     update(){
         if (this._isWork){
