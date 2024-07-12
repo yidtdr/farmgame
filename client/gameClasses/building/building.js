@@ -13,20 +13,19 @@ export default class Building extends Buildable{
         this._products = new Array()
         this._craftingItems = new Array()
     }
+    canStartWork(item){
+        return this._craftingItems.length < RES.buildings[this._type].slotsAmount && player.canCraft(item)
+    }
     startWork(item){
-        if (this._craftingItems.length < RES.buildings[this._type].slotsAmount && player.canCraft(item)) {
-            const itemCopy = JSON.parse(JSON.stringify(item));
-            player.craftItem(itemCopy)
-            this._craftingItems.push(itemCopy);
-            if (this._craftingItems.length > 1){
-                this._craftingItems[this._craftingItems.length-1].workingTimeStamp = this._craftingItems[this._craftingItems.length-2].workingTimeStamp + itemCopy.timeToFinish * 1000;
-            } else {
-                this._craftingItems[this._craftingItems.length-1].workingTimeStamp = Date.now() +  itemCopy.timeToFinish * 1000;
-            }
-            this._craftingItems[this._craftingItems.length-1].timeToComplete = itemCopy.timeToFinish * 1000
+        const itemCopy = JSON.parse(JSON.stringify(item));
+        player.craftItem(itemCopy)
+        this._craftingItems.push(itemCopy);
+        if (this._craftingItems.length > 1){
+            this._craftingItems[this._craftingItems.length-1].workingTimeStamp = this._craftingItems[this._craftingItems.length-2].workingTimeStamp + itemCopy.timeToFinish * 1000;
         } else {
-            console.log("заняты слоты или недостаточно ресурсов");
+            this._craftingItems[this._craftingItems.length-1].workingTimeStamp = Date.now() +  itemCopy.timeToFinish * 1000;
         }
+        this._craftingItems[this._craftingItems.length-1].timeToComplete = itemCopy.timeToFinish * 1000
     }    
     draw(){
         const out = (this._image.height - 16 * this._size.h)*CVAR.tileSide/16

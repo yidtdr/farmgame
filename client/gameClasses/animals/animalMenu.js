@@ -50,7 +50,7 @@ class AnimalMenu{
         let b = this.animalPen._timeStamp
         if (this.animalPen._timeToFinish == undefined)
             a = 0;
-        var progressLine = document.getElementById('process-line');
+        var progressLine = document.getElementById('animal-process-line');
         var progressBar = progressLine.querySelector('.progress');
         
         if (!progressBar) {
@@ -121,7 +121,7 @@ class AnimalMenu{
                 document.removeEventListener('touchmove', onTouchMove);
                 const cloneRect = clone.getBoundingClientRect();
                 const imgRect = document.getElementById('animal-img').getBoundingClientRect();
-                if (isIntersecting(cloneRect, imgRect)) {
+                if (isIntersecting(cloneRect, imgRect) && animalPen.canStartWork()) {
                     animalPen.startWork();
                     // Применяем CSS фильтр для черно-белого изображения
                     startButton.style.filter = 'grayscale(100%)';

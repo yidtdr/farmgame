@@ -4,6 +4,8 @@ import Plant from "../plant/plant.js";
 import RES from "../../resources.js";
 import { ctx } from "../../globalVars/canvas.js";
 import Buildable from "../building/buildable.js";
+import { fieldMenu } from "./fieldMenu.js";
+import player from "../player/player.js";
 
 export default class Field extends Buildable{
     constructor(x, y, type)
@@ -29,10 +31,15 @@ export default class Field extends Buildable{
         }
         else if (this._plant == "none")
         {
-            GVAR.UI.push(new PlantMenu(this._x, this._y, 30, 30));
+            fieldMenu.show(this)
+            // GVAR.UI.push(new PlantMenu(this._x, this._y, 30, 30));
         } else {
             this._plant.collect();
         }
+    }
+    canCreatePlant(plant){
+        console.log(plant, this._plant == "none")
+        return player._inventory[plant] > 0 && this._plant == "none"
     }
     createPlant(type)
     {

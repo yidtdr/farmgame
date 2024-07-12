@@ -10,6 +10,7 @@ import { orderManager } from './gameClasses/orders/orders.js';
 import { spin } from './gameClasses/spin/spin.js';
 import { buildingMenu } from './gameClasses/building/buildingMenu.js';
 import { animalMenu } from './gameClasses/animals/animalMenu.js';
+import { fieldMenu } from './gameClasses/field/fieldMenu.js';
 
 tiles[2][2].createBuilding('coop')
 
@@ -104,6 +105,8 @@ setInterval(() => {
         buildingMenu.renderQueue()
     if (animalMenu.animalPen != 'none')
         animalMenu.renderMenu()
+    if (fieldMenu.field != 'none')
+        fieldMenu.renderTimer()
 }, 1000);
 
 setInterval(() => {

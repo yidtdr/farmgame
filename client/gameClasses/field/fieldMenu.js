@@ -5,7 +5,7 @@ import RES from "../../resources.js";
 class FieldMenu{
     constructor() {
         document.getElementById("close-field-menu").onclick = () => {
-            document.getElementById("field-menu-wrap").style.display = "none";
+            this.close()
         }
         this.field = 'none'
     }
@@ -14,6 +14,9 @@ class FieldMenu{
         GVAR.closeAllWindows()
         document.getElementById("field-menu-wrap").style.display = "flex";
         this.renderPlants()
+    }
+    close(){
+        document.getElementById("field-menu-wrap").style.display = "none";
     }
     _formatTime(seconds) {
         let hours = Math.floor(seconds / 3600);
@@ -32,24 +35,61 @@ class FieldMenu{
         }
         return result.join(' ');
     }
+    renderTimer(){
+        const textTime = document.getElementById("field-timeToFinish")
+        if (this.field._plant == "none")
+            textTime.innerText = '-'
+        else
+            textTime.innerText = this._formatTime(Math.floor(this.field._plant._timeToGrow / 1000))
+        let a = 0
+        let b = 1 
+        if (this.field._plant != "none"){
+            a = this.field._plant._timeToGrow
+            b = this.field._plant._plantTimeStamp
+            if (a == 0)
+                this.close()
+        }
+        var progressLine = document.getElementById('field-process-line');
+        var progressBar = progressLine.querySelector('.progress');
+        
+        if (!progressBar) {
+            progressBar = document.createElement('div');
+            progressBar.className = 'progress';
+            progressLine.appendChild(progressBar);
+        }
+
+        var percentage = (a / b) * 100;
+        
+        percentage = Math.max(0, Math.min(100, percentage));
+        progressBar.style.width = percentage + '%';
+        const plantImg = document.getElementById('overlay-plant-img')
+        if (this.field._plant != 'none'){
+            plantImg.src = this.field._plant._image.src
+            plantImg.style.display = 'flex'
+        }
+        else
+            plantImg.style.display = 'none'
+    }
     renderPlants(){
         const fieldImg = document.getElementById('field-img')
         fieldImg.src = `client/assets/field/field.png`
         fieldImg.className = 'menu-big-img'
         const fieldMenuList = document.getElementById('field-menu-list');
         fieldMenuList.innerHTML = ""
-        for (let plant in RES.names.plants)
+        this.renderTimer()
+        RES.names.plants.forEach(plant =>
         {
             const craft = document.createElement("div")
             craft.className = "craft"
-            craft.id = `${plant}-craftItem`
 
             const craftImg = document.createElement("div")
             craftImg.style.backgroundImage = `url(client/assets/${plant}/${plant}.png)`
             craftImg.className = "craft-item-image"
+            if (player._inventory[plant] == 0)
+                craftImg.style.filter = 'grayscale(100%)';
             const amount = document.createElement("h3")
             amount.innerText = player._inventory[plant]
-            amount.className = 'queue-text' //потом замениться
+            amount.className = 'drop-list-text' //потом замениться
 
             const isIntersecting = (rect1, rect2) => {
                 return (
@@ -61,78 +101,59 @@ class FieldMenu{
             };
             const thisMenu = this;
             const field = this.field;
-            craftImg.addEventListener('touchstart', function (e) { //добавить штуку с запретом крафта сюда и в здание, везде показывать дроп меню но картинку серую
-                e.preventDefault();
-                const clone = this.cloneNode(true);
-                const chosenElem = craft.id.substring(0, craft.id.indexOf('-'));
-                clone.classList.add('clone-image');
-                document.body.appendChild(clone);
-    
-                const moveAt = (pageX, pageY) => {
-                    clone.style.left = pageX - clone.offsetWidth / 2 + 'px';
-                    clone.style.top = pageY - clone.offsetHeight / 2 + 'px';
-                    console.log("move", pageX, pageY);
-                };
-    
-                const touch = e.touches[0];
-                moveAt(touch.pageX, touch.pageY);
-    
-                const onTouchMove = (event) => {
-                    if (!isIntersecting(clone.getBoundingClientRect(),craft.getBoundingClientRect()))
-                        document.getElementById('drop-list').style.display = 'none';
-                    const touch = event.touches[0];
+            if (player._inventory[plant] > 0) {
+                craftImg.addEventListener('touchstart', function (e) { //добавить штуку с запретом крафта сюда и в здание, везде показывать дроп меню но картинку серую
+                    e.preventDefault();
+                    const clone = this.cloneNode(true);
+                    const chosenElem = craft.id.substring(0, craft.id.indexOf('-'));
+                    clone.classList.add('clone-image');
+                    document.body.appendChild(clone);
+        
+                    const moveAt = (pageX, pageY) => {
+                        clone.style.left = pageX - clone.offsetWidth / 2 + 'px';
+                        clone.style.top = pageY - clone.offsetHeight / 2 + 'px';
+                    };
+        
+                    const touch = e.touches[0];
                     moveAt(touch.pageX, touch.pageY);
-                };
-                const onTouchEnd = () => {
-                    document.removeEventListener('touchmove', onTouchMove);
-                    const cloneRect = clone.getBoundingClientRect();
-                    const visualRect = document.getElementById('building-visual').getBoundingClientRect();
-                    if (isIntersecting(cloneRect, visualRect)) {
-                        player._inventory[chosenElem] -= 1;
-                        field.createPlant(chosenElem)
-                    }
-                    clone.remove();
-                };
-                
-                document.addEventListener('touchmove', onTouchMove);
-                document.addEventListener('touchend', onTouchEnd, { once: true });
-            });
+        
+                    const onTouchMove = (event) => {
+                        if (!isIntersecting(clone.getBoundingClientRect(),craft.getBoundingClientRect()))
+                            document.getElementById('drop-list').style.display = 'none';
+                        const touch = event.touches[0];
+                        moveAt(touch.pageX, touch.pageY);
+                    };
+                    const onTouchEnd = () => {
+                        document.removeEventListener('touchmove', onTouchMove);
+                        const cloneRect = clone.getBoundingClientRect();
+                        const visualRect = document.getElementById('field-img').getBoundingClientRect();
+                        if (isIntersecting(cloneRect, visualRect) && field.canCreatePlant(plant)) {
+                            player._inventory[plant] -= 1;
+                            field.createPlant(plant)
+                            thisMenu.renderPlants()
+                        }
+                        clone.remove();
+                    };
+                    
+                    document.addEventListener('touchmove', onTouchMove);
+                    document.addEventListener('touchend', onTouchEnd, { once: true });
+                });
+            }
 
             craft.addEventListener('touchstart', (event) => {
-                let product = craft.id.substring(0, craft.id.indexOf('-'));
                 const dropList = document.createElement("div")
                 dropList.id = 'drop-list'
                 dropList.className = "craft-drop-list"
                 const dropName =  document.createElement("h3")
-                dropName.innerText = product
+                dropName.innerText = plant
                 dropName.className = 'drop-list-text'
                 dropList.appendChild(dropName)
 
                 const dropTime =  document.createElement("h3")
-                dropTime.innerText = this._formatTime(RES.buildings[type].workTypes[product].timeToFinish)
+                dropTime.innerText = this._formatTime(RES.plants[plant].growTime)
                 dropTime.className = 'drop-list-text'
                 dropList.appendChild(dropTime)
 
-                for (let item in RES.buildings[type].workTypes[product].items){
-                    const dropItem = document.createElement("div")
-                    dropItem.className = "drop-item"
-                    const img = document.createElement("img")
-                    img.src = `client/assets/${item}/${item}.png`
-                    img.className = 'drop-list-img'
-                    
-                    const itemText = document.createElement("h3")
-                    itemText.className = 'drop-items-amount';
-                    const playerItemAmount = player._inventory[item];
-                    const requiredItemAmount = RES.buildings[type].workTypes[product].items[item];
-                    itemText.innerText = `${playerItemAmount}/${requiredItemAmount}`;
-
-                    if (playerItemAmount < requiredItemAmount) {
-                        itemText.classList.add('insufficient');
-                    }
-                    dropItem.appendChild(img)
-                    dropItem.appendChild(itemText)
-                    dropList.appendChild(dropItem)
-                }
                 craft.appendChild(dropList)
                 dropList.style.display = 'block';
             });
@@ -145,7 +166,7 @@ class FieldMenu{
             craft.appendChild(amount)
 
             fieldMenuList.appendChild(craft)
-        }
+        });
     }
 }
 export const fieldMenu = new FieldMenu();
