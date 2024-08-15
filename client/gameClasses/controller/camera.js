@@ -5,8 +5,8 @@ import CVAR from "../../globalVars/const.js";
 class Camera{
     constructor()
     {
-        this._x = 15;
-        this._y = 15;
+        this._x = 0;
+        this._y = 0;
         this.updateBoundingBox();
     }
     move(x, y)
@@ -36,6 +36,18 @@ class Camera{
         {
             this._y -= y;
         }
+        this.updateBoundingBox();
+    }
+    newMove(x,y){
+        if (this._x + x < -60)
+            this._x = -60
+        else
+            this._x += x
+        
+        if (this._y + y < -60)
+            this._y = -60
+        else
+            this._y += y
         this.updateBoundingBox();
     }
     getPos()

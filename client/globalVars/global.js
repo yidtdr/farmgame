@@ -6,10 +6,16 @@ class GlobalVars{
         this.buildableArr = new Array();
         this.penArr = new Array();
         this.phantomStructureArr = new Array(0);
+        this.obstacleArr = new Array();
 
         this.scale = 4.5;
         this.rescale = true
         this.redraw = true;
+    }
+    activateBooster(){
+        this.buildableArr.forEach(el => {
+            el.activateBooster()
+        });
     }
     closeAllWindows(){
         this.UI.pop()

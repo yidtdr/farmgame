@@ -7,12 +7,29 @@ import Building from "../building/building.js";
 import Field from "../field/field.js";
 import RES from "../../resources.js";
 import AnimalPen from "../animals/animalPen.js";
+import Bush from "../bush/bush.js";
+import ServiceBuilding from "../building/serviceBuilding.js";
+import Obstacle from "../obstacle/obstacle.js";
 
 export default class Tile extends Sprite{
     constructor(x, y, w, h, image)
     {
         super(x, y, w, h, image);
         this._structure = "none";
+    }
+    use(type){
+        if (RES.buildingNames.bakery.includes(this._structure._type)){
+            this._structure._freeze = false
+            this._structure.realStart()
+        } else if (RES.buildingNames.garden.includes(this._structure._type)){
+            this._structure._freeze = false
+            this._structure.realStart()
+        } else if (RES.buildingNames.animalPen.includes(this._structure._type)){
+            if (type=='start'){
+                this._structure._freeze = false
+                this._structure.realStart()
+            }
+        } 
     }
     onClick()
     {  
@@ -38,14 +55,21 @@ export default class Tile extends Sprite{
     }
     createBuilding(type)
     {
-        if (["coop"].includes(type)){
+        if (RES.buildingNames.animalPen.includes(type)){
             this._structure = new AnimalPen(this._x, this._y, type)
             GVAR.penArr.push(this._structure);
         }
-        else if (type=="field"){
+        else if (type=="garden"){
             this._structure = new Field(this._x, this._y, type)
-        } else {
+        } else if (RES.buildingNames.bush.includes(type)){
+            this._structure = new Bush(this._x, this._y, type)
+        } else if (RES.buildingNames.bakery.includes(type)){
             this._structure = new Building(this._x, this._y, type)
+        } else if (RES.buildingNames.serviceBuildings.includes(type)){
+            this._structure = new ServiceBuilding(this._x, this._y, type)
+        } else if (RES.names.obstacles.includes(type)){
+            this._structure = new Obstacle(this._x, this._y, type)
+            GVAR.obstacleArr.push(this._structure);
         }
         let tileIndex = Calc.CanvasToIndex(this._x, this._y, CVAR.tileSide, CVAR.outlineWidth);
         for (let i = tileIndex.i; i < tileIndex.i + RES.buildings[type].size.w; i++) {
@@ -53,6 +77,8 @@ export default class Tile extends Sprite{
                 tiles[i][j]._structure = this._structure;
             }
         }
+        if (RES.names.obstacles.includes(type))
+            return //говнокод чтобы препятствие не попала в buildableArr
         GVAR.buildableArr.push(this._structure);
     }
     moveStructure(newPos){

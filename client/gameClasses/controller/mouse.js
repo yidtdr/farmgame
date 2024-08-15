@@ -4,6 +4,8 @@ import camera from "./camera.js";
 import GVAR from "../../globalVars/global.js";
 import CVAR from "../../globalVars/const.js";
 import player from "../player/player.js";
+import socketClient from "../../init.js";
+import RES from "../../resources.js";
 
 class Mouse{
     constructor() {
@@ -25,6 +27,7 @@ class Mouse{
         this._movedDist = 0;
         this._LMBhold;
         this._isDragging = false;
+        this._isOnBorder = false;
     }
     onMouseMove(e){
         const mousePos = Calc.getTouchPos(canvas, e);
@@ -47,10 +50,38 @@ class Mouse{
                 el.move(pos)
             }
         })
-
         GVAR.phantomStructureArr.forEach((el) => {
             let pos = Calc.indexToCanvas(this._mapPos.i, this._mapPos.j, CVAR.tileSide, CVAR.outlineWidth);
+            if (
+                Math.abs(this._mapPos.i - camera._cameraIndexBoundingBox.left) <= 2 ||
+                Math.abs(this._mapPos.i - camera._cameraIndexBoundingBox.right) <= 2 ||
+                Math.abs(this._mapPos.j - camera._cameraIndexBoundingBox.top) <= 2 ||
+                Math.abs(this._mapPos.j - camera._cameraIndexBoundingBox.bottom) <= 2
+            ){
+                this._isOnBorder = true
+                const cameraCenter = {
+                    i: Math.floor((camera._cameraIndexBoundingBox.left + camera._cameraIndexBoundingBox.right) / 2),
+                    j: Math.floor((camera._cameraIndexBoundingBox.top + camera._cameraIndexBoundingBox.bottom) / 2)
+                };
+                const vector = {
+                    di: this._mapPos.i - cameraCenter.i,
+                    dj: this._mapPos.j - cameraCenter.j
+                };
+                const length = Math.sqrt(vector.di ** 2 + vector.dj ** 2);
+                const unitVector = {
+                    di: vector.di / length,
+                    dj: vector.dj / length
+                };
+                this._dirX = unitVector.di
+                this._dirY = unitVector.dj
+            } else{
+                this._isOnBorder = false;
+            }
+
             el.move(pos)
+            if (this._isOnBorder){
+
+            }
         })
     }
     onMouseDown(e)
@@ -65,10 +96,9 @@ class Mouse{
             this._deltaMove.x = mousePos.x - this._screenPos.x;
             this._deltaMove.y = mousePos.y - this._screenPos.y;
             if (Math.sqrt((this._deltaMove.x) * (this._deltaMove.x) + (this._deltaMove.y) * (this._deltaMove.y))<10){
-                GVAR.UI.pop();
 
                 let el = tiles[this._mapPos.i][this._mapPos.j]._structure
-                if (el!="none"){
+                if (el!="none" && el._isMoving != undefined){
                     el._isMoving=true;
                     GVAR.redraw = true;
                     this._isDragging = true;
@@ -84,11 +114,13 @@ class Mouse{
             if (player._money >= player._phantomStructure.cost){
                 if (player._phantomStructure.structureType == 'building' && tiles[mouse._mapPos.i][mouse._mapPos.j].isCanPut(player._phantomStructure.structure)){
                     tiles[mouse._mapPos.i][mouse._mapPos.j].createBuilding(player._phantomStructure.structure._type)
+                    socketClient.send(`place/${player._phantomStructure.structure._type}/${mouse._mapPos.i}/${mouse._mapPos.j}`)
                     player._money -= player._phantomStructure.cost
                     player.updateMoney()
                     player._phantomStructure = "none"
-                }else if (player._phantomStructure.structureType == 'animal' && tiles[mouse._mapPos.i][mouse._mapPos.j]._structure.canAddAnimal(player._phantomStructure.structure._type)){ //потом буде проверка на то подходит ли животное и на то можно ли добавить
+                }else if (player._phantomStructure.structureType == 'animal' && RES.buildingNames.animalPen.includes(tiles[mouse._mapPos.i][mouse._mapPos.j]._structure._type) && tiles[mouse._mapPos.i][mouse._mapPos.j]._structure.canAddAnimal(player._phantomStructure.structure._type)){ //потом буде проверка на то подходит ли животное и на то можно ли добавить
                     tiles[mouse._mapPos.i][mouse._mapPos.j]._structure.addAnimal()
+                    socketClient.send(`use/buy/${mouse._mapPos.i}/${mouse._mapPos.j}`)
                     player._money -= player._phantomStructure.cost
                     player.updateMoney()
                     player._phantomStructure = "none"
@@ -127,6 +159,7 @@ class Mouse{
            this.onClick();
         }
         this._movedDist = 0;
+        this._isOnBorder = false
     }
     onClick()
     {
@@ -170,6 +203,7 @@ class Mouse{
         camera._x = (camera._x + s * (approximationCenter.x) /(d))*otn
         camera._y = (camera._y + s * (approximationCenter.y ) /(d))*otn
         camera.updateBoundingBox();
+        console.log(camera._x, camera._y)
         GVAR.redraw = true;
     }
 }

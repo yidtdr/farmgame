@@ -1,13 +1,14 @@
 import GVAR from "../../globalVars/global.js";
 import player from "../player/player.js";
+import socketClient from "../../init.js";
 
 class Spin {
     constructor() {
         this.sectors = player._spinItems.length;
-        this.renderSpin(this.sectors);
 
         document.getElementById('spin-button').onclick = () => {
             this.doSpin()
+            socketClient.send('spin')
         }
         
         document.getElementById("closeSpin").onclick = () => {
@@ -15,8 +16,12 @@ class Spin {
         }
         document.getElementById("open-spin").onclick = () => {
             GVAR.closeAllWindows()
-            document.getElementById("spin-wrap").style.display = "flex";
+            this.open()
         }
+    }
+    open(){
+        this.renderSpin(this.sectors);
+        document.getElementById("spin-wrap").style.display = "flex";
     }
     doSpin(){
         const container = document.getElementById('spin-container');

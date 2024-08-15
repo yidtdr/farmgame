@@ -1,11 +1,10 @@
 {
-    "pizdec": {
-      "growTime": 10,
-      "moneyReward": 15,
-      "shopCost": 6,
-      "collectAmount": 1,
-      "price": 7,
-      "minCost": 2,
-      "maxCost": 6
-    }
+  "name": "pizdec",
+  "growTime": 10,
+  "moneyReward": 15,
+  "shopCost": 6,
+  "collectAmount": 1,
+  "price": 7,
+  "minCost": 2,
+  "maxCost": 6
 }

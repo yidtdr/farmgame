@@ -5,14 +5,23 @@ import mouse from './gameClasses/controller/mouse.js';
 import camera from './gameClasses/controller/camera.js';
 import shop from './gameClasses/shop/shop.js';
 import player from './gameClasses/player/player.js';
-import Order from './gameClasses/orders/order.js';
-import { orderManager } from './gameClasses/orders/orders.js';
 import { spin } from './gameClasses/spin/spin.js';
+import { orderManager } from './gameClasses/orders/orders.js';
 import { buildingMenu } from './gameClasses/building/buildingMenu.js';
 import { animalMenu } from './gameClasses/animals/animalMenu.js';
 import { fieldMenu } from './gameClasses/field/fieldMenu.js';
+import CVAR from './globalVars/const.js';
+import { bushMenu } from './gameClasses/bush/bushMenu.js';
+import RES from './resources.js';
 
-tiles[2][2].createBuilding('coop')
+tiles[1][1].createBuilding('cranberry')
+tiles[10][10].createBuilding('barn')
+tiles[1][6].createBuilding('coop')
+
+document.getElementById('booster').onclick = () => {
+    player.activateBooster()
+    GVAR.activateBooster()  
+};
 
 // Ensure the document is scrollable
 function ensureDocumentIsScrollable() {
@@ -49,8 +58,6 @@ document.addEventListener('contextmenu', function(e) {
 
 //      [GLOBAL VARS]
 let prevdelta = 0.001;
-
-shop.drawStash();
 
 //      [EVENTS]
 
@@ -96,40 +103,71 @@ document.addEventListener('touchend', (e) => {
     }
 }, false);
 
-setInterval(() => {
+//      UPDATE  ALL 
+function updateGrow() {    
     GVAR.buildableArr.forEach((el) => {
-        el.update();
-        GVAR.redraw = true;  
-    })
-    if (buildingMenu.building!='none')
-        buildingMenu.renderQueue()
-    if (animalMenu.animalPen != 'none')
-        animalMenu.renderMenu()
+        const type = el._type
+        if (type == 'garden' || RES.buildingNames.bush.includes(type)){
+            el.update();
+            GVAR.redraw = true;  
+        }
+    });
+    
     if (fieldMenu.field != 'none')
-        fieldMenu.renderTimer()
-}, 1000);
+        fieldMenu.renderTimer();
+    if (bushMenu.bush != 'none')
+        bushMenu.renderTimer();
+
+    clearTimeout(growTimer);
+    growTimer = setTimeout(updateGrow, 1000 / player._growBooster.boosterAmount);
+}
+
+let growTimer = setTimeout(updateGrow, 1000 / player._growBooster.boosterAmount);
+
+function updateWork() {    
+    GVAR.buildableArr.forEach((el) => {
+        const type = el._type
+        if (RES.buildingNames.bakery.includes(type) || RES.buildingNames.animalPen.includes(type)){
+            el.update();
+            GVAR.redraw = true;  
+        }
+    });
+    
+    if (buildingMenu.building != 'none')
+        buildingMenu.renderQueue();
+    if (animalMenu.animalPen != 'none')
+        animalMenu.renderMenu();
+
+    clearTimeout(workTimer);
+    workTimer = setTimeout(updateWork, 1000 / player._growBooster.boosterAmount);
+}
+
+let workTimer = setTimeout(updateWork, 1000 / player._growBooster.boosterAmount);
+
+//      [ANIMATE]
 
 setInterval(() => {
     GVAR.penArr.forEach((el) => {
-        el.update();
+        el.updateAnimal();
         GVAR.redraw = true;  
     })
 }, 100);
 
-setInterval(() => {
-    let newOrders = new Array();
-
-    for (let i = 0; i < player._maxOrderAmount; i++) {
-        newOrders.push(new Order(player._inventory))
-    }
-    player._orderArr = newOrders;
-    orderManager.renderOrders()
-}, 10000); //таймер обновления ордеров
-
-
-//      [ANIMATE]
 function animate(delta){
-    if (GVAR.redraw)
+    if (mouse._isOnBorder){
+        camera.newMove(mouse._dirX * 1.5, mouse._dirY * 1.5)
+        let pos = {
+            x: GVAR.phantomStructureArr[0]._floatX + mouse._dirX/GVAR.scale * 1.5,
+            y: GVAR.phantomStructureArr[0]._floatY + mouse._dirY/GVAR.scale * 1.5
+        }
+        if (camera._cameraIndexBoundingBox.top == 0) //тут и для top =40
+            pos.y = GVAR.phantomStructureArr[0]._floatY
+        if (camera._cameraIndexBoundingBox.left == 0)
+            pos.x = GVAR.phantomStructureArr[0]._floatX
+        if (GVAR.phantomStructureArr[0]._x > 2 * CVAR.tileSide && GVAR.phantomStructureArr[0]._y > 2 * CVAR.tileSide)
+            GVAR.phantomStructureArr[0].move(pos)
+    }
+    if (GVAR.redraw || mouse._isOnBorder)
     {
         GVAR.redraw = false;
         const pos = camera.getPos();

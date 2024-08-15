@@ -130,7 +130,7 @@ body{
     height: 5vh;
     font-family: VCR;
 }
-#shop-wrap, #stash-wrap, #spin-wrap, #building-menu-wrap, #animal-menu-wrap, #field-menu-wrap{
+#shop-wrap, #stash-wrap, #spin-wrap, #building-menu-wrap, #animal-menu-wrap, #field-menu-wrap, #bush-menu-wrap, #booster-menu-wrap, #obstacle-menu-wrap{
     width: 100%;
     height: 100%;
     position: absolute;
@@ -140,13 +140,13 @@ body{
     z-index: 50;
     background-color: rgba(255, 255, 255, 0.244)
 }
-#stash, #spin, #building-menu, #animal-menu, #field-menu{
+#stash, #spin, #building-menu, #animal-menu, #field-menu, #bush-menu, #booster-menu, #obstacle-menu{
     background-color: aliceblue;
     width: 80%;
     height: 80%;
     overflow-y: scroll;
 }
-#closeShop, #closeStash, #closeSpin, #close-building-menu, #buy-building, #buy-plant, #close-animal-menu, #buy-animal, #close-field-menu{
+#closeShop, #closeStash, #closeSpin, #close-building-menu, #buy-building, #buy-plant, #close-animal-menu, #buy-animal, #close-field-menu, #close-bush-menu, #close-booster-menu, #close-obstacle-menu{
     float: right;
     border: none;
     background-color: rgb(225, 75, 75);
@@ -155,12 +155,12 @@ body{
     height: 5vh;
     font-family: VCR;
 }
-#stash-bar, #building-menu-bar, #animal-menu-bar, #field-menu-bar{
+#stash-bar, #building-menu-bar, #animal-menu-bar, #field-menu-bar, #bush-menu-bar, #booster-menu-bar, #obstacle-menu-bar{
     width: 100%;
     height: 5vh;
 }
 /*     STASH     */
-#stash-list {
+#stash-list, #booster-list {
     display: flex;
     flex-wrap: wrap;
 }   
@@ -247,7 +247,7 @@ body{
 }
 
 /*        BUILDING       */
-#building-menu-list{
+#building-menu-list, #booster-list{
     display: flex;
     flex-wrap: wrap;
 }
@@ -337,7 +337,7 @@ body{
 }
 
 /*        PROCESS-LINE AND TIME для всех будут общие, ещё добавить сюда здание и куст*/
-#animal-process-line, #field-process-line {
+#animal-process-line, #field-process-line, #bush-process-line {
     width: 100%;
     height: 20px;
     background-color: lightgray;
@@ -352,7 +352,7 @@ body{
     top: 0;
     left: 0;
 }
-#animal-timeToFinish, #field-timeToFinish{
+#animal-timeToFinish, #field-timeToFinish, #waterer-price, #bush-timeToFinish{
     width: 100%;
     bottom: 0;
     text-align: center;
@@ -469,4 +469,19 @@ body{
 }
 .complete-order.unlocked:hover {
     background-color: #218838;
+}
+.booster-button {
+    background-color: #4CAF50; /* Зеленый фон */
+    color: white; /* Белый текст */
+    padding: 10px 20px; /* Отступы внутри кнопки */
+    border: none; /* Без рамки */
+    border-radius: 5px; /* Закругленные углы */
+    cursor: pointer; /* Курсор указывает, что это кнопка */
+    font-size: 16px; /* Размер текста */
+}
+
+.booster-button:disabled {
+    background-color: #ccc; /* Серый фон, когда кнопка отключена */
+    color: #666; /* Темно-серый текст */
+    cursor: not-allowed; /* Курсор указывает, что кнопка неактивна */
 }

@@ -5,6 +5,7 @@ import Calc from "../../calc.js";
 import CVAR from "../../globalVars/const.js";
 import RES from "../../resources.js";
 import Phantom from "../sprite/phantom.js";
+import socketClient from "../../init.js";
 
 class Shop{
     constructor() {
@@ -32,6 +33,14 @@ class Shop{
         document.getElementById("buy-animal").onclick = () => {
             this.drawAnimalShop();
         }
+
+        document.getElementById("buy-animalPen").onclick = () => {
+            this.drawAnimalPenShop();
+        }
+
+        document.getElementById("buy-bush").onclick = () => {
+            this.drawBushShop();
+        }
     
         document.getElementById("open-shop").onclick = () => {
             const slidableDiv = document.getElementById('shop');
@@ -45,14 +54,13 @@ class Shop{
         }
         document.getElementById("open-stash").onclick = () => {
             GVAR.closeAllWindows();
-            document.getElementById("stash-wrap").style.display = "flex";
             this.drawStash();
         }
     }
     drawBuildingShop(){
         const shop = document.getElementById('shop-list');
         shop.innerHTML = '';
-        RES.names.buildings.forEach(building => {
+        RES.buildingNames.garden.concat(RES.buildingNames.bakery).forEach(building => {
             const shopItem = document.createElement('div');
             const img = document.createElement('img');
             img.src = `client/assets/${building}/${building}.png`
@@ -95,6 +103,7 @@ class Shop{
                 {
                     player.buy(RES.plants[plant].price)
                     player.pushInventory(plant, 1)
+                    socketClient.send(`buy/${plant}/${1}`)
                 }else{
                     console.log("нет денег или места в инвентаре")
                 }
@@ -132,11 +141,70 @@ class Shop{
             shop.appendChild(shopItem);
         });
     }
+    drawAnimalPenShop(){
+        const shop = document.getElementById('shop-list');
+        shop.innerHTML = '';
+        RES.buildingNames.animalPen.forEach(building => {
+            const shopItem = document.createElement('div');
+            const img = document.createElement('img');
+            img.src = `client/assets/${building}/${building}.png`
+            img.className = "item-image"
+            const price = document.createElement('h3');
+            price.innerText = `${RES.buildings[building].price}$`;
+            shopItem.appendChild(img)
+            shopItem.appendChild(price)
+            shopItem.addEventListener("touchstart", function(e) {
+                document.getElementById("shop-wrap").style.display = "none";
+                player._phantomStructure = {
+                    cost: RES.buildings[building].price,
+                    structureType: 'building'
+                }
+                let pos = Calc.indexToCanvas(mouse._mapPos.i, mouse._mapPos.j, CVAR.tileSide, CVAR.outlineWidth)
+                player._phantomStructure.structure = new Phantom(pos.x, pos.y, RES.buildings[building].size, building, RES.buildings[building].image)
+                player._phantomStructure.structure._isMoving = true
+                GVAR.phantomStructureArr.push(player._phantomStructure.structure)
+                mouse._isDragging = true
+                mouse.onMouseMove(e)
+            });
+            shopItem.className = "shop-item";
+            shop.appendChild(shopItem);
+        });
+    }
+    drawBushShop(){
+        const shop = document.getElementById('shop-list');
+        shop.innerHTML = '';
+        RES.buildingNames.bush.forEach(building => {
+            const shopItem = document.createElement('div');
+            const img = document.createElement('img');
+            img.src = `client/assets/${building}/${building}.png`
+            img.className = "item-image"
+            const price = document.createElement('h3');
+            price.innerText = `${RES.buildings[building].price}$`;
+            shopItem.appendChild(img)
+            shopItem.appendChild(price)
+            shopItem.addEventListener("touchstart", function(e) {
+                document.getElementById("shop-wrap").style.display = "none";
+                player._phantomStructure = {
+                    cost: RES.buildings[building].price,
+                    structureType: 'building'
+                }
+                let pos = Calc.indexToCanvas(mouse._mapPos.i, mouse._mapPos.j, CVAR.tileSide, CVAR.outlineWidth)
+                player._phantomStructure.structure = new Phantom(pos.x, pos.y, RES.buildings[building].size, building, RES.buildings[building].image)
+                player._phantomStructure.structure._isMoving = true
+                GVAR.phantomStructureArr.push(player._phantomStructure.structure)
+                mouse._isDragging = true
+                mouse.onMouseMove(e)
+            });
+            shopItem.className = "shop-item";
+            shop.appendChild(shopItem);
+        });
+    }
     drawStash()
     {
+        document.getElementById("stash-wrap").style.display = "flex";
         const stashList = document.getElementById('stash-list')
         stashList.innerHTML = "";
-
+    
         for (let item in player._inventory)
         {
             if (player._inventory[item] > 0)
@@ -154,6 +222,17 @@ class Shop{
                 stashList.appendChild(div);
             }
         }
+        const upgButton = document.getElementById('upgrade-stash-button')
+        upgButton.className = 'booster-button' // временно
+        if (player._money >= 10){
+            upgButton.disabled = false
+        } else {
+            upgButton.disabled = true
+        }
+        upgButton.addEventListener('click', () => {
+            player.upgradeInventory()
+            socketClient.send('invupgrade')
+        });
     }
 }
 const shop = new Shop();

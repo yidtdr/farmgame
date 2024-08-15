@@ -1,9 +1,8 @@
 {
-    "wheat": {
-      "growTime": 6,
-      "moneyReward": 5,
-      "shopCost": 3,
-      "collectAmount": 2,
-      "price": 5
-    }
+  "name": "wheat",
+  "growTime": 60,
+  "moneyReward": 5,
+  "shopCost": 3,
+  "collectAmount": 2,
+  "price": 5
 }

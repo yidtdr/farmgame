@@ -1,21 +1,28 @@
 {
-  "bakery": {
-    "price": 30,
-    "slotsAmount": 3,
-    "size": {
-      "w": 2,
-      "h": 3
-    },
-    "workTypes": {
-      "bread": { 
-        "timeToFinish": 15,
-        "items": {
-          "wheat": 3
-        },
-        "products": {
-          "bread": 1
-        }
+  "name": "bakery",
+  "price": 30,
+  "maxSlots": 3,
+  "sizex": 2,
+  "sizey": 3,
+  "maxLevel": 3,
+  "workTypes":
+  {
+      "bread":
+      {
+          "minLevel": 1,
+          "timeToFinish": 60,
+          "items":
+          {
+              "wheat": 3
+          },
+          "products":
+          {
+              "bread": 1
+          }
       }
-    }
-  }
+  },
+  "upgradesPrice":
+  [
+      100, 200
+  ]
 }

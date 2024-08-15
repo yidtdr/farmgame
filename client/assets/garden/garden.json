@@ -1,0 +1,9 @@
+{
+  "name": "garden",
+  "price": 10,
+  "maxSlots": 1,
+  "size": {
+    "w": 1,
+    "h": 1
+  }
+}

@@ -79,7 +79,7 @@ export default class Animal extends Sprite{
             }
         }
     }
-    move(delta){
+    moveDelta(delta){
         this._x += delta.x;
         this._y += delta.y;
         this.nextCoords.x += delta.x;

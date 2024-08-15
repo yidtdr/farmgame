@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
     <title>svoGAME</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- <script src="https://telegram.org/js/telegram-web-app.js"></script> -->
 </head>
 <body>
     <div id="loading-screen">
@@ -27,13 +27,18 @@
         <button id="open-spin">
             Spin
         </button>
+        <button id="booster">
+            boost
+        </button>
     </div>
     <div id="shop-wrap">
         <div id="shop">
             <div id="shop-bar">
-                <button id="buy-building">1</button>
-                <button id="buy-plant">2</button>
-                <button id="buy-animal">3</button>
+                <button id="buy-building">здания</button>
+                <button id="buy-plant">растеня</button>
+                <button id="buy-animal">животные</button>
+                <button id="buy-animalPen">загоны</button>
+                <button id="buy-bush">кусты</button>
             </div>
             <div id="shop-list"></div>
         </div>
@@ -52,13 +57,31 @@
             </div>
         </div>
     </div>
+    <div id="booster-menu-wrap">
+        <div id="booster-menu">
+            <div id="booster-menu-bar">
+                <button id="close-booster-menu">X</button>
+            </div>
+            <div id="activ-boosters"></div>
+            <div id="booster-list"></div>
+        </div>
+    </div>
+    <div id="obstacle-menu-wrap">
+        <div id="obstacle-menu">
+            <div id="obstacle-menu-bar">
+                <button id="close-obstacle-menu">X</button>
+            </div>
+            <button id="obstacle-button">Удалить</button>
+            <h3 id="obstacle-price"></h3>
+        </div>
+    </div>
     <div id="stash-wrap">
         <div id="stash">
             <div id="stash-bar">
                 <button id="closeStash">X</button>
             </div>
-            <div id="stash-list">
-            </div>
+            <div id="stash-list"></div>
+            <button id="upgrade-stash-button">Улучшить</button>
         </div>
     </div>
     <div id="orders-wrap">
@@ -80,6 +103,7 @@
                 <img id="building-img">
                 <div id="building-queue"></div>
             </div>
+            <button id="upgrade-building">улучшить</button>
             <div id="building-menu-list"></div>
         </div>
     </div>
@@ -105,6 +129,16 @@
             <h3 id="field-timeToFinish"></h3>
             <div id="field-process-line"></div>
             <div id="field-menu-list"></div>
+        </div>
+    </div>
+    <div id="bush-menu-wrap">
+        <div id="bush-menu">
+            <div id="bush-menu-bar">
+                <button id="close-bush-menu">X</button>
+            </div>
+            <img id="bush-img">
+            <h3 id="bush-timeToFinish"></h3>
+            <div id="bush-process-line"></div>
         </div>
     </div>
     <script>

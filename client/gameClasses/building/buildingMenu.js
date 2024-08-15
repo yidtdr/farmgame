@@ -19,7 +19,7 @@ class BuildingMenu {
         let hours = Math.floor(seconds / 3600);
         let minutes = Math.floor((seconds % 3600) / 60);
         let secs = seconds % 60;
-
+    
         let result = [];
         if (hours > 0) {
             result.push(hours + 'ч');
@@ -34,7 +34,7 @@ class BuildingMenu {
     }
     renderQueue() {
         const queue = this.building._craftingItems;
-        const size = RES.buildings[this.building._type].slotsAmount;
+        const size = RES.buildings[this.building._type].maxSlots;
         const buildingQueue = document.getElementById('building-queue');
         buildingQueue.innerHTML = '';
         for (let i = 0; i < size; i++) {
@@ -43,13 +43,13 @@ class BuildingMenu {
             if (queue[i] != undefined) {
                 const img = document.createElement("img");
                 img.className = "item-image";
-                const key = Object.keys(queue[i].products)[0];
+                const key = Object.keys(queue[i])[0];
                 img.src = `client/assets/${key}/${key}.png`;
                 queueElem.appendChild(img);
 
                 const time = document.createElement("h3");
                 time.className = "queue-text";
-                time.innerText = this._formatTime(Math.trunc(queue[i].timeToComplete / 1000));
+                time.innerText = this._formatTime(Math.trunc(queue[i].timeToFinish / 1000));
                 queueElem.appendChild(time);
             }
             buildingQueue.appendChild(queueElem);
@@ -62,6 +62,13 @@ class BuildingMenu {
         const buildingImg = document.getElementById('building-img');
         buildingImg.src = `client/assets/${type}/${type}.png`;
         buildingImg.className = 'menu-big-img';
+        const button = document.getElementById('upgrade-building');
+        button.onclick = () => {
+            if (this.building.canUpgrade()){
+                this.building.upgrade()
+                this.renderCrafts()
+            }
+        };
         const buildingMenuList = document.getElementById('building-menu-list');
         buildingMenuList.innerHTML = "";
         for (let product in RES.buildings[type].workTypes) {
@@ -137,6 +144,15 @@ class BuildingMenu {
                 dropTime.innerText = this._formatTime(RES.buildings[type].workTypes[product].timeToFinish);
                 dropTime.className = 'drop-list-text';
                 dropList.appendChild(dropTime);
+                const dropLevel = document.createElement("h3");
+                dropLevel.className = 'drop-items-amount';
+                const nowLevel = this.building._level;
+                const needLevel = RES.buildings[type].workTypes[product].minLevel;
+                if (nowLevel < needLevel) {
+                    dropLevel.classList.add('insufficient');
+                }
+                dropLevel.innerText = `level: ${nowLevel}/${needLevel}`
+                dropList.appendChild(dropLevel);
 
                 for (let item in RES.buildings[type].workTypes[product].items) {
                     const dropItem = document.createElement("div");

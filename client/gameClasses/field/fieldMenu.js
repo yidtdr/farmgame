@@ -39,8 +39,9 @@ class FieldMenu{
         const textTime = document.getElementById("field-timeToFinish")
         if (this.field._plant == "none")
             textTime.innerText = '-'
-        else
+        else{
             textTime.innerText = this._formatTime(Math.floor(this.field._plant._timeToGrow / 1000))
+        }
         let a = 0
         let b = 1 
         if (this.field._plant != "none"){
@@ -72,7 +73,7 @@ class FieldMenu{
     }
     renderPlants(){
         const fieldImg = document.getElementById('field-img')
-        fieldImg.src = `client/assets/field/field.png`
+        fieldImg.src = `client/assets/${this.field._type}/${this.field._type}.png`
         fieldImg.className = 'menu-big-img'
         const fieldMenuList = document.getElementById('field-menu-list');
         fieldMenuList.innerHTML = ""
