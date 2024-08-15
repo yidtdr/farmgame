@@ -70,6 +70,7 @@ export default class AnimalPen extends Buildable{
         return (this._animals.length < RES.buildings[this._type].maxCount && animal === RES.buildings[this._type].animal)
     }
     addAnimal(){
+        socketClient.send(`use/buy/${this._x/CVAR.tileSide}/${this._y/CVAR.tileSide}`)
         this._animals.push(new Animal(this._x + this._w/2, this._y + this._h/2,RES.buildings[this._type].animal,{x: this._x, y: this._y, w: this._w, h: this._h}))
         if (animalMenu.animalPen!='none'){
             animalMenu.renderMenu()
