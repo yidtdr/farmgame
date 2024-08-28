@@ -1,9 +1,9 @@
 {
-  "name": "bakery",
+  "name": "pie_oven",
   "price": 30,
   "maxSlots": 3,
   "sizex": 3,
-  "sizey": 2,
+  "sizey": 3,
   "maxLevel": 3,
   "workTypes":
   {

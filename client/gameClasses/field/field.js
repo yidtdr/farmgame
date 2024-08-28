@@ -6,6 +6,7 @@ import { fieldMenu } from "./fieldMenu.js";
 import player from "../player/player.js";
 import socketClient from "../../init.js";
 import CVAR from "../../globalVars/const.js";
+import GVAR from "../../globalVars/global.js";
 
 export default class Field extends Buildable{
     constructor(x, y, type)
@@ -49,6 +50,7 @@ export default class Field extends Buildable{
     addSlot(slot){
         this._plant = new Plant(this._x, this._y, this._w, this._h, slot.workName)
         this._plant._growTimeStamp = slot.workStartTimeStamp * 1000 + this._plant._plantTimeStamp //позже изменить в соответствии с временнеи json
+        this._plant._timeToGrow = Date.now() < this._growTimeStamp ? this._growTimeStamp - Date.now() : 0
     }
     canCreatePlant(plant){
         return player._inventory[plant] > 0 && this._plant == "none"
@@ -84,10 +86,11 @@ export default class Field extends Buildable{
         if (this._plant != "none"){
             this._plant.move(pos);
         }
+        GVAR.updateBuildingArr(this)
     }
     update(){
         if (!this._freeze && this._plant!="none"){
-            this._plant.updateGrowTime(1)
+            this._plant.updateGrowTime()
         }
     }
 }

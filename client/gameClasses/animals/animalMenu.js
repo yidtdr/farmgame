@@ -42,6 +42,7 @@ class AnimalMenu{
     }
     renderTimer(){
         const textTime = document.getElementById("animal-timeToFinish")
+        console.log(this.animalPen)
         if (this.animalPen._timeToFinish == undefined)
             textTime.innerText = '-'
         else

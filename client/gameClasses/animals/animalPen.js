@@ -6,6 +6,7 @@ import player from "../player/player.js";
 import { animalMenu } from "./animalMenu.js";
 import socketClient from "../../init.js";
 import CVAR from "../../globalVars/const.js";
+import GVAR from "../../globalVars/global.js";
 
 export default class AnimalPen extends Buildable{
     constructor(x, y, type)
@@ -28,7 +29,9 @@ export default class AnimalPen extends Buildable{
     }
     setTime(startTime){
         this._finishTime = startTime * 1000 + this._timeStamp
+        this._timeToFinish = Date.now() < this._finishTime ? this._finishTime - Date.now() : 0
         this._isWork = true;
+        console.log(this._timeToFinish, Date.now() - this._finishTime)
     }
     draw(){
         if (this._isMoving){
@@ -46,7 +49,7 @@ export default class AnimalPen extends Buildable{
         });
     }
     canStartWork(){
-        return (player._inventory[RES.buildings[this._type].feedType] >= this._animals.length && !this._isWork && this._animals.length!=0)
+        return !this._isWork && this._animals.length!=0
     }
     startWork(){
         this._freeze = true
@@ -56,6 +59,7 @@ export default class AnimalPen extends Buildable{
         this._isWork = true;
     }
     realStart(){
+        console.log('realStart')
         if (player._workBooster.boosterAmount==1){
             this._finishTime = Date.now() + this._timeStamp;
             return
@@ -67,10 +71,13 @@ export default class AnimalPen extends Buildable{
         }
     }
     canAddAnimal(animal){
+        if (animal !== RES.buildings[this._type].animal)
+            console.log('животное не подходит')
+        if (this._animals.length == RES.buildings[this._type].maxCount)
+            console.log('слоты для животных заняты')
         return (this._animals.length < RES.buildings[this._type].maxCount && animal === RES.buildings[this._type].animal)
     }
     addAnimal(){
-        socketClient.send(`use/buy/${this._x/CVAR.tileSide}/${this._y/CVAR.tileSide}`)
         this._animals.push(new Animal(this._x + this._w/2, this._y + this._h/2,RES.buildings[this._type].animal,{x: this._x, y: this._y, w: this._w, h: this._h}))
         if (animalMenu.animalPen!='none'){
             animalMenu.renderMenu()
@@ -78,11 +85,14 @@ export default class AnimalPen extends Buildable{
     }
     update(){
         if (!this._freeze && this._isWork){
-            this._timeToFinish = (this._timeToFinish != 0 
+            this._timeToFinish = (this._timeToFinish > 0 
             ? 
             (this._timeToFinish - 1000)
             : 0);
-            if (this._finishTime - Date.now() > 0){
+            if (this._finishTime - Date.now() < 0){
+                console.log(this._finishTime , Date.now())
+                this._timeToFinish = 0
+                console.log('да')
                 this._isWork = false;
                 animalMenu.close()
             }
@@ -94,7 +104,9 @@ export default class AnimalPen extends Buildable{
         });
     }
     collect(){
+        console.log(player.getInvFullness(), this._animals.length)
         if (player.getInvFullness() >= this._animals.length){
+            console.log('ffff')
             player.pushInventory(RES.buildings[this._type].product, this._animals.length);
             this._timeToFinish = undefined;
             socketClient.send(`collect/${this._x/CVAR.tileSide}/${this._y/CVAR.tileSide}`)
@@ -102,7 +114,9 @@ export default class AnimalPen extends Buildable{
     }
     onClick()
     {
+        console.log(this._timeToFinish)
         if (this._timeToFinish == 0){
+            console.log('зашёл клик')
             this.collect()
         } else {
             animalMenu.show(this)
@@ -120,5 +134,6 @@ export default class AnimalPen extends Buildable{
         this._floatY = pos.y;
         this._x = Math.ceil(this._floatX/CVAR.tileSide)*CVAR.tileSide
         this._y = Math.ceil(this._floatY/CVAR.tileSide)*CVAR.tileSide
+        GVAR.updateBuildingArr(this)
     }
 }

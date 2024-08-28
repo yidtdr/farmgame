@@ -47,7 +47,6 @@ class BushMenu{
     }
     renderTimer(){
         const textTime = document.getElementById("bush-timeToFinish")
-        console.log(this.bush._timeToFinish)
         if (this.bush._timeToFinish == undefined)
             textTime.innerText = '-'
         else
@@ -73,6 +72,10 @@ class BushMenu{
         progressBar.style.width = percentage + '%';
     }
     renderMenu() {
+        const temp = document.createElement('button')
+        temp.innerText = this.bush._collectedAmount
+        document.getElementById('temp').innerText = this.bush._collectedAmount
+
         const type = this.bush._type;
         const bushImage = document.getElementById('bush-img');
         bushImage.className = 'menu-big-img';
@@ -96,7 +99,8 @@ class BushMenu{
         const watererPrice = document.getElementById("waterer-price");
         // watererPrice.className = 'item-image';
         watererPrice.innerText = bush._resetPrice//цена пересоздания
-        if (this.bush.canStartWork()) {
+        console.log(this.bush.canReset())
+        if (this.bush.canReset()) {
             if (startButton.dataset.handlerAdded !== 'true') {
                 startButton.style.filter = 'grayscale(0%)';
                 startButton.addEventListener('touchstart', startButtonTouchStartHandler);
@@ -131,8 +135,8 @@ class BushMenu{
                 document.removeEventListener('touchmove', onTouchMove);
                 const cloneRect = clone.getBoundingClientRect();
                 const imgRect = document.getElementById('bush-img').getBoundingClientRect();
-                if (isIntersecting(cloneRect, imgRect) && bush.canStartWork()) {
-                    bush.startWork();
+                if (isIntersecting(cloneRect, imgRect)) {
+                    bush.reset();
                     // Применяем CSS фильтр для черно-белого изображения
                     startButton.style.filter = 'grayscale(100%)';
                     // Удаляем обработчик события, чтобы запретить перемещение

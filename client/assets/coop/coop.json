@@ -6,8 +6,8 @@
     "h": 3
   },
   "animal": "chicken",
-  "maxCount": 6,
-  "workTime": 10,
+  "maxCount": 5,
+  "workTime": 50,
   "product": "egg",
   "feedType": "chickenFeed"
 }

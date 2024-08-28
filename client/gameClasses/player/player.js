@@ -4,7 +4,7 @@ class Player{
         this._money = 100;
         this._chosenTile = {i: -1, j: -1};
         this._inventory = new Array();
-        this._inventorySize = 20;
+        this._inventorySize = 50;
         this._maxOrderAmount = 6;
         this._ordersArr = new Array();
         this._networth = 0;
@@ -91,6 +91,7 @@ class Player{
     }
     getInvFullness(){
         let sum = 0;
+        console.log(this._inventory)
         for (const el in this._inventory) {
             sum += this._inventory[el];
         }

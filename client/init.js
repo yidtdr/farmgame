@@ -5,35 +5,35 @@ import CVAR from "./globalVars/const.js";
 import player from "./gameClasses/player/player.js";
 
 class SocketClient{
-  constructor()
-  {
-      this.requestQueue = new Array()
-      this.socket = new WebSocket('ws:localhost:8000');
-      this.gameSessionPromiseResolve = null;
-      this.gameSessionPromise = new Promise((resolve) => {
-          this.gameSessionPromiseResolve = resolve;
-      });
+    constructor()
+    {
+        this.requestQueue = new Array()
+        this.socket = new WebSocket('ws:localhost:8000');
+        this.gameSessionPromiseResolve = null;
+        this.gameSessionPromise = new Promise((resolve) => {
+            this.gameSessionPromiseResolve = resolve;
+        });
       // this.socket.onopen = () => {
       //   console.log('WebSocket connection established');
       //   this.flushQueue();
       // };
-      this.socket.onmessage = (m) => {
-          const data = JSON.parse(m.data)
-          console.log(data)
+        this.socket.onmessage = (m) => {
+            const data = JSON.parse(m.data)
+            console.log(data)
 
-          if (data.dataType == "game-session") 
-          {
-              this.initGameSession(data)
-          }
-          else if (data.dataType == "game-session-regen")
-          {
-              this.regenPlayer(data)
-          }
-          else if (data.dataType == "result-code")
-          {
-              this.handleResultCode(data.code)
-          }
-      }
+            if (data.dataType == "game-session") 
+            {
+                this.initGameSession(data)
+            }
+            else if (data.dataType == "game-session-regen")
+            {
+                this.regenPlayer(data)
+            }
+            else if (data.dataType == "result-code")
+            {
+                this.handleResultCode(data.code)
+            }
+        }
   }
   // flushQueue() {
   //   while (this.requestQueue.length > 0 && this.socket.readyState === WebSocket.OPEN) {
@@ -122,11 +122,12 @@ class SocketClient{
       console.log(this.requestQueue[0])
       if (code == 200){
           let request = this._decipherRequest(this.requestQueue[0])
-
           if (request.requestType == 'use') {
-              tiles[request.x][request.y].use(request.type)
+              tiles[request.x][request.y].use(request.name)
           } else if (request.requestType == 'activateb'){
               player.realActivateBooster()
+          } else if (request.requestType == 'place' && RES.buildingNames.bush.includes(request.name)){
+              tiles[request.x][request.y].use()
           }
       }
       console.log('код',code)
@@ -135,20 +136,18 @@ class SocketClient{
   send(request) {
     if (this.socket.readyState === WebSocket.OPEN) {
         this.socket.send(request);
-        if (request.split('/')[0] != 'connect'){
+        if (request.split('/')[0] != 'connect'){// и реген
           this.requestQueue.push(request);
         }
+        console.log(this.requestQueue)
     }
   }
-  regenPlayer(data){
-      for (const key in data.player.SeedsInventory.map) {
-          player._inventory[key] = data.player.SeedsInventory.map[key]
-      }
-      for (const key in data.player.ItemInventory.map) {
-          player._inventory[key] = data.player.ItemInventory.map[key]
-      }
-      player._money = data.player.money
-      player.updateMoney()
+  	regenPlayer(data){
+		player._inventory = data.player.Inventory.map
+        console.log(player._inventory)
+        player._inventory['chickenFeed'] = 10
+		player._money = data.player.money
+		player.updateMoney()
 
       // player._spinItems = data.player.spin.items
       // player._isSpinActivated = data.player.spin.activated
@@ -159,30 +158,35 @@ class SocketClient{
       //         break
       //     }
       // }
-      player._orderArr = data.player.orders
-  }
-  initGameSession(data){
-      data.world.tileArray.forEach(el => {
-          tiles[el.x][el.y].createBuilding(el.name)
-          if (RES.buildingNames.bakery.includes(el.name)){
-              el.slots.forEach(slot => {
-                  tiles[el.x][el.y]._structure.addSlot(slot)
-              });
-              tiles[el.x][el.y]._structure.update()
-          } else if (RES.buildingNames.garden.includes(el.name)){
-              if (el.slots[0].workName != 'none')
-                tiles[el.x][el.y]._structure.addSlot(el.slots[0])
-          } else if (RES.buildingNames.animalPen.includes(el.name)){
-              for (let i = 0; i < el.animalAmount; i++) {
-                  tiles[el.x][el.y]._structure.addAnimal()
-              }
-              if (el.slots[0])
-                tiles[el.x][el.y]._structure.setTime(el.slots[0].workStartTimeStamp)
-          }
-      });
-      this.regenPlayer(data)
-      this.gameSessionPromiseResolve()
-  }
+      	player._orderArr = data.player.orders
+  	}
+  	initGameSession(data){
+    	console.log(data)
+      	data.world.tileArray.forEach(el => {
+          	tiles[el.x][el.y].createBuilding(el.name)
+          	if (RES.buildingNames.bakery.includes(el.name)){
+              	el.slots.forEach(slot => {
+                  	tiles[el.x][el.y]._structure.addSlot(slot)
+              	});
+              	tiles[el.x][el.y]._structure.update()
+          	} else if (RES.buildingNames.garden.includes(el.name)){
+				if (el.slots[0].workName != 'none')
+					tiles[el.x][el.y]._structure.addSlot(el.slots[0])
+			} else if (RES.buildingNames.animalPen.includes(el.name)){
+				for (let i = 0; i < el.integerData; i++) {
+					tiles[el.x][el.y]._structure.addAnimal()
+				}
+				if (el.slots[0])
+					tiles[el.x][el.y]._structure.setTime(el.slots[0].workStartTimeStamp)
+			} else if (RES.buildingNames.bush.includes(el.name)){
+                //возможно проверка на мертвый куст
+                console.log(tiles[el.x][el.y]._structure._timeToFinish)
+				tiles[el.x][el.y]._structure.setProperties(el.slots[0].workStartTimeStamp, el.integerData)
+			}
+		});
+		this.regenPlayer(data)
+		this.gameSessionPromiseResolve()
+  	}
 }
 
 const socketClient = new SocketClient();
@@ -207,7 +211,7 @@ class Init {
             }
         }
 
-        socketClient.send(`connect/username&=egor13`)
+        socketClient.send(`connect/2357285`)
 
         console.log("map loaded")
 

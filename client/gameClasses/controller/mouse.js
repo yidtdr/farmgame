@@ -118,12 +118,15 @@ class Mouse{
                     player._money -= player._phantomStructure.cost
                     player.updateMoney()
                     player._phantomStructure = "none"
-                }else if (player._phantomStructure.structureType == 'animal' && RES.buildingNames.animalPen.includes(tiles[mouse._mapPos.i][mouse._mapPos.j]._structure._type) && tiles[mouse._mapPos.i][mouse._mapPos.j]._structure.canAddAnimal(player._phantomStructure.structure._type)){ //потом буде проверка на то подходит ли животное и на то можно ли добавить
+                }else if (player._phantomStructure.structureType == 'animal' && RES.buildingNames.animalPen.includes(tiles[mouse._mapPos.i][mouse._mapPos.j]._structure._type) && tiles[mouse._mapPos.i][mouse._mapPos.j]._structure.canAddAnimal(player._phantomStructure.structure._type)){
                     tiles[mouse._mapPos.i][mouse._mapPos.j]._structure.addAnimal()
-                    socketClient.send(`use/buy/${mouse._mapPos.i}/${mouse._mapPos.j}`)
+                    const x = tiles[mouse._mapPos.i][mouse._mapPos.j]._structure._x
+                    const y = tiles[mouse._mapPos.i][mouse._mapPos.j]._structure._y
+                    socketClient.send(`use/buy/${x/CVAR.tileSide}/${y/CVAR.tileSide}`)
                     player._money -= player._phantomStructure.cost
                     player.updateMoney()
                     player._phantomStructure = "none"
+                    console.log(144342)
                 }
             } else {
                 console.log("недостаточно денег")

@@ -2,6 +2,7 @@ import Sprite from "../sprite/sprite.js";
 import RES from "../../resources.js";
 import { ctx } from "../../globalVars/canvas.js";
 import CVAR from "../../globalVars/const.js";
+import GVAR from "../../globalVars/global.js";
 
 export default class Buildable extends Sprite{
     constructor(x, y, type)
@@ -29,6 +30,7 @@ export default class Buildable extends Sprite{
         this._floatY = pos.y;
         this._x = Math.ceil(this._floatX/CVAR.tileSide)*CVAR.tileSide
         this._y = Math.ceil(this._floatY/CVAR.tileSide)*CVAR.tileSide
+        GVAR.updateBuildingArr(this)
     }
     draw () {
         const out = (this._image.height - 16 * this._size.h)*CVAR.tileSide/16

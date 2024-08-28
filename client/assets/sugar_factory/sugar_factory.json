@@ -1,8 +1,8 @@
 {
-  "name": "bakery",
+  "name": "sugar_factory",
   "price": 30,
   "maxSlots": 3,
-  "sizex": 3,
+  "sizex": 2,
   "sizey": 2,
   "maxLevel": 3,
   "workTypes":

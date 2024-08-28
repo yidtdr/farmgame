@@ -12,6 +12,23 @@ class GlobalVars{
         this.rescale = true
         this.redraw = true;
     }
+    addBuilding(item){
+        let index = this.buildableArr.findIndex(element => element._y > item._y);
+    
+        if (index >= 0) {
+            this.buildableArr.splice(index, 0, item);
+        } else {
+            this.buildableArr.push(item);
+        }
+    }
+    updateBuildingArr(item) {
+        let index = this.buildableArr.indexOf(item);
+        
+        if (index !== -1) {   
+            this.buildableArr.splice(index, 1);
+            this.addBuilding(item);
+        }
+      }
     activateBooster(){
         this.buildableArr.forEach(el => {
             el.activateBooster()

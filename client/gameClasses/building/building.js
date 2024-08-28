@@ -56,6 +56,17 @@ export default class Building extends Buildable{
     addSlot(slot){
         const item = {[slot.workName]: 1}
         item.workingTimeStamp = (slot.workStartTimeStamp + RES.buildings[this._type].workTypes[slot.workName].timeToFinish) * 1000 //если время в секундах то переводим в милли
+        if (item.workingTimeStamp > Date.now()){
+            if (this._craftingItems.length == 0 || this._craftingItems[this._craftingItems.length-1].timeToFinish == 0){
+                item.timeToFinish = item.workingTimeStamp - Date.now()
+            } else{
+                item.timeToFinish = RES.buildings[this._type].workTypes[slot.workName].timeToFinish * 1000
+            }
+        } else{
+            item.timeToFinish = 0
+            this._nowWorkIndex += 1
+        }
+
         this._craftingItems.push(item)
     }
     canStartWork(item){
@@ -119,7 +130,8 @@ export default class Building extends Buildable{
         if (!this._freeze && this._nowWorkIndex < this._craftingItems.length){
             // if (this._craftingItems.length > 1)
             //     console.log(Date.now(), this._craftingItems)
-            this._craftingItems[this._nowWorkIndex].timeToFinish = (this._craftingItems[this._nowWorkIndex].timeToFinish != 0 
+            console.log(this._craftingItems, this._nowWorkIndex)
+            this._craftingItems[this._nowWorkIndex].timeToFinish = (this._craftingItems[this._nowWorkIndex].timeToFinish > 0 
             ? 
             (this._craftingItems[this._nowWorkIndex].timeToFinish - 1000)
             : 0);
@@ -138,6 +150,7 @@ export default class Building extends Buildable{
             const key = Object.keys(this._craftingItems[0])[0];
             if (player.getInvFullness()>=this._craftingItems[0][key]){
                 player.pushInventory(key,this._craftingItems[0][key])
+                console.log(this._craftingItems, this._nowWorkIndex)
                 this._craftingItems.shift()
                 this._nowWorkIndex -= 1
             } else {

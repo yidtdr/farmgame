@@ -14,9 +14,9 @@ import CVAR from './globalVars/const.js';
 import { bushMenu } from './gameClasses/bush/bushMenu.js';
 import RES from './resources.js';
 
-tiles[1][1].createBuilding('cranberry')
-tiles[10][10].createBuilding('barn')
-tiles[1][6].createBuilding('coop')
+// tiles[1][1].createBuilding('cranberry')
+// tiles[10][10].createBuilding('barn')
+// tiles[1][6].createBuilding('coop')
 
 document.getElementById('booster').onclick = () => {
     player.activateBooster()
