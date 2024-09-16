@@ -10,6 +10,7 @@ import AnimalPen from "../animals/animalPen.js";
 import Bush from "../bush/bush.js";
 import ServiceBuilding from "../building/serviceBuilding.js";
 import Obstacle from "../obstacle/obstacle.js";
+import socketClient from "../../init.js";
 
 export default class Tile extends Sprite{
     constructor(x, y, w, h, image)
@@ -78,6 +79,10 @@ export default class Tile extends Sprite{
             GVAR.obstacleArr.push(this._structure);
         }
         let tileIndex = Calc.CanvasToIndex(this._x, this._y, CVAR.tileSide, CVAR.outlineWidth);
+        // let tileIndex = {
+        //     i: this._x / CVAR.tileSide,
+        //     j: this._y / CVAR.tileSide
+        // }
         for (let i = tileIndex.i; i < tileIndex.i + RES.buildings[type].size.w; i++) {
             for (let j = tileIndex.j; j < tileIndex.j + RES.buildings[type].size.h; j++) {
                 tiles[i][j]._structure = this._structure;
@@ -90,6 +95,7 @@ export default class Tile extends Sprite{
     moveStructure(newPos){
         let el = this._structure
         let size = RES.buildings[el._type].size;
+        socketClient.send(`move/${this._structure._prevPosition.i}/${this._structure._prevPosition.j}/${newPos.i}/${newPos.j}`)
 
         for (let i = el._prevPosition.i; i < el._prevPosition.i + size.w; i++) {
             for (let j = el._prevPosition.j; j < el._prevPosition.j + size.h; j++) {

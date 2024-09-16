@@ -1,28 +1,55 @@
 {
   "name": "dairy",
-  "price": 30,
-  "maxSlots": 3,
+  "price": 250,
+  "maxSlots": 1,
   "sizex": 3,
   "sizey": 2,
   "maxLevel": 3,
+  "mapLimit": 2,
   "workTypes":
   {
-      "bread":
+      "cream":
       {
           "minLevel": 1,
-          "timeToFinish": 20,
+          "timeToFinish": 600,
           "items":
           {
-              "wheat": 3
+              "milk": 1
           },
           "products":
           {
-              "bread": 1
+              "cream": 1
+          }
+      },
+      "butter":
+      {
+          "minLevel": 2,
+          "timeToFinish": 900,
+          "items":
+          {
+              "milk": 2
+          },
+          "products":
+          {
+              "butter": 1
+          }
+      },
+      "cheese":
+      {
+          "minLevel": 3,
+          "timeToFinish": 1800,
+          "items":
+          {
+              "milk": 3
+          },
+          "products":
+          {
+              "cheese": 1
           }
       }
   },
   "upgradesPrice":
   [
-      100, 200
+      1000, 4000
   ]
 }

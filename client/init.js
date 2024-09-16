@@ -8,7 +8,7 @@ class SocketClient{
     constructor()
     {
         this.requestQueue = new Array()
-        this.socket = new WebSocket('ws:localhost:8000');
+        // this.socket = new WebSocket('ws:192.168.123.1:8000');
         this.gameSessionPromiseResolve = null;
         this.gameSessionPromise = new Promise((resolve) => {
             this.gameSessionPromiseResolve = resolve;
@@ -17,23 +17,23 @@ class SocketClient{
       //   console.log('WebSocket connection established');
       //   this.flushQueue();
       // };
-        this.socket.onmessage = (m) => {
-            const data = JSON.parse(m.data)
-            console.log(data)
+        // this.socket.onmessage = (m) => {
+        //     const data = JSON.parse(m.data)
+        //     console.log(data)
 
-            if (data.dataType == "game-session") 
-            {
-                this.initGameSession(data)
-            }
-            else if (data.dataType == "game-session-regen")
-            {
-                this.regenPlayer(data)
-            }
-            else if (data.dataType == "result-code")
-            {
-                this.handleResultCode(data.code)
-            }
-        }
+        //     if (data.dataType == "game-session") 
+        //     {
+        //         this.initGameSession(data)
+        //     }
+        //     else if (data.dataType == "game-session-regen")
+        //     {
+        //         this.regenPlayer(data)
+        //     }
+        //     else if (data.dataType == "result-code")
+        //     {
+        //         this.handleResultCode(data.code)
+        //     }
+        // }
   }
   // flushQueue() {
   //   while (this.requestQueue.length > 0 && this.socket.readyState === WebSocket.OPEN) {
@@ -134,13 +134,13 @@ class SocketClient{
       this.requestQueue.shift()
   }
   send(request) {
-    if (this.socket.readyState === WebSocket.OPEN) {
-        this.socket.send(request);
-        if (request.split('/')[0] != 'connect'){// и реген
-          this.requestQueue.push(request);
-        }
-        console.log(this.requestQueue)
-    }
+    // if (this.socket.readyState === WebSocket.OPEN) {
+    //     this.socket.send(request);
+    //     if (request.split('/')[0] != 'connect'){// и реген
+    //       this.requestQueue.push(request);
+    //     }
+    //     console.log(this.requestQueue)
+    // }
   }
   	regenPlayer(data){
 		player._inventory = data.player.Inventory.map
@@ -149,15 +149,16 @@ class SocketClient{
 		player._money = data.player.money
 		player.updateMoney()
 
-      // player._spinItems = data.player.spin.items
-      // player._isSpinActivated = data.player.spin.activated
-      // player._spinTimeStamp = data.player.spin.generateTimeStamp
-      // for (const i in player._spinItems) {
-      //     if (player._spinItems[i].item == data.player.spin.drop.item && player._spinItems[i].amount == data.player.spin.drop.amount){
-      //         player._spinDropIndex = i
-      //         break
-      //     }
-      // }
+        player._spinItems = data.player.spin.items
+        player._isSpinActivated = data.player.spin.activated
+        player._spinTimeStamp = data.player.spin.generateTimeStamp
+        for (let i = 0; i < player._spinItems.length; i++) {
+            const el = player._spinItems[i];
+            if (el.item == data.player.spin.drop.item && el.amount == data.player.spin.drop.amount){
+                player._spinDropIndex = i
+                break
+            }
+        }
       	player._orderArr = data.player.orders
   	}
   	initGameSession(data){
@@ -199,6 +200,22 @@ class Init {
     async initMap(){
         const Tile = (await import("./gameClasses/tile/tile.js")).default;
 
+        const loadText = async (url) => {
+            const response = await fetch(url);
+            if (!response.ok) {
+              throw new Error('Network response was not ok ' + response.statusText);
+            }
+            const text = await response.text();
+            const lines = text.split('\n');
+            const mapArray = lines.map(line => 
+                line.trim().split(' ').map(Number)
+            );
+            const transposedArray = mapArray[0].map((_, colIndex) => mapArray.map(row => row[colIndex]));
+
+            return transposedArray;
+        };
+        
+        const map = await loadText(`client/assets/map/map.txt`);
         for (let i = 0; i < CVAR.tileRows; i++) {
             tiles[i] = new Array(CVAR.tileCols);
         }
@@ -207,15 +224,21 @@ class Init {
             for (let j = 0; j < CVAR.tileCols; j++)
             {
                 let tileCoords = Calc.indexToCanvas(i, j, CVAR.tileSide, CVAR.outlineWidth);
-                tiles[i][j] = new Tile(tileCoords.x, tileCoords.y, CVAR.tileSide, CVAR.tileSide, ((i + j) % 2) ? RES.map["grass_1"].image : RES.map["grass_2"].image);
+                // let tileCoords = {
+                //   x: i * CVAR.tileSide,
+                //   y: j * CVAR.tileSide
+                // }
+                // tiles[i][j] = new Tile(tileCoords.x, tileCoords.y, CVAR.tileSide, CVAR.tileSide, RES.map[(i + j) % 2]);
+                tiles[i][j] = new Tile(tileCoords.x, tileCoords.y, CVAR.tileSide, CVAR.tileSide, RES.map[map[i][j]]);
             }
         }
 
-        socketClient.send(`connect/2357285`)
+        // socketClient.send(`connect/` + Math.ceil(Date.now() / 10000))
+        socketClient.send(`connect/2357287`)
 
         console.log("map loaded")
 
-        await socketClient.gameSessionPromise;
+        // await socketClient.gameSessionPromise;
         console.log("Game session initialized");
     }
 
@@ -244,14 +267,53 @@ class Init {
       };
   
       const loadMapImages = async () => {
-        const promises = RES.mapImgNames.map(async (name) => {
-          const img = await loadImage(`client/assets/map/${name}.png`);
-          RES.map[name] = {}
-          RES.map[name].image = img;
-        });
-        await Promise.all(promises);
-        console.log('All map images loaded');
-      };
+        function loadImage(src) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = reject;
+                img.src = src;
+            });
+        }
+        
+        // Функция для создания canvas с определенными размерами
+        function createCanvas(width, height) {
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            return canvas;
+        }
+        
+        // Функция для разбиения изображения на блоки 16x16
+        async function splitImageToBlocks(imageSrc) {
+            const img = await loadImage(imageSrc);
+            const blocks = [];
+            const blockSize = 16;
+        
+            const canvas = createCanvas(blockSize, blockSize);
+            const ctx = canvas.getContext('2d');
+        
+            const cols = img.width / blockSize;
+            const rows = img.height / blockSize;
+        
+            for (let y = 0; y < rows; y++) {
+                for (let x = 0; x < cols; x++) {
+                    ctx.clearRect(0, 0, blockSize, blockSize);
+                    ctx.drawImage(img, x * blockSize, y * blockSize, blockSize, blockSize, 0, 0, blockSize, blockSize);
+    
+                    const blockImg = new Image();
+                    blockImg.src = canvas.toDataURL();
+                    blocks.push(blockImg);
+                }
+            }
+            console.log(blocks.length)
+            blocks.push(await loadImage(`client/assets/map/Water_1.png`));
+        
+            return blocks;
+        }
+
+        RES.map = await splitImageToBlocks(`client/assets/map/Grass.png`)
+      }
   
       const loadAssets = async (type, name) => {
         const data = await loadJson(`client/assets/${name}/${name}.json`);

@@ -6,14 +6,23 @@ class Orders {
     constructor() {
         this.renderOrders();
         document.getElementById("closeOrders").onclick = () => {
-            document.getElementById("orders-wrap").style.display = "none";
+            this.close()
         }
         document.getElementById("open-orders").onclick = () => {
             GVAR.closeAllWindows()
             document.getElementById("orders-wrap").style.display = "flex";
+            this.chosenOrder = 'none'
+            this._intervalId = setInterval(() => {
+                this.showOrderDetails()
+            }, 1000);
             this.renderOrders();
         }
-        this.isShowTimer = false
+        this.chosenOrder = 'none'
+    }
+    close(){
+        this.chosenOrder = 'none'
+        clearInterval(this._intervalId)
+        document.getElementById("orders-wrap").style.display = "none";
     }
     verifyOrder(order) {
         for (let item in order.orderItems) {
@@ -23,26 +32,27 @@ class Orders {
     }
     completeOrder(order) {
         if (this.verifyOrder(order)) {
-            player._orderArr[order.index].timeStamp = Math.floor(Date.now()/1000) + 120
+            order.timeStamp = Math.floor(Date.now()/1000) + 150
+            socketClient.send(`order/complete/${order.index}`)
+            socketClient.send(`regen`)
             player._money += order.orderPrice;
             player.updateMoney();
             for (let item in order.orderItems) {
                 player._inventory[item] -= order.orderItems[item]; 
             }
-            this.showTimer(order);
             this.renderOrders();
             document.getElementById('order-details').innerHTML = "";
-            socketClient.send(`order/complete/${order.index}`)
-            // socketClient.send(`regen`)
+            console.log('now', Math.floor(Date.now()/1000))
         }
     }
-
     rerollOrder(order){
-        player._orderArr[order.index].timeStamp = Math.floor(Date.now()/1000) + 120 //60-sec
+        order.timeStamp = Math.floor(Date.now()/1000) + 150
         socketClient.send(`order/reroll/${order.index}`)
-        // socketClient.send(`regen`)
+        socketClient.send(`regen`)
         this.showTimer(order);
         this.renderOrders()
+        console.log('now', Math.floor(Date.now()/1000), this._intervalId)
+        document.getElementById('order-details').innerHTML = "";
     }
     _formatTime(seconds) {
         let hours = Math.floor(seconds / 3600);
@@ -72,14 +82,15 @@ class Orders {
         else
             this.showOrderDetails(order)
     }
-    showOrderDetails(order) {
-        console.log(order.timeStamp, Math.floor(Date.now()/1000))
+    showOrderDetails() {
+        console.log(this._intervalId)
+        const order = this.chosenOrder
+        if (order === 'none')
+            return
+        console.log(order.timeStamp , Math.floor(Date.now()/1000))
         if (order.timeStamp > Math.floor(Date.now()/1000)){
-            this.isShowTimer = true
             this.showTimer(order)
             return
-        } else {
-            this.isShowTimer = false
         }
         const orderDetails = document.getElementById('order-details');
         orderDetails.innerHTML = "";
@@ -127,9 +138,8 @@ class Orders {
         orderDetails.appendChild(completeButton);
         orderDetails.appendChild(rerollButton);
     }
-
     renderOrders() {
-        console.log('order')
+        console.log(player._orderArr)
         const ordersList = document.getElementById('orders-list');
         ordersList.innerHTML = "";
         for (let i in player._orderArr) {
@@ -140,7 +150,8 @@ class Orders {
             order.style.backgroundImage = `url(client/assets/pizdec/pizdec.png)`; // Устанавливаем фоновое изображение
 
             order.onclick = () => {
-                this.showOrderDetails(ord);
+                this.chosenOrder = ord
+                this.showOrderDetails();
             };
 
             ordersList.appendChild(order);

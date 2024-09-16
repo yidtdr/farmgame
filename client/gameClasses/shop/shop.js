@@ -20,7 +20,6 @@ class Shop{
                 }, 450);
             }
         });
-        this.drawBuildingShop();
 
         document.getElementById("buy-building").onclick = () => {
             this.drawBuildingShop();
@@ -47,6 +46,7 @@ class Shop{
             slidableDiv.classList.remove('slide-out');
             GVAR.closeAllWindows();
             document.getElementById("shop-wrap").style.display = "flex";
+            this.drawBuildingShop();
         }        
 
         document.getElementById("closeStash").onclick = () => {
@@ -67,25 +67,57 @@ class Shop{
             img.className = "item-image"
             const price = document.createElement('h3');
             price.innerText = `${RES.buildings[building].price}$`;
-            shopItem.appendChild(img)
-            shopItem.appendChild(price)
-            shopItem.addEventListener("touchstart", function(e) {
-                document.getElementById("shop-wrap").style.display = "none";
-                player._phantomStructure = {
-                    cost: RES.buildings[building].price,
-                    structureType: 'building'
+    
+            // Создаем элемент для выпадающего описания
+            const description = document.createElement('div');
+            description.className = 'description';
+            description.innerText = 'описание'
+            description.style.display = 'none'; // изначально скрыто
+    
+            // Создаем стрелочку для открытия описания
+            const arrow = document.createElement('span');
+            arrow.innerText = '↓'; // символ стрелочки
+            arrow.className = 'description-arrow';
+    
+            // Добавляем обработчик для стрелочки
+            arrow.addEventListener('click', function() {
+                if (description.style.display === 'none') {
+                    description.style.display = 'block';
+                    arrow.innerText = '↑'; // меняем стрелочку на вверх
+                } else {
+                    description.style.display = 'none';
+                    arrow.innerText = '↓'; // меняем стрелочку на вниз
                 }
-                let pos = Calc.indexToCanvas(mouse._mapPos.i, mouse._mapPos.j, CVAR.tileSide, CVAR.outlineWidth)
-                player._phantomStructure.structure = new Phantom(pos.x, pos.y, RES.buildings[building].size, building, RES.buildings[building].image)
-                player._phantomStructure.structure._isMoving = true
-                GVAR.phantomStructureArr.push(player._phantomStructure.structure)
-                mouse._isDragging = true
-                mouse.onMouseMove(e)
             });
+    
+            shopItem.appendChild(img);
+            shopItem.appendChild(price);
+            shopItem.appendChild(arrow); // добавляем стрелочку
+            shopItem.appendChild(description); // добавляем описание
+    
+            // Проверка лимита здания
+            if (GVAR.countBuilding(building) < RES.buildings[building].mapLimit) {
+                img.addEventListener("touchstart", function(e) {
+                    document.getElementById("shop-wrap").style.display = "none";
+                    player._phantomStructure = {
+                        cost: RES.buildings[building].price,
+                        structureType: 'building'
+                    };
+                    let pos = Calc.indexToCanvas(mouse._mapPos.i, mouse._mapPos.j, CVAR.tileSide, CVAR.outlineWidth);
+                    player._phantomStructure.structure = new Phantom(pos.x, pos.y, RES.buildings[building].size, building, RES.buildings[building].image);
+                    player._phantomStructure.structure._isMoving = true;
+                    GVAR.phantomStructureArr.push(player._phantomStructure.structure);
+                    mouse._isDragging = true;
+                    mouse.onMouseMove(e);
+                });
+            } else {
+                img.style.filter = 'grayscale(100%)';
+            }
+    
             shopItem.className = "shop-item";
             shop.appendChild(shopItem);
         });
-    }
+    }    
     drawPlantShop(){
         const shop = document.getElementById('shop-list');
         shop.innerHTML = '';

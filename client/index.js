@@ -6,7 +6,10 @@ import camera from './gameClasses/controller/camera.js';
 import shop from './gameClasses/shop/shop.js';
 import player from './gameClasses/player/player.js';
 import { spin } from './gameClasses/spin/spin.js';
+import { buisnessMenu } from './gameClasses/buisness/buisnessMenu.js';
 import { orderManager } from './gameClasses/orders/orders.js';
+import boosterMenu from './gameClasses/boosterMenu/boosterMenu.js';
+// import { dealmenu } from './gameClasses/ton-connect/tonMenu.js';
 import { buildingMenu } from './gameClasses/building/buildingMenu.js';
 import { animalMenu } from './gameClasses/animals/animalMenu.js';
 import { fieldMenu } from './gameClasses/field/fieldMenu.js';
@@ -17,11 +20,6 @@ import RES from './resources.js';
 // tiles[1][1].createBuilding('cranberry')
 // tiles[10][10].createBuilding('barn')
 // tiles[1][6].createBuilding('coop')
-
-document.getElementById('booster').onclick = () => {
-    player.activateBooster()
-    GVAR.activateBooster()  
-};
 
 // Ensure the document is scrollable
 function ensureDocumentIsScrollable() {
@@ -153,7 +151,7 @@ setInterval(() => {
     })
 }, 100);
 
-function animate(delta){
+async function animate(delta){    
     if (mouse._isOnBorder){
         camera.newMove(mouse._dirX * 1.5, mouse._dirY * 1.5)
         let pos = {
@@ -175,6 +173,11 @@ function animate(delta){
         ctx.translate(-pos.x, -pos.y);
         ctx.scale(GVAR.scale, GVAR.scale);
 
+        ctx.drawImage(RES.buildings['garden'].image, -15, -15, 15, 1000);
+        ctx.drawImage(RES.buildings['garden'].image, -15, -15, 1000, 15);
+        for (let i = 0; i < 10; i++) {
+            ctx.drawImage(RES.map[77], -15 + i*16, -15, 16, 16);
+        }
         const drawBoundingBox = camera.getBoundingBox();
         for (let i = drawBoundingBox.left; i < drawBoundingBox.right; i++)
         {

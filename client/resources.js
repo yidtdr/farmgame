@@ -5,11 +5,11 @@ class Resources {
     this.items = {};
     this.animals = {};
     this.obstacles = {};
-    this.map = {};
+    this.map = new Array();
     this.names = {};
     this.buildingNames = {}
-    this.names.buildings = ["garden", "coop", 'cranberry','barn', "bakery", 'crusher', 'dairy', 'juicer', 'loom', 'pie_oven', 'popcorn_maker', 'sugar_factory'];
-    this.buildingNames.bakery = ["bakery", 'crusher', 'dairy', 'juicer', 'loom', 'pie_oven', 'popcorn_maker', 'sugar_factory']
+    this.names.buildings = ["garden", "coop", 'cranberry','barn', "bakery", 'crusher', 'dairy', 'juicer', 'loom', 'oven', 'popcorn_maker', 'sugar_factory'];
+    this.buildingNames.bakery = ["bakery", 'crusher', 'dairy', 'juicer', 'loom', 'oven', 'popcorn_maker', 'sugar_factory']
     this.buildingNames.garden = ["garden"]
     this.buildingNames.animalPen = ["coop"]
     this.buildingNames.bush = ['cranberry']

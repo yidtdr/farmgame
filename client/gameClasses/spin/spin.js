@@ -4,11 +4,11 @@ import socketClient from "../../init.js";
 
 class Spin {
     constructor() {
-        this.sectors = player._spinItems.length;
-
         document.getElementById('spin-button').onclick = () => {
-            this.doSpin()
-            socketClient.send('spin')
+            if (!player._isSpinActivated){
+                this.doSpin()
+                socketClient.send('spin')
+            }
         }
         
         document.getElementById("closeSpin").onclick = () => {
@@ -20,18 +20,16 @@ class Spin {
         }
     }
     open(){
-        this.renderSpin(this.sectors);
+        this.renderSpin();
         document.getElementById("spin-wrap").style.display = "flex";
     }
     doSpin(){
         const container = document.getElementById('spin-container');
-        let number = Math.ceil(360 - (Math.random()*180/this.sectors + player._spinDropIndex*360/this.sectors) + 360);
-        // this.topSector = 0.5
+        let number = Math.ceil(360 - (Math.random()*180/player._spinItems.length + player._spinDropIndex*360/player._spinItems.length) + 360);
         container.style.transform = `rotate(${number}deg)`;
         container.style.transform = `rotate(${number}deg)`;
         console.log(player._spinItems[player._spinDropIndex])
         player.pushInventory(player._spinItems[player._spinDropIndex].item,player._spinItems[player._spinDropIndex].amount)
-        // this.topSector = (0.5 - ((number / (360/this.sectors)) % this.sectors) + this.sectors);
     }
     getRandomColor() {
         var letters = '0123456789ABCDEF';
@@ -41,9 +39,10 @@ class Spin {
         }
         return color;
     }
-    renderSpin(size){
+    renderSpin(){
         const spin = document.getElementById('spin-container');
         spin.innerHTML = ""
+        const size = player._spinItems.length
         let h = 150; // половина ширины рулетки (радиус)
         for (let index = 0; index < size; index++) {
             const elem = document.createElement("div")

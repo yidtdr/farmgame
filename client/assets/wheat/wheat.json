@@ -1,6 +1,6 @@
 {
   "name": "wheat",
-  "growTime": 60,
+  "growTime": 10,
   "moneyReward": 5,
   "shopCost": 3,
   "collectAmount": 2,

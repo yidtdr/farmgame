@@ -12,6 +12,14 @@ class GlobalVars{
         this.rescale = true
         this.redraw = true;
     }
+    countBuilding(type){
+        let counter = 0
+        this.buildableArr.forEach(el => {
+            if (el._type === type)
+                counter += 1
+        });
+        return counter
+    }
     addBuilding(item){
         let index = this.buildableArr.findIndex(element => element._y > item._y);
     

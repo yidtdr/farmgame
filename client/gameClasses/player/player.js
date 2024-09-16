@@ -2,11 +2,12 @@ class Player{
     constructor()
     {
         this._money = 100;
+        this._cryptoMoney = 10000;
         this._chosenTile = {i: -1, j: -1};
         this._inventory = new Array();
         this._inventorySize = 50;
         this._maxOrderAmount = 6;
-        this._ordersArr = new Array();
+        this._orderArr = new Array();
         this._networth = 0;
         this._phantomStructure = "none";
         this._spinItems = new Array();
@@ -32,6 +33,19 @@ class Player{
             timeStamp: 0,
             timeToEnd: 0
         }
+
+        this._boostersArr = [{
+            type: 'WorkSpeed',
+            time: 6000,
+            amount: 10
+        },
+        {
+            type: 'WorkSpeed',
+            time: 6000,
+            amount: 10
+        }
+    ]
+
     }
     upgradeInventory(){
         this._inventorySize += 10 //временное
@@ -39,13 +53,16 @@ class Player{
     }
     canActivateBooster(id){
         let boost = this._boostersArr[id]
+        let result = true
         this._activBoostersArr.forEach(booster => {
             if (boost.type == booster.type)
-                return false
+                result = false
         });
+        return result
     }
     activateBooster(id){
         let boost = this._boostersArr[id]
+        console.log(boost)
         this._boostersArr.splice(id, 1)
         if (boost.type == 'WorkSpeed'){
             this._workBooster.boosterAmount = boost.amount

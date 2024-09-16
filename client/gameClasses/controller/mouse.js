@@ -79,9 +79,6 @@ class Mouse{
             }
 
             el.move(pos)
-            if (this._isOnBorder){
-
-            }
         })
     }
     onMouseDown(e)
@@ -103,6 +100,7 @@ class Mouse{
                     GVAR.redraw = true;
                     this._isDragging = true;
                     el._prevPosition = Calc.CanvasToIndex(el._x, el._y, CVAR.tileSide, CVAR.outlineWidth);
+                    console.log(el._prevPosition, el._x, el._y)
                     GVAR.phantomStructureArr.push(el)
                 }
             }   
@@ -138,6 +136,7 @@ class Mouse{
             if (el._isMoving)
             {
                 if (el._x>=0 && el._y>=0 && tiles[this._mapPos.i][this._mapPos.j].isCanPut(el)){
+                    console.log(el._prevPosition.i, el._prevPosition.j)
                     tiles[el._prevPosition.i][el._prevPosition.j].moveStructure(this._mapPos)
                 }
                 else {
@@ -166,22 +165,12 @@ class Mouse{
     }
     onClick()
     {
-        let Clicked = false;
-        GVAR.UI.forEach((el) => {
-            el.checkRectHover();
-            if (el._hovered)
-            {
-                el.onClick();
-                Clicked = true;
-            }
-        })
+        if (this._mapPos.i<0 || this._mapPos.j<0)
+            return
         player._chosenTile = {
             i: this._mapPos.i,
             j: this._mapPos.j,
         }
-        if (Clicked)
-        {return};
-
         if (tiles[player._chosenTile.i][player._chosenTile.j]._structure != "none"){
             player._lastStructure = tiles[player._chosenTile.i][player._chosenTile.j]._structure
             tiles[player._chosenTile.i][player._chosenTile.j]._structure.onClick();

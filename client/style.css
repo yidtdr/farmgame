@@ -30,7 +30,7 @@ body{
 #canvas{
     position: absolute;
     image-rendering: pixelated;
-    background: darkblue;
+    background: rgb(192, 212, 112);
     width: 100%;
     height: 100%;
 }
@@ -85,6 +85,7 @@ body{
     display: flex;
     flex-direction: column; /* Располагаем содержимое shop-item вертикально */
     align-items: center; /* Центрируем содержимое по горизонтали */
+    margin-bottom: 10px;
 }
 .slide-out { /* для плавного закрытия shop */
     transform: translateX(-100%);
@@ -130,7 +131,7 @@ body{
     height: 5vh;
     font-family: VCR;
 }
-#shop-wrap, #stash-wrap, #spin-wrap, #building-menu-wrap, #animal-menu-wrap, #field-menu-wrap, #bush-menu-wrap, #booster-menu-wrap, #obstacle-menu-wrap{
+#shop-wrap, #stash-wrap, #spin-wrap, #building-menu-wrap, #animal-menu-wrap, #field-menu-wrap, #bush-menu-wrap, #booster-menu-wrap, #obstacle-menu-wrap, #buisness-menu-wrap, #deals-wrap, #payment-wrap{
     width: 100%;
     height: 100%;
     position: absolute;
@@ -140,13 +141,13 @@ body{
     z-index: 50;
     background-color: rgba(255, 255, 255, 0.244)
 }
-#stash, #spin, #building-menu, #animal-menu, #field-menu, #bush-menu, #booster-menu, #obstacle-menu{
+#stash, #spin, #building-menu, #animal-menu, #field-menu, #bush-menu, #booster-menu, #obstacle-menu, #buisness-menu, #deals, #payments{
     background-color: aliceblue;
     width: 80%;
     height: 80%;
     overflow-y: scroll;
 }
-#closeShop, #closeStash, #closeSpin, #close-building-menu, #buy-building, #buy-plant, #close-animal-menu, #buy-animal, #close-field-menu, #close-bush-menu, #close-booster-menu, #close-obstacle-menu{
+#closeShop, #closeStash, #closeSpin, #close-building-menu, #buy-building, #buy-plant, #close-animal-menu, #buy-animal, #close-field-menu, #close-bush-menu, #close-booster-menu, #close-obstacle-menu, #close-buisness-menu{
     float: right;
     border: none;
     background-color: rgb(225, 75, 75);
@@ -155,7 +156,7 @@ body{
     height: 5vh;
     font-family: VCR;
 }
-#stash-bar, #building-menu-bar, #animal-menu-bar, #field-menu-bar, #bush-menu-bar, #booster-menu-bar, #obstacle-menu-bar{
+#stash-bar, #building-menu-bar, #animal-menu-bar, #field-menu-bar, #bush-menu-bar, #booster-menu-bar, #obstacle-menu-bar, #buisness-menu-bar, #deals-bar, #payment-bar{
     width: 100%;
     height: 5vh;
 }
@@ -484,4 +485,133 @@ body{
     background-color: #ccc; /* Серый фон, когда кнопка отключена */
     color: #666; /* Темно-серый текст */
     cursor: not-allowed; /* Курсор указывает, что кнопка неактивна */
+}
+
+/*   БИЗНЕСЫ    */
+.businesses {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+}
+
+.business {
+    width: 150px;
+    height: 100px;
+    background-color: lightgray;
+    border: 2px solid gray;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.business.locked {
+    background-color: darkgray;
+    cursor: not-allowed;
+}
+
+#money-display {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    background-color: white;
+    border: 1px solid gray;
+    padding: 20px;
+    z-index: 1000;
+}
+
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+button {
+    margin: 10px;
+}
+
+button:disabled {
+    background-color: lightgray;
+    cursor: not-allowed;
+}
+
+.close {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+}
+
+#timer {
+    font-weight: bold;
+    color: red;
+    margin-top: 10px;
+}
+
+
+.line-with-text {
+    display: flex;                 /* Enables flexbox for alignment */
+    align-items: center;           /* Centers text vertically */
+    text-align: center;            /* Aligns text to the center */
+    width: 100%;
+  }
+.line-with-text > span {
+    color: black;
+}
+  .line-with-text::before,
+  .line-with-text::after {
+    content: "";                   /* Creates pseudo-element */
+    flex: 1;                       /* Distributes space on both sides */
+    border-bottom: 1px solid #000; /* Draws the line */
+  }
+  
+  .line-with-text::before {
+    margin-right: 10px;            /* Spacing between line and text */
+  }
+  
+  .line-with-text::after {
+    margin-left: 10px;             /* Spacing between text and line */
+  }
+  
+  .line-with-text span {
+    padding: 0 10px;               /* Adds padding around the text */
+  }
+  
+#ton-connect {
+    display: flex;
+    flex-direction: column;
+    height: 20%;
+    justify-content: center;
+    align-items: center;
+}
+
+h3 {
+    text-align: center;
+}
+
+#balance-wrap {
+    display: inline-flex;
+}
+#ton-wrap, #usdt-wrap {
+    display: flex;
+    flex-direction: row;
+}
+
+.description { /* описание здания */
+    margin-top: 10px;
+    font-size: 14px;
+    color: gray;
+}
+.description-arrow {
+    cursor: pointer;
+    font-size: 16px;
+    margin-left: 10px;
 }
