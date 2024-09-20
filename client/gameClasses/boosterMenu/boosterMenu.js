@@ -1,6 +1,7 @@
 import player from "../player/player.js";
-import GVAR from "../../globalVars/global.js";
 import socketClient from "../../init.js";
+import RES from "../../resources.js";
+import GVAR from "../../globalVars/global.js";
 
 class BoosterMenu{
     constructor() {
@@ -51,7 +52,7 @@ class BoosterMenu{
             amount.innerText = 'x' + booster.boosterAmount
             amount.className = 'drop-list-text' // в будущем изменить
             const time = document.createElement('h3')
-            time.innerText = this._formatTime(booster.timeToEnd)
+            time.innerText = this._formatTime(Math.floor(booster.timeToEnd / 1000))
             time.className = 'drop-list-text' // в будущем изменить
 
             activBooster.appendChild(name)
@@ -94,7 +95,19 @@ class BoosterMenu{
             button.addEventListener('click', () => {
                 player.activateBooster(i)
                 socketClient.send(`activateb/${i}`)
-                if (booster.type == 'OrderMoney')
+                if (booster.type == 'WorkSpeed'){
+                    GVAR.buildableArr.forEach(el => {
+                        if (RES.buildingNames.bakery.includes(el._type) || RES.buildingNames.animalPen.includes(el._type)){
+                            el.activateBooster()
+                        }
+                    });
+                } else if (booster.type == 'GrowSpeed'){
+                    GVAR.buildableArr.forEach(el => {
+                        if (el._type=="garden" || RES.buildingNames.bush.includes(el._type)){
+                            el.activateBooster()
+                        }
+                    });
+                } else if (booster.type == 'OrderMoney')
                     socketClient.send(`regen`)
                 this.drawMenu()
             });

@@ -115,6 +115,12 @@ class Mouse{
                     socketClient.send(`place/${player._phantomStructure.structure._type}/${mouse._mapPos.i}/${mouse._mapPos.j}`)
                     player._money -= player._phantomStructure.cost
                     player.updateMoney()
+                    if (RES.buildingNames.bakery.concat(RES.buildingNames.animalPen).includes(player._phantomStructure.structure._type)){
+                        RES.buildings[player._phantomStructure.structure._type].price *= 100
+                    } else if (player._phantomStructure.structure._type == 'garden'){
+                        RES.buildings['garden'].floatPrice *= 1.1
+                        RES.buildings['garden'].price = Math.floor(RES.buildings['garden'].floatPrice)
+                    }
                     player._phantomStructure = "none"
                 }else if (player._phantomStructure.structureType == 'animal' && RES.buildingNames.animalPen.includes(tiles[mouse._mapPos.i][mouse._mapPos.j]._structure._type) && tiles[mouse._mapPos.i][mouse._mapPos.j]._structure.canAddAnimal(player._phantomStructure.structure._type)){
                     tiles[mouse._mapPos.i][mouse._mapPos.j]._structure.addAnimal()

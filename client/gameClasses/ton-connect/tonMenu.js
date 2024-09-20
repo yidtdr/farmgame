@@ -1,66 +1,10 @@
+import socketClient from "../../init.js";
+import player from "../player/player.js";
+
 const tonweb = new window.TonWeb();
 
 const WALLET_ADRESS = "UQAr2S7H-w148h9N97NI17bqSW8v9TLV8V7Scp60KiM4fewU";
 const TELEGRAM_ID = "1770661619"
-
-const availibleDeals = JSON.parse(`{
-    "Deal_test_1": {
-        "name": "Deal_test_1",
-        "tonPrice": 500000,
-        "reward": {
-            "token": 2000000001,
-            "boosters": [
-                {
-                    "boosterType": "WorkSpeed",
-                    "percentage": 20,
-                    "time": 100
-                }
-            ]
-        }
-    },
-    "Deal_test_2": {
-        "name": "Deal_test_2",
-        "reward": {
-            "token": 2000000001,
-            "boosters": [
-                {
-                    "boosterType": "WorkSpeed",
-                    "percentage": 20,
-                    "time": 100
-                },
-                {
-                    "boosterType": "WorkSpeed",
-                    "percentage": 50,
-                    "time": 1000
-                }
-            ]
-        }
-    },
-    "Deal_test_3": {
-        "name": "Deal_test_3",
-        "tonPrice": 500000,
-        "reward": {
-            "token": 2000000001,
-            "boosters": [
-                {
-                    "boosterType": "OrderItems",
-                    "percentage": 80,
-                    "time": 100
-                },
-                {
-                    "boosterType": "OrderMoney",
-                    "percentage": 200,
-                    "time": 100
-                },
-                {
-                    "boosterType": "GrowSpeed",
-                    "percentage": 200,
-                    "time": 100
-                }
-            ]
-        }
-    }
-}`)
 
 class PayMenu {
     constructor() {
@@ -83,6 +27,10 @@ class PayMenu {
 
         document.getElementById('open-connect').onclick = () => {
             document.getElementById("payment-wrap").style.display = 'flex';
+        }
+        document.getElementById('close-payments').onclick = () => {
+            document.getElementById("payment-wrap").style.display = 'none';
+            document.getElementById("deals-wrap").style.display = "flex";
         }
     }
 
@@ -169,31 +117,53 @@ class DealsMenu
     drawDealsMenu() {
         const dealsWrap = document.getElementById("deals-list");
 
-        for (const dealKey in availibleDeals) {
-            const deal = availibleDeals[dealKey];
-
+        for (const dealKey in player._availableDeals) {
+            const deal = player._availableDeals[dealKey];
+    
             const dealDiv = document.createElement("div");
             dealDiv.className = "deal";
-            
-            let dealContent = `<h3>${deal.name}</h3>`;
-            
-            if (deal.tonPrice) {
-                dealContent += `<p>Price: ${deal.tonPrice} TON</p>`;
-            }
-
-            dealContent += `<p>Token: ${deal.reward.token}</p>`;
-            dealContent += `<h4>Boosters:</h4><ul>`;
-
+                
+            let dealContent = `
+                <h3>${deal.name}</h3>
+                ${deal.tonPrice ? `<div class="deal-price">Price: ${deal.tonPrice} TON</div>` : ''}
+                ${deal.usdtPrice ? `<div class="deal-price">Price: ${deal.usdtPrice} USDT</div>` : ''}
+                <div class="deal-token">Token: ${deal.reward.token}</div>
+                <h4>Boosters:</h4>
+                <ul class="booster-list">`;
+    
             for (const booster of deal.reward.boosters) {
-                dealContent += `<li>Type: ${booster.boosterType}, Percentage: ${booster.percentage}%, Time: ${booster.time}s</li>`;
+                dealContent += `
+                    <li>
+                        <span>Type: ${booster.boosterType}</span>, 
+                        <span>Percentage: ${booster.percentage}%</span>, 
+                        <span>Time: ${booster.time}s</span>
+                    </li>`;
             }
-
+    
             dealContent += `</ul>`;
-
+    
+            // Вставляем содержимое в dealDiv
             dealDiv.innerHTML = dealContent;
+    
+            const canAfford = (deal.tonPrice && player._tonBalance >= deal.tonPrice) ||
+                              (deal.usdtPrice && player._usdtBalance >= deal.usdtPrice);
+            // Создание кнопки через createElement
+            const buyButton = document.createElement("button");
+            buyButton.className = "deal-button";
+            buyButton.textContent = "Купить";
+            buyButton.disabled = !canAfford;  // Активность кнопки зависит от canAfford
+            buyButton.onclick = () => {
+                socketClient.send(`buydeal/${dealKey}`)
+                socketClient.send(`regen`)
+            }
+            // Добавление кнопки в dealDiv
+            dealDiv.appendChild(buyButton);
+    
+            // Добавление блока сделки в dealsWrap
             dealsWrap.appendChild(dealDiv);
         }
-    }
+    }    
+    
 }
 
 export const dealmenu = new DealsMenu();

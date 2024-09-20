@@ -3,6 +3,8 @@ class Player{
     {
         this._money = 100;
         this._cryptoMoney = 10000;
+        this._tonBalance = 1000000000
+        this._usdtBalance = 1000000000
         this._chosenTile = {i: -1, j: -1};
         this._inventory = new Array();
         this._inventorySize = 50;
@@ -16,6 +18,7 @@ class Player{
         this._spinTimeStamp = 0
         this._boostersArr = new Array()
         this._activBoostersArr = new Array()
+        this._availableDeals = new Array()
         this._growBooster = {
             type: 'GrowSpeed',
             boosterAmount: 1,
@@ -28,24 +31,7 @@ class Player{
             timeStamp: 0,
             timeToEnd: 0
         }
-        this._moneyBooster = {
-            type: 'OrderMoney',
-            timeStamp: 0,
-            timeToEnd: 0
-        }
-
-        this._boostersArr = [{
-            type: 'WorkSpeed',
-            time: 6000,
-            amount: 10
-        },
-        {
-            type: 'WorkSpeed',
-            time: 6000,
-            amount: 10
-        }
-    ]
-
+        this._boostersArr = []
     }
     upgradeInventory(){
         this._inventorySize += 10 //временное
@@ -66,30 +52,26 @@ class Player{
         this._boostersArr.splice(id, 1)
         if (boost.type == 'WorkSpeed'){
             this._workBooster.boosterAmount = boost.amount
-            this._workBooster.timeToEnd = boost.time
+            this._workBooster.timeToEnd = boost.time * 1000
             this._activBoostersArr.push(this._workBooster)
         } else if (boost.type == 'GrowSpeed'){
             this._growBooster.boosterAmount = boost.amount
-            this._growBooster.timeToEnd = boost.time
+            this._growBooster.timeToEnd = boost.time * 1000
             this._activBoostersArr.push(this._growBooster)
-        } else if (boost.type == 'OrderMoney'){
-            //запрос на реген идет в кнопке
-            this._moneyBooster.timeToEnd = boost.time
-            this._activBoostersArr.push(this._moneyBooster)
+        } else{ //кажется этот else не нужен из-за reroll
+            boost.boosterAmount = boost.amount
+            boost.timeToEnd = boost.time * 1000
+            console.log(boost.timeToEnd)
+            boost.timeStamp = 0
+            this._activBoostersArr.push(boost)
         }
     }
     realActivateBooster(){
         for (let i = 0; i < this._activBoostersArr.length; i++) {
-            const booster = his._activBoostersArr[i];
+            const booster = this._activBoostersArr[i];
             if (booster.timeStamp == 0){
                 booster.timeStamp = Date.now() + booster.timeToEnd
-                const timer = setInterval(() => {
-                    booster.timeToEnd = (booster.timeStamp - Date.now() > 0 ? (booster.timeStamp - Date.now()) : 0);
-                    if (booster.timeToEnd == 0)
-                        booster.boosterAmount = 1
-                        booster.timeStamp = 0;
-                        clearInterval(timer)
-                }, 1000);
+                console.log(booster.timeToEnd, Date.now() / 1000)
                 break
             }
         }

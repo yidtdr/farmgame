@@ -9,7 +9,7 @@ import { spin } from './gameClasses/spin/spin.js';
 import { buisnessMenu } from './gameClasses/buisness/buisnessMenu.js';
 import { orderManager } from './gameClasses/orders/orders.js';
 import boosterMenu from './gameClasses/boosterMenu/boosterMenu.js';
-// import { dealmenu } from './gameClasses/ton-connect/tonMenu.js';
+import { dealmenu } from './gameClasses/ton-connect/tonMenu.js';
 import { buildingMenu } from './gameClasses/building/buildingMenu.js';
 import { animalMenu } from './gameClasses/animals/animalMenu.js';
 import { fieldMenu } from './gameClasses/field/fieldMenu.js';
@@ -17,9 +17,11 @@ import CVAR from './globalVars/const.js';
 import { bushMenu } from './gameClasses/bush/bushMenu.js';
 import RES from './resources.js';
 
-// tiles[1][1].createBuilding('cranberry')
-// tiles[10][10].createBuilding('barn')
-// tiles[1][6].createBuilding('coop')
+
+import socketClient from './init.js';
+
+socketClient.send('buydeal/Deal_test_1')
+console.log(player._boostersArr)
 
 // Ensure the document is scrollable
 function ensureDocumentIsScrollable() {
@@ -115,7 +117,6 @@ function updateGrow() {
         fieldMenu.renderTimer();
     if (bushMenu.bush != 'none')
         bushMenu.renderTimer();
-
     clearTimeout(growTimer);
     growTimer = setTimeout(updateGrow, 1000 / player._growBooster.boosterAmount);
 }
@@ -135,12 +136,23 @@ function updateWork() {
         buildingMenu.renderQueue();
     if (animalMenu.animalPen != 'none')
         animalMenu.renderMenu();
-
     clearTimeout(workTimer);
-    workTimer = setTimeout(updateWork, 1000 / player._growBooster.boosterAmount);
+    workTimer = setTimeout(updateWork, 1000 / player._workBooster.boosterAmount);
 }
 
-let workTimer = setTimeout(updateWork, 1000 / player._growBooster.boosterAmount);
+let workTimer = setTimeout(updateWork, 1000 / player._workBooster.boosterAmount);
+
+setInterval(() => {
+    player._activBoostersArr.forEach(booster => {
+        booster.timeToEnd = (booster.timeStamp - Date.now() > 0 ? (booster.timeStamp - Date.now()) : 0);
+        if (booster.timeToEnd == 0){
+            console.log('test')
+            booster.boosterAmount = 1
+            booster.timeStamp = 0;
+            player._activBoostersArr = player._activBoostersArr.filter(item => item !== booster);
+        }
+    });
+}, 1000);
 
 //      [ANIMATE]
 

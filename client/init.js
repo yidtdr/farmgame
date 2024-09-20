@@ -3,12 +3,13 @@ import tiles from "./globalVars/tiles.js";
 import Calc from "./calc.js";
 import CVAR from "./globalVars/const.js";
 import player from "./gameClasses/player/player.js";
+import GVAR from "./globalVars/global.js";
 
 class SocketClient{
     constructor()
     {
         this.requestQueue = new Array()
-        // this.socket = new WebSocket('ws:192.168.123.1:8000');
+        this.socket = new WebSocket('ws:localhost:8000');
         this.gameSessionPromiseResolve = null;
         this.gameSessionPromise = new Promise((resolve) => {
             this.gameSessionPromiseResolve = resolve;
@@ -17,23 +18,23 @@ class SocketClient{
       //   console.log('WebSocket connection established');
       //   this.flushQueue();
       // };
-        // this.socket.onmessage = (m) => {
-        //     const data = JSON.parse(m.data)
-        //     console.log(data)
+        this.socket.onmessage = (m) => {
+            const data = JSON.parse(m.data)
+            console.log(data)
 
-        //     if (data.dataType == "game-session") 
-        //     {
-        //         this.initGameSession(data)
-        //     }
-        //     else if (data.dataType == "game-session-regen")
-        //     {
-        //         this.regenPlayer(data)
-        //     }
-        //     else if (data.dataType == "result-code")
-        //     {
-        //         this.handleResultCode(data.code)
-        //     }
-        // }
+            if (data.dataType == "game-session") 
+            {
+                this.initGameSession(data)
+            }
+            else if (data.dataType == "game-session-regen")
+            {
+                this.regenPlayer(data)
+            }
+            else if (data.dataType == "result-code")
+            {
+                this.handleResultCode(data.code)
+            }
+        }
   }
   // flushQueue() {
   //   while (this.requestQueue.length > 0 && this.socket.readyState === WebSocket.OPEN) {
@@ -42,106 +43,106 @@ class SocketClient{
   //   }
   //   console.log(this.requestQueue[0])
   // }
-  _decipherRequest(request) {
-    let parts = request.split('/');
+    _decipherRequest(request) {
+        let parts = request.split('/');
 
-    let requestType = parts[0];
-    let result = { requestType: requestType };
+        let requestType = parts[0];
+        let result = { requestType: requestType };
 
-    switch (requestType) {
-        case 'connect':
-            result.text = parts[1];
-            break;
-        case 'use':
-            result.name = parts[1];
-            result.x = parseInt(parts[2]);
-            result.y = parseInt(parts[3]);
-            break;
-        case 'collect':
-            result.x = parseInt(parts[1]);
-            result.y = parseInt(parts[2]);
-            break;
-        case 'upgrade':
-            result.x = parseInt(parts[1]);
-            result.y = parseInt(parts[2]);
-            break;
-        case 'buy':
-            result.name = parts[1];
-            result.amount = parseInt(parts[2]);
-            break;
-        case 'spin':
-            break;
-        case 'regen':
-            break;
-        case 'order':
-            result.operation = parts[1];
-            result.index = parseInt(parts[2]);
-            break;
-        case 'place':
-            result.name = parts[1];
-            result.x = parseInt(parts[2]);
-            result.y = parseInt(parts[3]);
-            break;
-        case 'move':
-            result.x = parseInt(parts[1]);
-            result.y = parseInt(parts[2]);
-            result.to_x = parseInt(parts[3]);
-            result.to_y = parseInt(parts[4]);
-            break;
-        case 'claim':
-            result.index = parseInt(parts[1]);
-            break;
-        case 'withdraw':
-            result.amount = parseFloat(parts[1]); // Changed to parseFloat for handling larger numbers
-            break;
-        case 'buyslot':
-            result.x = parseInt(parts[1]);
-            result.y = parseInt(parts[2]);
-            break;
-        case 'buydeal':
-            result.name = parts[1];
-            break;
-        case 'activateb':
-            result.index = parseInt(parts[1]);
-            break;
-        case 'invupgrade':
-            break;
-        case 'business':
-            result.event = parts[1];
-            result.id = parseInt(parts[2]);
-            result.i = parseInt(parts[3]);
-            break;
-        default:
-            result = { requestType: 'Unknown' };
-            break;
+        switch (requestType) {
+            case 'connect':
+                result.text = parts[1];
+                break;
+            case 'use':
+                result.name = parts[1];
+                result.x = parseInt(parts[2]);
+                result.y = parseInt(parts[3]);
+                break;
+            case 'collect':
+                result.x = parseInt(parts[1]);
+                result.y = parseInt(parts[2]);
+                break;
+            case 'upgrade':
+                result.x = parseInt(parts[1]);
+                result.y = parseInt(parts[2]);
+                break;
+            case 'buy':
+                result.name = parts[1];
+                result.amount = parseInt(parts[2]);
+                break;
+            case 'spin':
+                break;
+            case 'regen':
+                break;
+            case 'order':
+                result.operation = parts[1];
+                result.index = parseInt(parts[2]);
+                break;
+            case 'place':
+                result.name = parts[1];
+                result.x = parseInt(parts[2]);
+                result.y = parseInt(parts[3]);
+                break;
+            case 'move':
+                result.x = parseInt(parts[1]);
+                result.y = parseInt(parts[2]);
+                result.to_x = parseInt(parts[3]);
+                result.to_y = parseInt(parts[4]);
+                break;
+            case 'claim':
+                result.index = parseInt(parts[1]);
+                break;
+            case 'withdraw':
+                result.amount = parseFloat(parts[1]); // Changed to parseFloat for handling larger numbers
+                break;
+            case 'buyslot':
+                result.x = parseInt(parts[1]);
+                result.y = parseInt(parts[2]);
+                break;
+            case 'buydeal':
+                result.name = parts[1];
+                break;
+            case 'activateb':
+                result.index = parseInt(parts[1]);
+                break;
+            case 'invupgrade':
+                break;
+            case 'business':
+                result.event = parts[1];
+                result.id = parseInt(parts[2]);
+                result.i = parseInt(parts[3]);
+                break;
+            default:
+                result = { requestType: 'Unknown' };
+                break;
+        }
+
+        return result;
     }
-
-    return result;
-}
-  handleResultCode(code){
-      console.log(this.requestQueue[0])
-      if (code == 200){
-          let request = this._decipherRequest(this.requestQueue[0])
-          if (request.requestType == 'use') {
-              tiles[request.x][request.y].use(request.name)
-          } else if (request.requestType == 'activateb'){
-              player.realActivateBooster()
-          } else if (request.requestType == 'place' && RES.buildingNames.bush.includes(request.name)){
-              tiles[request.x][request.y].use()
-          }
-      }
-      console.log('код',code)
-      this.requestQueue.shift()
-  }
-  send(request) {
-    // if (this.socket.readyState === WebSocket.OPEN) {
-    //     this.socket.send(request);
-    //     if (request.split('/')[0] != 'connect'){// и реген
-    //       this.requestQueue.push(request);
-    //     }
-    //     console.log(this.requestQueue)
-    // }
-  }
+    handleResultCode(code){
+        console.log(this.requestQueue[0])
+        if (code == 200){
+            let request = this._decipherRequest(this.requestQueue[0])
+            if (request.requestType == 'use') {
+                tiles[request.x][request.y].use(request.name)
+            } else if (request.requestType == 'activateb'){
+                player.realActivateBooster()
+            } else if (request.requestType == 'place' && RES.buildingNames.bush.includes(request.name)){
+                tiles[request.x][request.y].use()
+            }
+        }
+        console.log('код',code)
+        this.requestQueue.shift()
+    }
+    send(request) {
+        if (this.socket.readyState === WebSocket.OPEN) {
+            this.socket.send(request);
+            if (request.split('/')[0] != 'connect' && request.split('/')[0] != 'regen'){// и реген
+                this.requestQueue.push(request);
+            }
+            console.log(this.requestQueue)
+        }
+    }
   	regenPlayer(data){
 		player._inventory = data.player.Inventory.map
         console.log(player._inventory)
@@ -160,11 +161,61 @@ class SocketClient{
             }
         }
       	player._orderArr = data.player.orders
+        player._boostersArr = []
+        data.availableBoosters.forEach(el => {
+            const booster = {
+                type: el.boosterType,
+                time: el.time
+            }
+            if (el.boosterType == "GrowSpeed" || el.boosterType == "WorkSpeed"){
+                booster.amount = 100 / (100 - el.percentage)// + 3 убрать после исправления 200%
+            } else if (el.boosterType == "OrderMoney"){
+                booster.amount = el.percentage / 100 + 1
+            } else if (el.boosterType == "OrderItems"){
+                booster.amount = el.percentage / 100
+            }
+            player._boostersArr.push(booster)
+        });
+
+        player._activBoostersArr = []
+        for (const key in data.activeBoosters) {
+            console.log(key)
+            if (key == 'WorkSpeed'){
+                player._workBooster.boosterAmount = 100 / (100 - data.activeBoosters[key].percentage)
+                player._workBooster.timeStamp = (data.activeBoosters[key].activateTimeStamp + data.activeBoosters[key].time) * 1000
+                player._workBooster.timeToEnd = player._workBooster.timeStamp - Date.now()
+                player._activBoostersArr.push(player._workBooster)
+            } else if (key == 'GrowSpeed'){
+                player._growBooster.boosterAmount = 100 / (100 - data.activeBoosters[key].percentage)
+                player._growBooster.timeStamp = (data.activeBoosters[key].activateTimeStamp + data.activeBoosters[key].time) * 1000
+                player._growBooster.timeToEnd = player._growBooster.timeStamp - Date.now()
+                player._activBoostersArr.push(player._growBooster)
+            } else if (key == 'OrderMoney'){
+                const booster = {
+                    type: 'OrderMoney',
+                    boosterAmount: data.activeBoosters[key].percentage / 100 + 1,
+                    timeStamp: (data.activeBoosters[key].activateTimeStamp + data.activeBoosters[key].time) * 1000,
+                    timeToEnd: (data.activeBoosters[key].activateTimeStamp + data.activeBoosters[key].time) * 1000 - Date.now()
+                }
+                console.log(booster)
+                player._activBoostersArr.push(booster)
+            } else if (key == 'OrderItems'){
+                const booster = {
+                    type: 'OrderItems',
+                    boosterAmount: data.activeBoosters[key].percentage / 100,
+                    timeStamp: (data.activeBoosters[key].activateTimeStamp + data.activeBoosters[key].time) * 1000,
+                    timeToEnd: (data.activeBoosters[key].activateTimeStamp + data.activeBoosters[key].time) * 1000 - Date.now()
+                }
+                player._activBoostersArr.push(booster)
+            } 
+        }
+        player._availableDeals = data.availableDeals
   	}
   	initGameSession(data){
     	console.log(data)
       	data.world.tileArray.forEach(el => {
           	tiles[el.x][el.y].createBuilding(el.name)
+            console.log(GVAR.buildableArr)
           	if (RES.buildingNames.bakery.includes(el.name)){
               	el.slots.forEach(slot => {
                   	tiles[el.x][el.y]._structure.addSlot(slot)
@@ -185,6 +236,12 @@ class SocketClient{
 				tiles[el.x][el.y]._structure.setProperties(el.slots[0].workStartTimeStamp, el.integerData)
 			}
 		});
+        RES.buildingNames.bakery.concat(RES.buildingNames.animalPen).forEach(name => {
+            console.log(name, GVAR.countBuilding(name), Math.pow(100, GVAR.countBuilding(name)))
+            RES.buildings[name].price *= Math.pow(100, GVAR.countBuilding(name))
+        });
+        RES.buildings['garden'].floatPrice = RES.buildings['garden'].price * Math.pow(1.1, GVAR.countBuilding('garden'))
+        RES.buildings['garden'].price = Math.floor(RES.buildings['garden'].floatPrice)
 		this.regenPlayer(data)
 		this.gameSessionPromiseResolve()
   	}
@@ -234,11 +291,11 @@ class Init {
         }
 
         // socketClient.send(`connect/` + Math.ceil(Date.now() / 10000))
-        socketClient.send(`connect/2357287`)
+        socketClient.send(`connect/2357301`)
 
         console.log("map loaded")
 
-        // await socketClient.gameSessionPromise;
+        await socketClient.gameSessionPromise;
         console.log("Game session initialized");
     }
 

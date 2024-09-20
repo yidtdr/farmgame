@@ -130,12 +130,11 @@ export default class Building extends Buildable{
         if (!this._freeze && this._nowWorkIndex < this._craftingItems.length){
             // if (this._craftingItems.length > 1)
             //     console.log(Date.now(), this._craftingItems)
-            console.log(this._craftingItems, this._nowWorkIndex)
             this._craftingItems[this._nowWorkIndex].timeToFinish = (this._craftingItems[this._nowWorkIndex].timeToFinish > 0 
             ? 
             (this._craftingItems[this._nowWorkIndex].timeToFinish - 1000)
             : 0);
-            
+            console.log(this._craftingItems[this._nowWorkIndex].workingTimeStamp, Date.now())
             if (this._craftingItems[this._nowWorkIndex].workingTimeStamp - Date.now() <= 0)
             {
                 this._craftingItems[this._nowWorkIndex].timeToFinish = 0

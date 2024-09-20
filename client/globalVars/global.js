@@ -36,11 +36,6 @@ class GlobalVars{
             this.buildableArr.splice(index, 1);
             this.addBuilding(item);
         }
-      }
-    activateBooster(){
-        this.buildableArr.forEach(el => {
-            el.activateBooster()
-        });
     }
     closeAllWindows(){
         this.UI.pop()
