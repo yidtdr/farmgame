@@ -6,6 +6,8 @@ export default class Phantom extends Sprite{
     constructor(x, y, size, type, image)
     {
         super(x, y);
+        this._floatX = this._x;
+        this._floatY = this._y;
         this._type = type
         this._image = image
         this._size = size
@@ -14,8 +16,10 @@ export default class Phantom extends Sprite{
         this._h = this._size.h * CVAR.tileSide;
     }
     move(pos) {
-        this._x = pos.x;
-        this._y = pos.y;
+        this._floatX = pos.x;
+        this._floatY = pos.y;
+        this._x = Math.ceil(this._floatX/CVAR.tileSide)*CVAR.tileSide
+        this._y = Math.ceil(this._floatY/CVAR.tileSide)*CVAR.tileSide
     }
     draw () {
         const out = (this._image.height - 16 * this._size.h)*CVAR.tileSide/16

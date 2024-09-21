@@ -49,7 +49,8 @@ export default class Bush extends Buildable{
             ctx.shadowBlur = 30;
             ctx.shadowColor = "rgb(0,0,230)";
         }
-        ctx.drawImage(this._image, this._x, this._y, this._w, this._h);
+        const out = (this._image.height - 16 * this._size.h)*CVAR.tileSide/16
+        ctx.drawImage(this._image, this._x, this._y - out, this._w, this._h + out);
         ctx.shadowBlur = 0;
     }
     canReset(){

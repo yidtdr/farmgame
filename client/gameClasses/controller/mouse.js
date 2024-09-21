@@ -50,7 +50,7 @@ class Mouse{
                 el.move(pos)
             }
         })
-        GVAR.phantomStructureArr.forEach((el) => {
+        if (GVAR.phantomStructureArr.length != 0){
             let pos = Calc.indexToCanvas(this._mapPos.i, this._mapPos.j, CVAR.tileSide, CVAR.outlineWidth);
             if (
                 Math.abs(this._mapPos.i - camera._cameraIndexBoundingBox.left) <= 2 ||
@@ -68,6 +68,8 @@ class Mouse{
                     dj: this._mapPos.j - cameraCenter.j
                 };
                 const length = Math.sqrt(vector.di ** 2 + vector.dj ** 2);
+                if (length == 0)
+                    return
                 const unitVector = {
                     di: vector.di / length,
                     dj: vector.dj / length
@@ -78,8 +80,8 @@ class Mouse{
                 this._isOnBorder = false;
             }
 
-            el.move(pos)
-        })
+            GVAR.phantomStructureArr[0].move(pos)
+        }
     }
     onMouseDown(e)
     {

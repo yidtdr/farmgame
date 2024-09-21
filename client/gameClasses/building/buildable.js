@@ -22,10 +22,6 @@ export default class Buildable extends Sprite{
         this._h = this._size.h * CVAR.tileSide;
     }
     move(pos) {
-        // if (pos.x < 0)
-        //     pos.x = 0
-        // if (pos.y < 0)
-        //     pos.y = 0
         this._floatX = pos.x;
         this._floatY = pos.y;
         this._x = Math.ceil(this._floatX/CVAR.tileSide)*CVAR.tileSide

@@ -174,13 +174,11 @@ setInterval(() => {
 
 async function animate(delta){    
     if (mouse._isOnBorder){
-        console.log(mouse._dirX, mouse._dirY, GVAR.phantomStructureArr[0])
         camera.newMove(mouse._dirX * 1.5, mouse._dirY * 1.5)
         let pos = {
             x: GVAR.phantomStructureArr[0]._floatX + mouse._dirX/GVAR.scale * 1.5,
             y: GVAR.phantomStructureArr[0]._floatY + mouse._dirY/GVAR.scale * 1.5
         }
-        console.log(pos)
         if (camera._cameraIndexBoundingBox.top == 0) //тут и для top =40
             pos.y = GVAR.phantomStructureArr[0]._floatY
         if (camera._cameraIndexBoundingBox.left == 0)

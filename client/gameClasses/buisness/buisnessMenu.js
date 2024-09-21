@@ -13,7 +13,7 @@ class BuisnessMenu{
         }
         document.getElementById("open-buisness").onclick = () => {
             this.updateMoneyDisplay()
-            console.log(player._cryptoMoney)
+            console.log(player._tokenBalance)
             document.getElementById("buisness-menu-wrap").style.display = "flex";
         }
         for (let i = 1; i < 6; i++) {
@@ -57,8 +57,8 @@ class BuisnessMenu{
         const business = businesses[index-1];
         
         if (!business.unlocked) {
-            if (player._cryptoMoney >= business.cost) {
-                player._cryptoMoney -= business.cost;
+            if (player._tokenBalance >= business.cost) {
+                player._tokenBalance -= business.cost;
                 business.unlocked = true;
                 this.updateMoneyDisplay();
                 document.getElementById(`business${index}`).classList.remove("locked");
@@ -89,8 +89,8 @@ class BuisnessMenu{
     claim() {
         console.log('claim')
         if (this.currBusiness && this.currBusiness.canClaim) {
-            player._cryptoMoney += this.currBusiness.invested * this.currBusiness.income;
-            player._cryptoMoney += this.currBusiness.invested;
+            player._tokenBalance += this.currBusiness.invested * this.currBusiness.income;
+            player._tokenBalance += this.currBusiness.invested;
             this.currBusiness.invested = 0
             this.currBusiness.canInvest = true;
             this.currBusiness.timeToEnd = undefined;
@@ -105,13 +105,13 @@ class BuisnessMenu{
         const amount = parseFloat(document.getElementById("investment-amount").value);
         const maxInvestable = this.currBusiness.maxCapacity - this.currBusiness.invested;
     
-        if (this.currBusiness && player._cryptoMoney >= amount && this.currBusiness.canInvest) {
+        if (this.currBusiness && player._tokenBalance >= amount && this.currBusiness.canInvest) {
             if (amount > maxInvestable) {
                 alert("Превышена максимальная вместимость для инвестиций.");
                 return;
             }
     
-            player._cryptoMoney -= amount;
+            player._tokenBalance -= amount;
             this.currBusiness.invested += amount;
             this.currBusiness.canInvest = false;
             this.currBusiness.canClaim = false
@@ -135,8 +135,8 @@ class BuisnessMenu{
     levelUp() {
         const levelUpCost = this.currBusiness.cost * levelMultiplier;
     
-        if (this.currBusiness.level < maxLevel && player._cryptoMoney >= levelUpCost) {
-            player._cryptoMoney -= levelUpCost;
+        if (this.currBusiness.level < maxLevel && player._tokenBalance >= levelUpCost) {
+            player._tokenBalance -= levelUpCost;
             this.currBusiness.level++;
             this.currBusiness.cost *= levelMultiplier;
             this.currBusiness.income *= levelMultiplier;
@@ -165,7 +165,7 @@ class BuisnessMenu{
         }
     }
     updateMoneyDisplay() {
-        document.getElementById("crupto-money").innerText = player._cryptoMoney;
+        document.getElementById("crupto-money").innerText = player._tokenBalance;
     }
 }
 
