@@ -2,23 +2,24 @@ class Player{
     constructor()
     {
         this._money = 100;
-        this._cryptoMoney = 10000;
-        this._tonBalance = 1000000000
-        this._usdtBalance = 1000000000
+        this._tokenBalance = 0;
+        this._tonBalance = 0
+        this._usdtBalance = 0
+
         this._chosenTile = {i: -1, j: -1};
-        this._inventory = new Array();
+        this._inventory = []
         this._inventorySize = 50;
         this._maxOrderAmount = 6;
-        this._orderArr = new Array();
+        this._orderArr = []
         this._networth = 0;
         this._phantomStructure = "none";
-        this._spinItems = new Array();
+        this._spinItems = []
         this._isSpinActivated = false;
         this._spinDropIndex = 0
         this._spinTimeStamp = 0
-        this._boostersArr = new Array()
-        this._activBoostersArr = new Array()
-        this._availableDeals = new Array()
+        this._boostersArr = []
+        this._activBoostersArr = []
+        this._availableDeals = []
         this._growBooster = {
             type: 'GrowSpeed',
             boosterAmount: 1,
@@ -32,6 +33,8 @@ class Player{
             timeToEnd: 0
         }
         this._boostersArr = []
+        this._deposits = []
+        this._withdraws = []
     }
     upgradeInventory(){
         this._inventorySize += 10 //временное

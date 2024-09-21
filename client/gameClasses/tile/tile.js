@@ -77,19 +77,21 @@ export default class Tile extends Sprite{
         } else if (RES.names.obstacles.includes(type)){
             this._structure = new Obstacle(this._x, this._y, type)
             GVAR.obstacleArr.push(this._structure);
+            let tileIndex = Calc.CanvasToIndex(this._x, this._y, CVAR.tileSide, CVAR.outlineWidth);
+            for (let i = tileIndex.i; i < tileIndex.i + RES.obstacles[type].size.w; i++) {
+                for (let j = tileIndex.j; j < tileIndex.j + RES.obstacles[type].size.h; j++) {
+                    tiles[i][j]._structure = this._structure;
+                }
+            }
+            GVAR.addBuilding(this._structure);
+            return
         }
         let tileIndex = Calc.CanvasToIndex(this._x, this._y, CVAR.tileSide, CVAR.outlineWidth);
-        // let tileIndex = {
-        //     i: this._x / CVAR.tileSide,
-        //     j: this._y / CVAR.tileSide
-        // }
         for (let i = tileIndex.i; i < tileIndex.i + RES.buildings[type].size.w; i++) {
             for (let j = tileIndex.j; j < tileIndex.j + RES.buildings[type].size.h; j++) {
                 tiles[i][j]._structure = this._structure;
             }
         }
-        if (RES.names.obstacles.includes(type))
-            return //говнокод чтобы препятствие не попала в buildableArr
         GVAR.addBuilding(this._structure);
     }
     moveStructure(newPos){

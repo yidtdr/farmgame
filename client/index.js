@@ -9,7 +9,7 @@ import { spin } from './gameClasses/spin/spin.js';
 import { buisnessMenu } from './gameClasses/buisness/buisnessMenu.js';
 import { orderManager } from './gameClasses/orders/orders.js';
 import boosterMenu from './gameClasses/boosterMenu/boosterMenu.js';
-import { dealmenu } from './gameClasses/ton-connect/tonMenu.js';
+// import { dealmenu } from './gameClasses/ton-connect/tonMenu.js';
 import { buildingMenu } from './gameClasses/building/buildingMenu.js';
 import { animalMenu } from './gameClasses/animals/animalMenu.js';
 import { fieldMenu } from './gameClasses/field/fieldMenu.js';
@@ -18,10 +18,12 @@ import { bushMenu } from './gameClasses/bush/bushMenu.js';
 import RES from './resources.js';
 
 
-import socketClient from './init.js';
+// import socketClient from './init.js';
 
-socketClient.send('buydeal/Deal_test_1')
-console.log(player._boostersArr)
+// socketClient.send('buydeal/Deal_test_1')
+// console.log(player._boostersArr)
+
+tiles[1][5].createBuilding('small_swamp')
 
 // Ensure the document is scrollable
 function ensureDocumentIsScrollable() {
@@ -163,13 +165,22 @@ setInterval(() => {
     })
 }, 100);
 
+setInterval(() => {
+    GVAR.obstacleArr.forEach((el) => {
+        el.changeImage()
+    })
+    GVAR.redraw = true;
+}, 1000);
+
 async function animate(delta){    
     if (mouse._isOnBorder){
+        console.log(mouse._dirX, mouse._dirY, GVAR.phantomStructureArr[0])
         camera.newMove(mouse._dirX * 1.5, mouse._dirY * 1.5)
         let pos = {
             x: GVAR.phantomStructureArr[0]._floatX + mouse._dirX/GVAR.scale * 1.5,
             y: GVAR.phantomStructureArr[0]._floatY + mouse._dirY/GVAR.scale * 1.5
         }
+        console.log(pos)
         if (camera._cameraIndexBoundingBox.top == 0) //тут и для top =40
             pos.y = GVAR.phantomStructureArr[0]._floatY
         if (camera._cameraIndexBoundingBox.left == 0)

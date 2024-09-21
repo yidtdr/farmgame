@@ -149,6 +149,11 @@ class SocketClient{
         player._inventory['chickenFeed'] = 10
 		player._money = data.player.money
 		player.updateMoney()
+        player._tokenBalance = data.wallet.tokenBalance
+        player._tonBalance = data.wallet.tonBalance
+        player._usdtBalance = data.wallet.usdtBalance
+        player._deposits = data.deposits
+        player._withdraws = data.withdraws
 
         player._spinItems = data.player.spin.items
         player._isSpinActivated = data.player.spin.activated
@@ -382,6 +387,13 @@ class Init {
             data.image.stages[i] = await loadImage(`client/assets/${name}/${name}_stage${i}.png`);
           });
           await Promise.all(stagesPromises);
+        } else if (type === "obstacles") {
+            data.image = {};
+    
+            const stagesPromises = Array.from({ length: 4 }).map(async (_, i) => {
+              data.image[i] = await loadImage(`client/assets/${name}/${name}${i}.png`);
+            });
+            await Promise.all(stagesPromises);
         } else {
           data.image = await loadImage(`client/assets/${name}/${name}.png`);
         }
