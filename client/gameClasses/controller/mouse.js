@@ -28,6 +28,7 @@ class Mouse{
         this._LMBhold;
         this._isDragging = false;
         this._isOnBorder = false;
+        this._isBlockAfterShop = false;
     }
     onMouseMove(e){
         const mousePos = Calc.getTouchPos(canvas, e);
@@ -137,6 +138,7 @@ class Mouse{
             } else {
                 console.log("недостаточно денег")
             }
+            this._isBlockAfterShop = false;
         }
         GVAR.phantomStructureArr.pop()
 

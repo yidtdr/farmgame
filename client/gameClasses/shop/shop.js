@@ -118,6 +118,10 @@ class Shop{
                             player._phantomStructure.structure._isMoving = true;
                             GVAR.phantomStructureArr.push(player._phantomStructure.structure);
                             mouse._isDragging = true;
+                            mouse._isBlockAfterShop = true;
+                            setTimeout(() => {
+                                mouse._isBlockAfterShop = false
+                            }, 1000);
                             mouse.onMouseMove(e);
                         }
                     }, 300);
@@ -259,6 +263,10 @@ class Shop{
                             player._phantomStructure.structure._isMoving = true;
                             GVAR.phantomStructureArr.push(player._phantomStructure.structure);
                             mouse._isDragging = true;
+                            mouse._isBlockAfterShop = true;
+                            setTimeout(() => {
+                                mouse._isBlockAfterShop = false
+                            }, 1000);
                             mouse.onMouseMove(e);
                         }
                     }, 300);
@@ -345,6 +353,10 @@ class Shop{
                             player._phantomStructure.structure._isMoving = true
                             GVAR.phantomStructureArr.push(player._phantomStructure.structure)
                             mouse._isDragging = true
+                            mouse._isBlockAfterShop = true;
+                            setTimeout(() => {
+                                mouse._isBlockAfterShop = false
+                            }, 1000);
                             mouse.onMouseMove(e)
                         }
                     }, 300);
@@ -431,6 +443,10 @@ class Shop{
                             player._phantomStructure.structure._isMoving = true
                             GVAR.phantomStructureArr.push(player._phantomStructure.structure)
                             mouse._isDragging = true
+                            mouse._isBlockAfterShop = true;
+                            setTimeout(() => {
+                                mouse._isBlockAfterShop = false
+                            }, 1000);
                             mouse.onMouseMove(e)
                         }
                     }, 300);
