@@ -92,24 +92,51 @@ class Shop{
     
             shopItem.appendChild(img);
             shopItem.appendChild(price);
-            shopItem.appendChild(arrow); // добавляем стрелочку
-            shopItem.appendChild(description); // добавляем описание
+            shopItem.appendChild(arrow);
+            shopItem.appendChild(description);
     
-            // Проверка лимита здания
-            if (GVAR.countBuilding(building) < RES.buildings[building].mapLimit) {
+            if (GVAR.countBuilding(building) < RES.buildings[building].mapLimit && player._money >= RES.buildings[building].price) {
+                let touchStartX = 0;
+                let touchStartY = 0;
+                let isScrolling = false;
+                let touchTimer = null;
+
                 img.addEventListener("touchstart", function(e) {
-                    document.getElementById("shop-wrap").style.display = "none";
-                    player._phantomStructure = {
-                        cost: RES.buildings[building].price,
-                        structureType: 'building'
-                    };
-                    let pos = Calc.indexToCanvas(mouse._mapPos.i, mouse._mapPos.j, CVAR.tileSide, CVAR.outlineWidth);
-                    player._phantomStructure.structure = new Phantom(pos.x, pos.y, RES.buildings[building].size, building, RES.buildings[building].image);
-                    player._phantomStructure.structure._isMoving = true;
-                    GVAR.phantomStructureArr.push(player._phantomStructure.structure);
-                    mouse._isDragging = true;
-                    mouse.onMouseMove(e);
+                    touchStartX = e.touches[0].clientX;
+                    touchStartY = e.touches[0].clientY;
+                    isScrolling = false;
+
+                    touchTimer = setTimeout(function() {
+                        if (!isScrolling) {
+                            document.getElementById("shop-wrap").style.display = "none";
+                            player._phantomStructure = {
+                                cost: RES.buildings[building].price,
+                                structureType: 'building'
+                            };
+                            let pos = Calc.indexToCanvas(mouse._mapPos.i, mouse._mapPos.j, CVAR.tileSide, CVAR.outlineWidth);
+                            player._phantomStructure.structure = new Phantom(pos.x, pos.y, RES.buildings[building].size, building, RES.buildings[building].image);
+                            player._phantomStructure.structure._isMoving = true;
+                            GVAR.phantomStructureArr.push(player._phantomStructure.structure);
+                            mouse._isDragging = true;
+                            mouse.onMouseMove(e);
+                        }
+                    }, 300);
                 });
+
+                img.addEventListener("touchmove", function(e) {
+                    let touchMoveX = e.touches[0].clientX;
+                    let touchMoveY = e.touches[0].clientY;
+
+                    if (Math.abs(touchMoveX - touchStartX) > 10 || Math.abs(touchMoveY - touchStartY) > 10) {
+                        isScrolling = true;
+                        clearTimeout(touchTimer);
+                    }
+                });
+
+                img.addEventListener("touchend", function(e) {
+                    clearTimeout(touchTimer);
+                });
+
             } else {
                 img.style.filter = 'grayscale(100%)';
             }
@@ -128,8 +155,34 @@ class Shop{
             img.className = "item-image"
             const price = document.createElement('h3');
             price.innerText = `${RES.plants[plant].price}$`;
+
+            // Создаем элемент для выпадающего описания
+            const description = document.createElement('div');
+            description.className = 'description';
+            description.innerText = 'описание'
+            description.style.display = 'none'; // изначально скрыто
+    
+            // Создаем стрелочку для открытия описания
+            const arrow = document.createElement('span');
+            arrow.innerText = '↓'; // символ стрелочки
+            arrow.className = 'description-arrow';
+    
+            // Добавляем обработчик для стрелочки
+            arrow.addEventListener('click', function() {
+                if (description.style.display === 'none') {
+                    description.style.display = 'block';
+                    arrow.innerText = '↑'; // меняем стрелочку на вверх
+                } else {
+                    description.style.display = 'none';
+                    arrow.innerText = '↓'; // меняем стрелочку на вниз
+                }
+            });
+
             shopItem.appendChild(img)
             shopItem.appendChild(price)
+            shopItem.appendChild(arrow);
+            shopItem.appendChild(description);
+            
             shopItem.addEventListener("click", function(e) {
                 if (player.canBuy(RES.plants[plant].price, 1))
                 {
@@ -154,21 +207,79 @@ class Shop{
             img.className = "item-image"
             const price = document.createElement('h3');
             price.innerText = `${RES.animals[animal].price}$`;
+
+            // Создаем элемент для выпадающего описания
+            const description = document.createElement('div');
+            description.className = 'description';
+            description.innerText = 'описание'
+            description.style.display = 'none'; // изначально скрыто
+    
+            // Создаем стрелочку для открытия описания
+            const arrow = document.createElement('span');
+            arrow.innerText = '↓'; // символ стрелочки
+            arrow.className = 'description-arrow';
+    
+            // Добавляем обработчик для стрелочки
+            arrow.addEventListener('click', function() {
+                if (description.style.display === 'none') {
+                    description.style.display = 'block';
+                    arrow.innerText = '↑'; // меняем стрелочку на вверх
+                } else {
+                    description.style.display = 'none';
+                    arrow.innerText = '↓'; // меняем стрелочку на вниз
+                }
+            });
+
             shopItem.appendChild(img)
             shopItem.appendChild(price)
-            shopItem.addEventListener("touchstart", function(e) {
-                document.getElementById("shop-wrap").style.display = "none"; //везде заменить на плавное закрывание
-                player._phantomStructure = {
-                    cost: RES.animals[animal].price,
-                    structureType: 'animal'
-                }
-                let pos = Calc.indexToCanvas(mouse._mapPos.i, mouse._mapPos.j, CVAR.tileSide, CVAR.outlineWidth)
-                player._phantomStructure.structure = new Phantom(pos.x, pos.y, RES.animals[animal].size, animal, RES.animals[animal].image)
-                player._phantomStructure.structure._isMoving = true
-                GVAR.phantomStructureArr.push(player._phantomStructure.structure)
-                mouse._isDragging = true
-                mouse.onMouseMove(e)
-            });
+            shopItem.appendChild(arrow);
+            shopItem.appendChild(description);
+
+            if (player._money >= RES.animals[animal].price){
+                let touchStartX = 0;
+                let touchStartY = 0;
+                let isScrolling = false;
+                let touchTimer = null;
+
+                img.addEventListener("touchstart", function(e) {
+                    touchStartX = e.touches[0].clientX;
+                    touchStartY = e.touches[0].clientY;
+                    isScrolling = false;
+
+                    touchTimer = setTimeout(function() {
+                        if (!isScrolling) {
+                            document.getElementById("shop-wrap").style.display = "none"; //везде заменить на плавное закрывание
+
+                            player._phantomStructure = {
+                                cost: RES.animals[animal].price,
+                                structureType: 'animal'
+                            };
+                            let pos = Calc.indexToCanvas(mouse._mapPos.i, mouse._mapPos.j, CVAR.tileSide, CVAR.outlineWidth);
+                            player._phantomStructure.structure = new Phantom(pos.x, pos.y, RES.animals[animal].size, animal, RES.animals[animal].image);
+                            player._phantomStructure.structure._isMoving = true;
+                            GVAR.phantomStructureArr.push(player._phantomStructure.structure);
+                            mouse._isDragging = true;
+                            mouse.onMouseMove(e);
+                        }
+                    }, 300);
+                });
+
+                img.addEventListener("touchmove", function(e) {
+                    let touchMoveX = e.touches[0].clientX;
+                    let touchMoveY = e.touches[0].clientY;
+
+                    if (Math.abs(touchMoveX - touchStartX) > 10 || Math.abs(touchMoveY - touchStartY) > 10) {
+                        isScrolling = true;
+                        clearTimeout(touchTimer);
+                    }
+                });
+
+                img.addEventListener("touchend", function(e) {
+                    clearTimeout(touchTimer);
+                });
+            } else {
+                img.style.filter = 'grayscale(100%)';
+            }
             shopItem.className = "shop-item";
             shop.appendChild(shopItem);
         });
@@ -183,21 +294,78 @@ class Shop{
             img.className = "item-image"
             const price = document.createElement('h3');
             price.innerText = `${RES.buildings[building].price}$`;
+
+            // Создаем элемент для выпадающего описания
+            const description = document.createElement('div');
+            description.className = 'description';
+            description.innerText = 'описание'
+            description.style.display = 'none'; // изначально скрыто
+    
+            // Создаем стрелочку для открытия описания
+            const arrow = document.createElement('span');
+            arrow.innerText = '↓'; // символ стрелочки
+            arrow.className = 'description-arrow';
+    
+            // Добавляем обработчик для стрелочки
+            arrow.addEventListener('click', function() {
+                if (description.style.display === 'none') {
+                    description.style.display = 'block';
+                    arrow.innerText = '↑'; // меняем стрелочку на вверх
+                } else {
+                    description.style.display = 'none';
+                    arrow.innerText = '↓'; // меняем стрелочку на вниз
+                }
+            });
+
             shopItem.appendChild(img)
             shopItem.appendChild(price)
-            shopItem.addEventListener("touchstart", function(e) {
-                document.getElementById("shop-wrap").style.display = "none";
-                player._phantomStructure = {
-                    cost: RES.buildings[building].price,
-                    structureType: 'building'
-                }
-                let pos = Calc.indexToCanvas(mouse._mapPos.i, mouse._mapPos.j, CVAR.tileSide, CVAR.outlineWidth)
-                player._phantomStructure.structure = new Phantom(pos.x, pos.y, RES.buildings[building].size, building, RES.buildings[building].image)
-                player._phantomStructure.structure._isMoving = true
-                GVAR.phantomStructureArr.push(player._phantomStructure.structure)
-                mouse._isDragging = true
-                mouse.onMouseMove(e)
-            });
+            shopItem.appendChild(arrow);
+            shopItem.appendChild(description);
+
+            if (player._money >= RES.buildings[building].price){
+                let touchStartX = 0;
+                let touchStartY = 0;
+                let isScrolling = false;
+                let touchTimer = null;
+
+                img.addEventListener("touchstart", function(e) {
+                    touchStartX = e.touches[0].clientX;
+                    touchStartY = e.touches[0].clientY;
+                    isScrolling = false;
+
+                    touchTimer = setTimeout(function() {
+                        if (!isScrolling) {
+                            document.getElementById("shop-wrap").style.display = "none";
+                            player._phantomStructure = {
+                                cost: RES.buildings[building].price,
+                                structureType: 'building'
+                            }
+                            let pos = Calc.indexToCanvas(mouse._mapPos.i, mouse._mapPos.j, CVAR.tileSide, CVAR.outlineWidth)
+                            player._phantomStructure.structure = new Phantom(pos.x, pos.y, RES.buildings[building].size, building, RES.buildings[building].image)
+                            player._phantomStructure.structure._isMoving = true
+                            GVAR.phantomStructureArr.push(player._phantomStructure.structure)
+                            mouse._isDragging = true
+                            mouse.onMouseMove(e)
+                        }
+                    }, 300);
+                });
+
+                img.addEventListener("touchmove", function(e) {
+                    let touchMoveX = e.touches[0].clientX;
+                    let touchMoveY = e.touches[0].clientY;
+
+                    if (Math.abs(touchMoveX - touchStartX) > 10 || Math.abs(touchMoveY - touchStartY) > 10) {
+                        isScrolling = true;
+                        clearTimeout(touchTimer);
+                    }
+                });
+
+                img.addEventListener("touchend", function(e) {
+                    clearTimeout(touchTimer);
+                });
+            } else{
+                img.style.filter = 'grayscale(100%)';
+            }
             shopItem.className = "shop-item";
             shop.appendChild(shopItem);
         });
@@ -212,21 +380,78 @@ class Shop{
             img.className = "item-image"
             const price = document.createElement('h3');
             price.innerText = `${RES.buildings[building].price}$`;
+
+            // Создаем элемент для выпадающего описания
+            const description = document.createElement('div');
+            description.className = 'description';
+            description.innerText = 'описание'
+            description.style.display = 'none'; // изначально скрыто
+    
+            // Создаем стрелочку для открытия описания
+            const arrow = document.createElement('span');
+            arrow.innerText = '↓'; // символ стрелочки
+            arrow.className = 'description-arrow';
+    
+            // Добавляем обработчик для стрелочки
+            arrow.addEventListener('click', function() {
+                if (description.style.display === 'none') {
+                    description.style.display = 'block';
+                    arrow.innerText = '↑'; // меняем стрелочку на вверх
+                } else {
+                    description.style.display = 'none';
+                    arrow.innerText = '↓'; // меняем стрелочку на вниз
+                }
+            });
+
             shopItem.appendChild(img)
             shopItem.appendChild(price)
-            shopItem.addEventListener("touchstart", function(e) {
-                document.getElementById("shop-wrap").style.display = "none";
-                player._phantomStructure = {
-                    cost: RES.buildings[building].price,
-                    structureType: 'building'
-                }
-                let pos = Calc.indexToCanvas(mouse._mapPos.i, mouse._mapPos.j, CVAR.tileSide, CVAR.outlineWidth)
-                player._phantomStructure.structure = new Phantom(pos.x, pos.y, RES.buildings[building].size, building, RES.buildings[building].image)
-                player._phantomStructure.structure._isMoving = true
-                GVAR.phantomStructureArr.push(player._phantomStructure.structure)
-                mouse._isDragging = true
-                mouse.onMouseMove(e)
-            });
+            shopItem.appendChild(arrow);
+            shopItem.appendChild(description);
+
+            if (player._money >= RES.buildings[building].price){
+                let touchStartX = 0;
+                let touchStartY = 0;
+                let isScrolling = false;
+                let touchTimer = null;
+
+                img.addEventListener("touchstart", function(e) {
+                    touchStartX = e.touches[0].clientX;
+                    touchStartY = e.touches[0].clientY;
+                    isScrolling = false;
+
+                    touchTimer = setTimeout(function() {
+                        if (!isScrolling) {
+                            document.getElementById("shop-wrap").style.display = "none";
+                            player._phantomStructure = {
+                                cost: RES.buildings[building].price,
+                                structureType: 'building'
+                            }
+                            let pos = Calc.indexToCanvas(mouse._mapPos.i, mouse._mapPos.j, CVAR.tileSide, CVAR.outlineWidth)
+                            player._phantomStructure.structure = new Phantom(pos.x, pos.y, RES.buildings[building].size, building, RES.buildings[building].image)
+                            player._phantomStructure.structure._isMoving = true
+                            GVAR.phantomStructureArr.push(player._phantomStructure.structure)
+                            mouse._isDragging = true
+                            mouse.onMouseMove(e)
+                        }
+                    }, 300);
+                });
+
+                img.addEventListener("touchmove", function(e) {
+                    let touchMoveX = e.touches[0].clientX;
+                    let touchMoveY = e.touches[0].clientY;
+
+                    if (Math.abs(touchMoveX - touchStartX) > 10 || Math.abs(touchMoveY - touchStartY) > 10) {
+                        isScrolling = true;
+                        clearTimeout(touchTimer);
+                    }
+                });
+
+                img.addEventListener("touchend", function(e) {
+                    clearTimeout(touchTimer);
+                });
+            } else{
+                img.style.filter = 'grayscale(100%)';
+            }
             shopItem.className = "shop-item";
             shop.appendChild(shopItem);
         });
