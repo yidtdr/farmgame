@@ -15,6 +15,7 @@ export default class AnimalPen extends Buildable{
         this._animals = [];
         this._isWork = false;
         this._image = RES.buildings[type].image
+        this._frontImage = RES.buildings[type].frontImage
         this._timeStamp = RES.buildings[this._type].workTime * 1000;
         this._freeze = false
     }
@@ -42,11 +43,14 @@ export default class AnimalPen extends Buildable{
             ctx.shadowBlur = 30;
             ctx.shadowColor = "rgb(0,0,230)";
         }
-        ctx.drawImage(this._image, this._x, this._y, this._w, this._h);
+        const out = (this._image.height - 16 * this._size.h)*CVAR.tileSide/16
+        ctx.drawImage(this._image, this._x, this._y - out, this._w, this._h + out);
         ctx.shadowBlur = 0;
         this._animals.forEach(animal => {
             animal.draw();
         });
+        const perc = 1 - this._frontImage.height / this._image.height
+        ctx.drawImage(this._frontImage, this._x, this._y + (this._h + out) * perc, this._w, this._frontImage.height * CVAR.tileSide / 16);
     }
     canStartWork(){
         return !this._isWork && this._animals.length!=0 && player._inventory[RES.buildings[this._type].feedType] >= this._animals.length
@@ -126,13 +130,19 @@ export default class AnimalPen extends Buildable{
             pos.x = 0
         if (pos.y < 0)
             pos.y = 0
-        this._animals.forEach(el => {
-            el.moveDelta({x: pos.x - this._x, y: pos.y - this._y})
-        });
+        const prev = {
+            x: this._x,
+            y: this._y
+        }
         this._floatX = pos.x;
         this._floatY = pos.y;
         this._x = Math.ceil(this._floatX/CVAR.tileSide)*CVAR.tileSide
         this._y = Math.ceil(this._floatY/CVAR.tileSide)*CVAR.tileSide
+        this._animals.forEach(el => {
+            const a = {x: this._x - prev.x, y: this._y - prev.y}
+            console.log(a)
+            el.moveDelta(a)
+        });
         GVAR.updateBuildingArr(this)
     }
 }

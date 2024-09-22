@@ -354,7 +354,6 @@ class Init {
                 const data_front = await loadJson(`client/assets/${name}/${name}_front.json`);
                 Object.assign(data, data_front);
             } catch (error) {}
-
             if (type === "plants") {
                 data.image = {};
                 data.image.stages = {};
@@ -370,6 +369,9 @@ class Init {
                     data.image[i] = await loadImage(`client/assets/${name}/${name}${i}.png`);
                 });
                 await Promise.all(stagesPromises);
+            } else if (type === "buildings" && RES.buildingNames.animalPen.includes(name)){
+                data.image = await loadImage(`client/assets/${name}/${name}.png`);
+                data.frontImage = await loadImage(`client/assets/${name}/${name}_front.png`);
             } else {
                 data.image = await loadImage(`client/assets/${name}/${name}.png`);
             }

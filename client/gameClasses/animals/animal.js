@@ -17,6 +17,8 @@ export default class Animal extends Sprite{
         this._w = RES.animals[type].size.w * CVAR.tileSide
         this.range.w -= this._w
         this.range.h -= this._h
+        // this.range.y += 10 //размер запретной зоны переведенный в пиксели игры
+        // this.range.h -= 10
         this.nextCoords = this._getRandomPointOnBorder(range)
         this.timer = 0
         this.stopTime = 20 + Math.floor(Math.random() * 20)
@@ -86,6 +88,7 @@ export default class Animal extends Sprite{
         this.nextCoords.y += delta.y;
         this.range.x += delta.x;
         this.range.y += delta.y;
+        console.log(this._x, this._y)
     }
     _getRandomPointOnBorder(range) {
         const side = Math.floor(Math.random() * 4); // Случайно выбираем одну из 4 сторон
