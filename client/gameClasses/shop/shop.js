@@ -188,7 +188,7 @@ class Shop{
             shopItem.appendChild(description);
             
             shopItem.addEventListener("click", function(e) {
-                if (player.canBuy(RES.plants[plant].price, 1))
+                if (player._money >= RES.plants[plant].price && player.getInvFullness >= 1)
                 {
                     player.buy(RES.plants[plant].price)
                     player.pushInventory(plant, 1)
@@ -497,7 +497,7 @@ class Shop{
         }
         const upgButton = document.getElementById('upgrade-stash-button')
         upgButton.className = 'booster-button' // временно
-        if (player._money >= 10){
+        if (player._tokenBalance >= 1000){
             upgButton.disabled = false
         } else {
             upgButton.disabled = true

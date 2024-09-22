@@ -86,7 +86,6 @@ export default class Bush extends Buildable{
     }
     update(){
         if (!this._freeze && this._isWork && this._timeToFinish != undefined){
-            console.log(this._timeToFinish, this._finishTime - Date.now())
             this._timeToFinish = (this._timeToFinish != 0 
             ? 
             (this._timeToFinish - 1000)

@@ -41,7 +41,7 @@ class Player{
     }
     upgradeInventory(){
         this._inventorySize += 10
-        this.buy(10)
+        this.spendToken(1000)
     }
     canActivateBooster(id){
         let boost = this._boostersArr[id]
@@ -82,9 +82,6 @@ class Player{
             }
         }
     }
-    canBuy(cost, count){
-        return (this._money >= cost && this.getInvFullness() >= count)
-    }
     buy(cost) {
         if (this._money >= cost){
             this._money -= cost;
@@ -99,6 +96,14 @@ class Player{
         this._networth += n
         this.updateMoney()
         this.checkNetworthLevel()
+    }
+    spendToken(cost){
+        this._tokenBalance -= cost
+        this.updateMoney()
+    }
+    addToken(n){
+        this._tokenBalance += n
+        this.updateMoney()
     }
     checkNetworthLevel(){
 
@@ -127,6 +132,7 @@ class Player{
     updateMoney()
     {
         document.getElementById('money').innerText = `Money: ${this._money}`;
+        //апдейт tokenBalance
     }
     pushInventory(item, n)
     {

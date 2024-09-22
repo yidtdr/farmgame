@@ -51,7 +51,7 @@ export default class Building extends Buildable{
     upgrade(){
         player.buy(RES.buildings[this._type].upgradesPrice[this._level-1])
         this._level += 1
-        //запрос на апгрейд
+        socketClient.send(`upgrade/${this._x/CVAR.tileSide}/${this._y/CVAR.tileSide}`)
     }
     addSlot(slot){
         const item = {[slot.workName]: 1}
