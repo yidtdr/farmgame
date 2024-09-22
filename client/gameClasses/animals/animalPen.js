@@ -49,7 +49,7 @@ export default class AnimalPen extends Buildable{
         });
     }
     canStartWork(){
-        return !this._isWork && this._animals.length!=0
+        return !this._isWork && this._animals.length!=0 && player._inventory[RES.buildings[this._type].feedType] >= this._animals.length
     }
     startWork(){
         this._freeze = true
@@ -106,17 +106,16 @@ export default class AnimalPen extends Buildable{
     collect(){
         console.log(player.getInvFullness(), this._animals.length)
         if (player.getInvFullness() >= this._animals.length){
-            console.log('ffff')
             player.pushInventory(RES.buildings[this._type].product, this._animals.length);
             this._timeToFinish = undefined;
             socketClient.send(`collect/${this._x/CVAR.tileSide}/${this._y/CVAR.tileSide}`)
+        } else{
+            console.log('Недостаточно места в инвентаре')
         }
     }
     onClick()
     {
-        console.log(this._timeToFinish)
         if (this._timeToFinish == 0){
-            console.log('зашёл клик')
             this.collect()
         } else {
             animalMenu.show(this)

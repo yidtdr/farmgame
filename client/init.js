@@ -134,7 +134,6 @@ class SocketClient{
     }
   	regenPlayer(data){
 		player._inventory = data.player.Inventory.map
-        player._inventory['chickenFeed'] = 10
 		player._money = data.player.money
         player._networth = data.player.networth
 		player.updateMoney()

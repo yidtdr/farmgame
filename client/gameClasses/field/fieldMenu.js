@@ -103,7 +103,7 @@ class FieldMenu{
             const thisMenu = this;
             const field = this.field;
             if (player._inventory[plant] > 0) {
-                craftImg.addEventListener('touchstart', function (e) { //добавить штуку с запретом крафта сюда и в здание, везде показывать дроп меню но картинку серую
+                craftImg.addEventListener('touchstart', function (e) {
                     e.preventDefault();
                     const clone = this.cloneNode(true);
                     const chosenElem = craft.id.substring(0, craft.id.indexOf('-'));

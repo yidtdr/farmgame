@@ -12,10 +12,10 @@ export default class Bush extends Buildable{
         super(x, y, type);
         this._image = RES.buildings[type].image
         this._timeStamp = RES.buildings[this._type].speed * 1000;
-        this._freeze = false
-        this._collectedAmountLimit = 4;
-        this._collectedAmount = 0
-        this._resetPrice = 30
+        this._freeze = false;
+        this._collectedAmountLimit = RES.buildings[this._type].productLimit;
+        this._collectedAmount = 0;
+        this._resetPrice = RES.buildings[this._type].price * 2
         this.startWork()
     }
     activateBooster(){
@@ -99,8 +99,9 @@ export default class Bush extends Buildable{
         }
     }
     collect(){
-        if (player.getInvFullness() >= 1){
-            player.pushInventory(Object.keys(RES.buildings[this._type].products)[0], 1);//3 будет записано в json сколько собирается
+        const amount = RES.buildings[this._type].products[this._type]
+        if (player.getInvFullness() >= amount){
+            player.pushInventory(this._type, amount);
             this._timeToFinish = undefined;
             socketClient.send(`collect/${this._x/CVAR.tileSide}/${this._y/CVAR.tileSide}`)
             this._collectedAmount += 1
