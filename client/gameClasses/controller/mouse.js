@@ -116,8 +116,7 @@ class Mouse{
                 if (player._phantomStructure.structureType == 'building' && tiles[mouse._mapPos.i][mouse._mapPos.j].isCanPut(player._phantomStructure.structure)){
                     tiles[mouse._mapPos.i][mouse._mapPos.j].createBuilding(player._phantomStructure.structure._type)
                     socketClient.send(`place/${player._phantomStructure.structure._type}/${mouse._mapPos.i}/${mouse._mapPos.j}`)
-                    player._money -= player._phantomStructure.cost
-                    player.updateMoney()
+                    player.buy(player._phantomStructure.cost)
                     if (RES.buildingNames.bakery.concat(RES.buildingNames.animalPen).includes(player._phantomStructure.structure._type)){
                         RES.buildings[player._phantomStructure.structure._type].price *= 100
                     } else if (player._phantomStructure.structure._type == 'garden'){
@@ -130,10 +129,8 @@ class Mouse{
                     const x = tiles[mouse._mapPos.i][mouse._mapPos.j]._structure._x
                     const y = tiles[mouse._mapPos.i][mouse._mapPos.j]._structure._y
                     socketClient.send(`use/buy/${x/CVAR.tileSide}/${y/CVAR.tileSide}`)
-                    player._money -= player._phantomStructure.cost
-                    player.updateMoney()
+                    player.buy(player._phantomStructure.cost)
                     player._phantomStructure = "none"
-                    console.log(144342)
                 }
             } else {
                 console.log("недостаточно денег")

@@ -1,22 +1,25 @@
 class Player{
     constructor()
     {
-        this._money = 100;
+        this._money = 0;
+        this._networth = 0;
         this._tokenBalance = 0;
         this._tonBalance = 0
         this._usdtBalance = 0
 
         this._chosenTile = {i: -1, j: -1};
+        this._phantomStructure = "none";
+
         this._inventory = []
         this._inventorySize = 50;
-        this._maxOrderAmount = 6;
+        
         this._orderArr = []
-        this._networth = 0;
-        this._phantomStructure = "none";
+        
         this._spinItems = []
         this._isSpinActivated = false;
         this._spinDropIndex = 0
         this._spinTimeStamp = 0
+
         this._boostersArr = []
         this._activBoostersArr = []
         this._availableDeals = []
@@ -37,7 +40,7 @@ class Player{
         this._withdraws = []
     }
     upgradeInventory(){
-        this._inventorySize += 10 //временное
+        this._inventorySize += 10
         this.buy(10)
     }
     canActivateBooster(id){
@@ -91,6 +94,15 @@ class Player{
             return false
         }
     }
+    addMoney(n){
+        this._money += n
+        this._networth += n
+        this.updateMoney()
+        this.checkNetworthLevel()
+    }
+    checkNetworthLevel(){
+
+    }
     getInvFullness(){
         let sum = 0;
         console.log(this._inventory)
@@ -111,10 +123,6 @@ class Player{
         for (const el in item.items) {
             this._inventory[el] -= item.items[el]
         };
-    }
-    updateOrders(newOrders)
-    {
-        this._orderArr = newOrders;
     }
     updateMoney()
     {
