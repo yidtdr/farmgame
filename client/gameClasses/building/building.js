@@ -122,7 +122,7 @@ export default class Building extends Buildable{
         ctx.shadowBlur = 0;
         if (this._craftingItems.length != 0 && this._craftingItems[0].timeToFinish == 0){
             let key = Object.keys(this._craftingItems[0])[0]
-            ctx.drawImage(RES.items[key].image, this._x, this._y, RES.items[key].size.w*8, RES.items[key].size.h*8)
+            ctx.drawImage(RES.items[key].image, this._x + RES.buildings[this._type].productx, this._y + RES.buildings[this._type].producty, RES.items[key].sizex, RES.items[key].sizey)
         }
     }
     update()

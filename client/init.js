@@ -14,10 +14,6 @@ class SocketClient{
         this.gameSessionPromise = new Promise((resolve) => {
             this.gameSessionPromiseResolve = resolve;
         });
-      // this.socket.onopen = () => {
-      //   console.log('WebSocket connection established');
-      //   this.flushQueue();
-      // };
         this.socket.onmessage = (m) => {
             const data = JSON.parse(m.data)
             console.log(data)
@@ -35,14 +31,7 @@ class SocketClient{
                 this.handleResultCode(data.code)
             }
         }
-  }
-  // flushQueue() {
-  //   while (this.requestQueue.length > 0 && this.socket.readyState === WebSocket.OPEN) {
-  //       const request = this.requestQueue.shift();
-  //       this.socket.send(request);
-  //   }
-  //   console.log(this.requestQueue[0])
-  // }
+    }
     _decipherRequest(request) {
         let parts = request.split('/');
 
@@ -93,7 +82,7 @@ class SocketClient{
                 result.index = parseInt(parts[1]);
                 break;
             case 'withdraw':
-                result.amount = parseFloat(parts[1]); // Changed to parseFloat for handling larger numbers
+                result.amount = parseFloat(parts[1]);
                 break;
             case 'buyslot':
                 result.x = parseInt(parts[1]);
@@ -137,7 +126,7 @@ class SocketClient{
     send(request) {
         if (this.socket.readyState === WebSocket.OPEN) {
             this.socket.send(request);
-            if (request.split('/')[0] != 'connect' && request.split('/')[0] != 'regen'){// и реген
+            if (request.split('/')[0] != 'connect' && request.split('/')[0] != 'regen'){
                 this.requestQueue.push(request);
             }
             console.log(this.requestQueue)
@@ -145,7 +134,6 @@ class SocketClient{
     }
   	regenPlayer(data){
 		player._inventory = data.player.Inventory.map
-        console.log(player._inventory)
         player._inventory['chickenFeed'] = 10
 		player._money = data.player.money
 		player.updateMoney()
@@ -173,7 +161,7 @@ class SocketClient{
                 time: el.time
             }
             if (el.boosterType == "GrowSpeed" || el.boosterType == "WorkSpeed"){
-                booster.amount = 100 / (100 - el.percentage)// + 3 убрать после исправления 200%
+                booster.amount = 100 / (100 - el.percentage)
             } else if (el.boosterType == "OrderMoney"){
                 booster.amount = el.percentage / 100 + 1
             } else if (el.boosterType == "OrderItems"){
@@ -184,7 +172,6 @@ class SocketClient{
 
         player._activBoostersArr = []
         for (const key in data.activeBoosters) {
-            console.log(key)
             if (key == 'WorkSpeed'){
                 player._workBooster.boosterAmount = 100 / (100 - data.activeBoosters[key].percentage)
                 player._workBooster.timeStamp = (data.activeBoosters[key].activateTimeStamp + data.activeBoosters[key].time) * 1000
@@ -202,7 +189,6 @@ class SocketClient{
                     timeStamp: (data.activeBoosters[key].activateTimeStamp + data.activeBoosters[key].time) * 1000,
                     timeToEnd: (data.activeBoosters[key].activateTimeStamp + data.activeBoosters[key].time) * 1000 - Date.now()
                 }
-                console.log(booster)
                 player._activBoostersArr.push(booster)
             } else if (key == 'OrderItems'){
                 const booster = {
@@ -220,7 +206,6 @@ class SocketClient{
     	console.log(data)
       	data.world.tileArray.forEach(el => {
           	tiles[el.x][el.y].createBuilding(el.name)
-            console.log(GVAR.buildableArr)
           	if (RES.buildingNames.bakery.includes(el.name)){
               	el.slots.forEach(slot => {
                   	tiles[el.x][el.y]._structure.addSlot(slot)
@@ -236,13 +221,10 @@ class SocketClient{
 				if (el.slots[0])
 					tiles[el.x][el.y]._structure.setTime(el.slots[0].workStartTimeStamp)
 			} else if (RES.buildingNames.bush.includes(el.name)){
-                //возможно проверка на мертвый куст
-                console.log(tiles[el.x][el.y]._structure._timeToFinish)
 				tiles[el.x][el.y]._structure.setProperties(el.slots[0].workStartTimeStamp, el.integerData)
 			}
 		});
         RES.buildingNames.bakery.concat(RES.buildingNames.animalPen).forEach(name => {
-            console.log(name, GVAR.countBuilding(name), Math.pow(100, GVAR.countBuilding(name)))
             RES.buildings[name].price *= Math.pow(100, GVAR.countBuilding(name))
         });
         RES.buildings['garden'].floatPrice = RES.buildings['garden'].price * Math.pow(1.1, GVAR.countBuilding('garden'))
@@ -264,9 +246,7 @@ class Init {
 
         const loadText = async (url) => {
             const response = await fetch(url);
-            if (!response.ok) {
-              throw new Error('Network response was not ok ' + response.statusText);
-            }
+            if (!response.ok) throw new Error('Network response was not ok ' + response.statusText);
             const text = await response.text();
             const lines = text.split('\n');
             const mapArray = lines.map(line => 
@@ -286,11 +266,6 @@ class Init {
             for (let j = 0; j < CVAR.tileCols; j++)
             {
                 let tileCoords = Calc.indexToCanvas(i, j, CVAR.tileSide, CVAR.outlineWidth);
-                // let tileCoords = {
-                //   x: i * CVAR.tileSide,
-                //   y: j * CVAR.tileSide
-                // }
-                // tiles[i][j] = new Tile(tileCoords.x, tileCoords.y, CVAR.tileSide, CVAR.tileSide, RES.map[(i + j) % 2]);
                 tiles[i][j] = new Tile(tileCoords.x, tileCoords.y, CVAR.tileSide, CVAR.tileSide, RES.map[map[i][j]]);
             }
         }
@@ -305,143 +280,140 @@ class Init {
     }
 
     async loadRes() {
-      const loadImage = (src) => {
-        return new Promise((resolve, reject) => {
-          const img = new Image();
-          img.src = src;
-          img.onload = () => {
-            console.log(`Image loaded: ${src}`);
-            resolve(img);
-          };
-          img.onerror = (error) => {
-            console.error(`Error loading image: ${src}`, error);
-            reject(error);
-          };
-        });
-      };
-  
-      const loadJson = async (url) => {
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error('Network response was not ok ' + response.statusText);
-        }
-        return response.json();
-      };
-  
-      const loadMapImages = async () => {
-        function loadImage(src) {
+        const loadImage = (src) => {
             return new Promise((resolve, reject) => {
                 const img = new Image();
-                img.onload = () => resolve(img);
-                img.onerror = reject;
                 img.src = src;
+                img.onload = () => {
+                    console.log(`Image loaded: ${src}`);
+                    resolve(img);
+                };
+                img.onerror = (error) => {
+                    console.error(`Error loading image: ${src}`, error);
+                    reject(error);
+                };
             });
+        };
+  
+        const loadJson = async (url) => {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('Network response was not ok ' + response.statusText);
+            return response.json();
+        };
+  
+        const loadMapImages = async () => {
+            function loadImage(src) {
+                return new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.onload = () => resolve(img);
+                    img.onerror = reject;
+                    img.src = src;
+                });
+            }
+        
+            function createCanvas(width, height) {
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                return canvas;
+            }
+        
+            async function splitImageToBlocks(imageSrc) {
+                const img = await loadImage(imageSrc);
+                const blocks = [];
+                const blockSize = 16;
+            
+                const canvas = createCanvas(blockSize, blockSize);
+                const ctx = canvas.getContext('2d');
+            
+                const cols = img.width / blockSize;
+                const rows = img.height / blockSize;
+            
+                for (let y = 0; y < rows; y++) {
+                    for (let x = 0; x < cols; x++) {
+                        ctx.clearRect(0, 0, blockSize, blockSize);
+                        ctx.drawImage(img, x * blockSize, y * blockSize, blockSize, blockSize, 0, 0, blockSize, blockSize);
+        
+                        const blockImg = new Image();
+                        blockImg.src = canvas.toDataURL();
+                        blocks.push(blockImg);
+                    }
+                }
+                blocks.push(await loadImage(`client/assets/map/Water_1.png`));
+            
+                return blocks;
+            }
+
+            RES.map = await splitImageToBlocks(`client/assets/map/Grass.png`)
         }
+  
+        const loadAssets = async (type, name) => {
+            const data = await loadJson(`client/assets/${name}/${name}.json`);
+
+            try {
+                const data_front = await loadJson(`client/assets/${name}/${name}_front.json`);
+                Object.assign(data, data_front);
+            } catch (error) {}
+
+            if (type === "plants") {
+                data.image = {};
+                data.image.stages = {};
         
-        // Функция для создания canvas с определенными размерами
-        function createCanvas(width, height) {
-            const canvas = document.createElement('canvas');
-            canvas.width = width;
-            canvas.height = height;
-            return canvas;
-        }
+                const stagesPromises = Array.from({ length: 4 }).map(async (_, i) => {
+                    data.image.stages[i] = await loadImage(`client/assets/${name}/${name}_stage${i}.png`);
+                });
+                await Promise.all(stagesPromises);
+            } else if (type === "obstacles") {
+                data.image = {};
         
-        // Функция для разбиения изображения на блоки 16x16
-        async function splitImageToBlocks(imageSrc) {
-            const img = await loadImage(imageSrc);
-            const blocks = [];
-            const blockSize = 16;
-        
-            const canvas = createCanvas(blockSize, blockSize);
-            const ctx = canvas.getContext('2d');
-        
-            const cols = img.width / blockSize;
-            const rows = img.height / blockSize;
-        
-            for (let y = 0; y < rows; y++) {
-                for (let x = 0; x < cols; x++) {
-                    ctx.clearRect(0, 0, blockSize, blockSize);
-                    ctx.drawImage(img, x * blockSize, y * blockSize, blockSize, blockSize, 0, 0, blockSize, blockSize);
-    
-                    const blockImg = new Image();
-                    blockImg.src = canvas.toDataURL();
-                    blocks.push(blockImg);
+                const stagesPromises = Array.from({ length: 4 }).map(async (_, i) => {
+                    data.image[i] = await loadImage(`client/assets/${name}/${name}${i}.png`);
+                });
+                await Promise.all(stagesPromises);
+            } else {
+                data.image = await loadImage(`client/assets/${name}/${name}.png`);
+            }
+            if (!data.size){
+                data.size = {
+                    w: data.sizex,
+                    h: data.sizey
                 }
             }
-            console.log(blocks.length)
-            blocks.push(await loadImage(`client/assets/map/Water_1.png`));
-        
-            return blocks;
-        }
-
-        RES.map = await splitImageToBlocks(`client/assets/map/Grass.png`)
-      }
+            RES[type][name] = data;
+        };
   
-      const loadAssets = async (type, name) => {
-        const data = await loadJson(`client/assets/${name}/${name}.json`);
-        if (type === "plants") {
-          data.image = {};
-          data.image.stages = {};
-  
-          const stagesPromises = Array.from({ length: 4 }).map(async (_, i) => {
-            data.image.stages[i] = await loadImage(`client/assets/${name}/${name}_stage${i}.png`);
-          });
-          await Promise.all(stagesPromises);
-        } else if (type === "obstacles") {
-            data.image = {};
+        try {
+            await loadMapImages();
     
-            const stagesPromises = Array.from({ length: 4 }).map(async (_, i) => {
-              data.image[i] = await loadImage(`client/assets/${name}/${name}${i}.png`);
-            });
-            await Promise.all(stagesPromises);
-        } else {
-          data.image = await loadImage(`client/assets/${name}/${name}.png`);
-        }
-        if (!data.size){
-          data.size = {
-            w: data.sizex,
-            h: data.sizey
-          }
-        }
-        RES[type][name] = data;
-      };
+            const allAssetPromises = [];
+            for (const type in RES.names) {
+                RES.names[type].forEach((name) => {
+                    allAssetPromises.push(loadAssets(type, name));
+                });
+            }
+            console.log(RES)
   
-      try {
-        await loadMapImages();
-  
-        const allAssetPromises = [];
-        for (const type in RES.names) {
-            RES.names[type].forEach((name) => {
-            allAssetPromises.push(loadAssets(type, name));
-          });
+            await Promise.all(allAssetPromises);
+            console.log('All resources loaded');
+            // Возвращаем экземпляр класса Resources, чтобы его можно было использовать
+            // после загрузки в других модулях
+            await this.initMap();
+            return RES;
+        } catch (error) {
+            console.error('Error loading resources:', error);
+            throw error;
         }
-        console.log(RES)
-  
-        await Promise.all(allAssetPromises);
-        console.log('All resources loaded');
-        // Возвращаем экземпляр класса Resources, чтобы его можно было использовать
-        // после загрузки в других модулях
-        await this.initMap();
-        return RES;
-      } catch (error) {
-        console.error('Error loading resources:', error);
-        throw error; // Пробрасываем ошибку для обработки в вызывающем коде
-      }
     }
-  }
+}
   
-  const init = new Init();
+const init = new Init();
   
-  init.loadRes().then(() => {
-    // Динамически загружаем основной скрипт после загрузки ресурсов
-    const script = document.createElement('script');
+init.loadRes().then(() => {
+    const script = document.createElement('script'); // Динамически загружаем основной скрипт после загрузки ресурсов
     script.src = 'client/index.js';
     script.type = 'module'
     document.body.appendChild(script);
     document.getElementById('loading-screen').style.display = 'none';
-  
-  }).catch((error) => {
+}).catch((error) => {
     console.error('Failed to load resources:', error);
-  });
-  
-  
+});
