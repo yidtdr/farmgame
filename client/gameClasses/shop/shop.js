@@ -188,7 +188,7 @@ class Shop{
             shopItem.appendChild(description);
             
             shopItem.addEventListener("click", function(e) {
-                if (player._money >= RES.plants[plant].price && player.getInvFullness >= 1)
+                if (player._money >= RES.plants[plant].price && player.getInvFullness() >= 1)
                 {
                     player.buy(RES.plants[plant].price)
                     player.pushInventory(plant, 1)

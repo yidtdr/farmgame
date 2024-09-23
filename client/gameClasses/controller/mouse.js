@@ -191,11 +191,18 @@ class Mouse{
     onScale(e)
     {
         const newScale = Calc.getTouchesDistance(e) / 100;
-        this._deltaScale = newScale - this._scale;
+        this._deltaScale = (newScale - this._scale) * 1.5;
         this._scale = newScale;
         let otn = (GVAR.scale + this._deltaScale) / GVAR.scale ;
-        GVAR.scale = (GVAR.scale + this._deltaScale) > 0.5 ? (GVAR.scale + this._deltaScale) : 0.5;
-        // GVAR.scale = (GVAR.scale + this._deltaScale) < 6 ? (GVAR.scale + this._deltaScale) : 6;
+        if ((GVAR.scale + this._deltaScale) >= CVAR.minScale && (GVAR.scale + this._deltaScale) <= CVAR.maxScale){
+            GVAR.scale = GVAR.scale + this._deltaScale
+        } else if ((GVAR.scale + this._deltaScale) < CVAR.minScale){
+            GVAR.scale = CVAR.minScale
+            return
+        } else{
+            GVAR.scale = CVAR.maxScale
+            return
+        }
         const approximationCenter = Calc.getApproximationCenter(e);
         let d = Math.sqrt((approximationCenter.x)*(approximationCenter.x) + (approximationCenter.y)*(approximationCenter.y))
         let s = d - d/(otn)
