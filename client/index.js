@@ -189,10 +189,14 @@ async function animate(delta){
             x: GVAR.phantomStructureArr[0]._floatX + mouse._dirX/GVAR.scale * 1.5,
             y: GVAR.phantomStructureArr[0]._floatY + mouse._dirY/GVAR.scale * 1.5
         }
-        if (camera._cameraIndexBoundingBox.top == 0) //тут и для top =40
+        if (camera._cameraIndexBoundingBox.top == 0)
             pos.y = GVAR.phantomStructureArr[0]._floatY
         if (camera._cameraIndexBoundingBox.left == 0)
             pos.x = GVAR.phantomStructureArr[0]._floatX
+        if (camera._cameraIndexBoundingBox.right == 40)
+            pos.x = GVAR.phantomStructureArr[0]._floatX
+        if (camera._cameraIndexBoundingBox.bottom == 40)
+            pos.y = GVAR.phantomStructureArr[0]._floatY
         if (GVAR.phantomStructureArr[0]._x > 2 * CVAR.tileSide && GVAR.phantomStructureArr[0]._y > 2 * CVAR.tileSide)
             GVAR.phantomStructureArr[0].move(pos)
     }

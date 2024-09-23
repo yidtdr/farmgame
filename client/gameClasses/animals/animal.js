@@ -88,7 +88,6 @@ export default class Animal extends Sprite{
         this.nextCoords.y += delta.y;
         this.range.x += delta.x;
         this.range.y += delta.y;
-        console.log(this._x, this._y)
     }
     _getRandomPointOnBorder(range) {
         const side = Math.floor(Math.random() * 4); // Случайно выбираем одну из 4 сторон

@@ -96,7 +96,9 @@ class Mouse{
             this._deltaMove.x = mousePos.x - this._screenPos.x;
             this._deltaMove.y = mousePos.y - this._screenPos.y;
             if (Math.sqrt((this._deltaMove.x) * (this._deltaMove.x) + (this._deltaMove.y) * (this._deltaMove.y))<10){
-
+                if (this._mapPos.i<0 || this._mapPos.j<0 || this._mapPos.j>=CVAR.tileRows || this._mapPos.i>=CVAR.tileCols){
+                    return
+                }
                 let el = tiles[this._mapPos.i][this._mapPos.j]._structure
                 if (el!="none" && el._isMoving != undefined){
                     el._isMoving=true;
@@ -111,7 +113,7 @@ class Mouse{
     }
     onMouseUp(e)
     {
-        if (player._phantomStructure!="none" && player._phantomStructure.structure._x>=0 && player._phantomStructure.structure._y>=0){
+        if (player._phantomStructure!="none" && player._phantomStructure.structure._x>=0 && player._phantomStructure.structure._y>=0 && player._phantomStructure.structure._x<CVAR.tileSide*CVAR.tileCols && player._phantomStructure.structure._y<CVAR.tileSide*CVAR.tileRows){
             if (player._money >= player._phantomStructure.cost){
                 if (player._phantomStructure.structureType == 'building' && tiles[mouse._mapPos.i][mouse._mapPos.j].isCanPut(player._phantomStructure.structure)){
                     tiles[mouse._mapPos.i][mouse._mapPos.j].createBuilding(player._phantomStructure.structure._type)
@@ -142,7 +144,7 @@ class Mouse{
         GVAR.buildableArr.forEach((el) => {
             if (el._isMoving)
             {
-                if (el._x>=0 && el._y>=0 && tiles[this._mapPos.i][this._mapPos.j].isCanPut(el)){
+                if (el._x>=0 && el._y>=0 && el._x<CVAR.tileSide*CVAR.tileCols && el._y<CVAR.tileSide*CVAR.tileRows && tiles[this._mapPos.i][this._mapPos.j].isCanPut(el)){
                     console.log(el._prevPosition.i, el._prevPosition.j)
                     tiles[el._prevPosition.i][el._prevPosition.j].moveStructure(this._mapPos)
                 }
@@ -172,7 +174,7 @@ class Mouse{
     }
     onClick()
     {
-        if (this._mapPos.i<0 || this._mapPos.j<0)
+        if (this._mapPos.i<0 || this._mapPos.j<0 || this._mapPos.j>=CVAR.tileRows || this._mapPos.i>=CVAR.tileCols)
             return
         player._chosenTile = {
             i: this._mapPos.i,
@@ -196,11 +198,14 @@ class Mouse{
         let otn = (GVAR.scale + this._deltaScale) / GVAR.scale ;
         if ((GVAR.scale + this._deltaScale) >= CVAR.minScale && (GVAR.scale + this._deltaScale) <= CVAR.maxScale){
             GVAR.scale = GVAR.scale + this._deltaScale
+            camera.updateMapBoundingBox()
         } else if ((GVAR.scale + this._deltaScale) < CVAR.minScale){
             GVAR.scale = CVAR.minScale
+            camera.updateMapBoundingBox()
             return
         } else{
             GVAR.scale = CVAR.maxScale
+            camera.updateMapBoundingBox()
             return
         }
         const approximationCenter = Calc.getApproximationCenter(e);
@@ -209,7 +214,6 @@ class Mouse{
         camera._x = (camera._x + s * (approximationCenter.x) /(d))*otn
         camera._y = (camera._y + s * (approximationCenter.y ) /(d))*otn
         camera.updateBoundingBox();
-        console.log(camera._x, camera._y)
         GVAR.redraw = true;
     }
 }

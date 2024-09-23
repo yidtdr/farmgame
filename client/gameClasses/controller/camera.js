@@ -8,29 +8,30 @@ class Camera{
         this._x = 0;
         this._y = 0;
         this.updateBoundingBox();
+        this.updateMapBoundingBox();
     }
     move(x, y)
     {
-        if (this._x - x < CVAR.mapBoundingBox.left )
+        if (this._x - x < this.mapBoundingBox.left)
         {
-            this._x = CVAR.mapBoundingBox.left;
+            this._x = this.mapBoundingBox.left;
         }
-        else if (this._x - x > CVAR.mapBoundingBox.right )
+        else if (this._x - x > this.mapBoundingBox.right )
         {
-            this._x = CVAR.mapBoundingBox.right;
+            this._x = this.mapBoundingBox.right;
         }
         else
         {
             this._x -= x;
         }
         
-        if (this._y - y > CVAR.mapBoundingBox.bottom)
+        if (this._y - y > this.mapBoundingBox.bottom)
         {
-            this._y = CVAR.mapBoundingBox.bottom;
+            this._y = this.mapBoundingBox.bottom;
         }
-        else if (this._y - y < CVAR.mapBoundingBox.top)
+        else if (this._y - y < this.mapBoundingBox.top)
         {
-            this._y = CVAR.mapBoundingBox.top;
+            this._y = this.mapBoundingBox.top;
         }
         else
         {
@@ -39,13 +40,23 @@ class Camera{
         this.updateBoundingBox();
     }
     newMove(x,y){
-        if (this._x + x < -60)
-            this._x = -60
+        if (this._x + x < this.mapBoundingBox.left)
+            this._x = this.mapBoundingBox.left
         else
             this._x += x
         
-        if (this._y + y < -60)
-            this._y = -60
+        if (this._y + y < this.mapBoundingBox.top)
+            this._y = this.mapBoundingBox.top
+        else
+            this._y += y
+
+        if (this._x + x > this.mapBoundingBox.right)
+            this._x = this.mapBoundingBox.right
+        else
+            this._x += x
+        
+        if (this._y + y > this.mapBoundingBox.bottom)
+            this._y = this.mapBoundingBox.bottom
         else
             this._y += y
         this.updateBoundingBox();
@@ -68,6 +79,16 @@ class Camera{
     getBoundingBox()
     {
         return this._cameraIndexBoundingBox;
+    }
+    updateMapBoundingBox(){
+        const screenW = this._cameraIndexBoundingBox.right - this._cameraIndexBoundingBox.left
+        const screenH = this._cameraIndexBoundingBox.bottom - this._cameraIndexBoundingBox.top
+        this.mapBoundingBox = {
+            top: -1 * (CVAR.tileSide+CVAR.outlineWidth) * GVAR.scale,
+            bottom: (CVAR.tileCols+1-screenH) * (CVAR.tileSide+CVAR.outlineWidth) * GVAR.scale,
+            left: -1 * (CVAR.tileSide+CVAR.outlineWidth) * GVAR.scale,
+            right: (CVAR.tileRows+2-screenW) * (CVAR.tileSide+CVAR.outlineWidth) * GVAR.scale,
+        }
     }
 }
 const camera = new Camera();

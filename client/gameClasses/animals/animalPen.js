@@ -108,7 +108,6 @@ export default class AnimalPen extends Buildable{
         });
     }
     collect(){
-        console.log(player.getInvFullness(), this._animals.length)
         if (player.getInvFullness() >= this._animals.length){
             player.pushInventory(RES.buildings[this._type].product, this._animals.length);
             this._timeToFinish = undefined;
@@ -126,10 +125,6 @@ export default class AnimalPen extends Buildable{
         }
     }
     move(pos) {
-        if (pos.x < 0)
-            pos.x = 0
-        if (pos.y < 0)
-            pos.y = 0
         const prev = {
             x: this._x,
             y: this._y
@@ -140,7 +135,6 @@ export default class AnimalPen extends Buildable{
         this._y = Math.ceil(this._floatY/CVAR.tileSide)*CVAR.tileSide
         this._animals.forEach(el => {
             const a = {x: this._x - prev.x, y: this._y - prev.y}
-            console.log(a)
             el.moveDelta(a)
         });
         GVAR.updateBuildingArr(this)
