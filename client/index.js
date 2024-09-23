@@ -24,6 +24,7 @@ import RES from './resources.js';
 // console.log(player._boostersArr)
 
 tiles[1][5].createBuilding('small_swamp')
+tiles[10][5].createBuilding('barn')
 
 // Ensure the document is scrollable
 function ensureDocumentIsScrollable() {
@@ -63,46 +64,55 @@ let prevdelta = 0.001;
 
 //      [EVENTS]
 
+let isScaling = false;
+let singleTouchTimeout = null;
+let singleTouchEndTimeout = null;
+const SINGLE_TOUCH_DELAY = 20;
+
 document.addEventListener('touchmove', (e) => {
-    const touchX = e.touches[0].clientX;
-    const touchY = e.touches[0].clientY;
-    const touchedElement = document.elementFromPoint(touchX, touchY);
-    if (canvas === touchedElement){
-        if (e.touches.length == 1)
-            {
-                mouse.onMouseMove(e);
-            }
-            else
-            {
-                mouse.onScale(e);
-            }
-    } else {
-        if (player._phantomBuilding!="none")
-            {
-                mouse.onMouseMove(e);
-            }
+    if (canvas === document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY)) {
+        if (e.touches.length == 1 && !isScaling) {
+            mouse.onMouseMove(e);
+        } else if (e.touches.length > 1) {
+            clearTimeout(singleTouchTimeout);
+            isScaling = true;
+            mouse.onScale(e);
+        }
     }
 }, false);
 
 canvas.addEventListener('touchstart', (e) => {
-    preventCollapse(e)
-    if (e.touches.length == 1)
-    {
-        mouse.onMouseDown(e);
-    }
-    else
-    {
+    preventCollapse(e);
+    if (e.touches.length == 1 && !isScaling) {
+        singleTouchTimeout = setTimeout(() => {
+            if (!isScaling) {
+                mouse.onMouseDown(e);
+            }
+        }, SINGLE_TOUCH_DELAY);
+    } else if (e.touches.length > 1) {
+        clearTimeout(singleTouchTimeout);
+        isScaling = true;
         mouse.onScaleStart(e);
     }
-})
+}, false);
 
 document.addEventListener('touchend', (e) => {
     const touchX = e.changedTouches[0].clientX;
     const touchY = e.changedTouches[0].clientY;
     const touchedElement = document.elementFromPoint(touchX, touchY);
-    if (canvas === touchedElement){
-        mouse.onMouseUp(e);
+
+    if (e.touches.length === 0) {
+        clearTimeout(singleTouchEndTimeout);
+        singleTouchEndTimeout = setTimeout(() => {
+            if (!isScaling) {
+                if (canvas === touchedElement) {
+                    mouse.onMouseUp(e);
+                }
+            }
+            isScaling = false;
+        }, SINGLE_TOUCH_DELAY);
     }
+
 }, false);
 
 //      UPDATE  ALL 
