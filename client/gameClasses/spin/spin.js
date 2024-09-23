@@ -6,8 +6,14 @@ class Spin {
     constructor() {
         document.getElementById('spin-button').onclick = () => {
             if (!player._isSpinActivated){
-                this.doSpin()
-                socketClient.send('spin')
+                if (player.getInvFullness() >= player._spinItems[player._spinDropIndex].amount){
+                    this.doSpin()
+                    socketClient.send('spin')
+                } else{
+                    console.log('Недостаточно места в инвентаре')
+                }
+            } else{
+                console.log('Спин не активен')
             }
         }
         
