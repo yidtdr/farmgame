@@ -5,11 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
     <title>svoGAME</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- <script src="https://telegram.org/js/telegram-web-app.js"></script> -->
 </head>
 <body>
     <div id="loading-screen">
-        Loading...
+        Loading5...
     </div>
 
     <canvas id="canvas"></canvas>
@@ -27,13 +27,27 @@
         <button id="open-spin">
             Spin
         </button>
+        <button id="booster">
+            boost
+        </button>
+        <button id="open-buisness">
+            Buisness
+        </button>
+        <button id="open-deals">
+            Deals
+        </button>
+        <button id="open-connect">
+            ton-connect
+        </button>
     </div>
     <div id="shop-wrap">
         <div id="shop">
             <div id="shop-bar">
-                <button id="closeShop">X</button>
-                <button id="buy-building">1</button>
-                <button id="buy-plant">2</button>
+                <button id="buy-building">здания</button>
+                <button id="buy-plant">растеня</button>
+                <button id="buy-animal">животные</button>
+                <button id="buy-animalPen">загоны</button>
+                <button id="buy-bush">кусты</button>
             </div>
             <div id="shop-list"></div>
         </div>
@@ -44,10 +58,63 @@
                 <button id="closeSpin">X</button>
             </div>
             <div class="spinwheel-wrap">
-                <div id="centered-content">
+                <div id="spin-centered-content">
                     <button id="spin-button">Spin</button>
                     <span class="arrow"></span>
-                    <div id="container"></div>
+                    <div id="spin-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="booster-menu-wrap">
+        <div id="booster-menu">
+            <div id="booster-menu-bar">
+                <button id="close-booster-menu">X</button>
+            </div>
+            <div id="activ-boosters"></div>
+            <div id="booster-list"></div>
+        </div>
+    </div>
+    <div id="obstacle-menu-wrap">
+        <div id="obstacle-menu">
+            <div id="obstacle-menu-bar">
+                <button id="close-obstacle-menu">X</button>
+            </div>
+            <img id="obstacle-img">
+            <button id="obstacle-button">Удалить</button>
+            <h3 id="obstacle-price"></h3>
+        </div>
+    </div>
+    <div id="buisness-menu-wrap">
+        <div id="buisness-menu">
+            <div id="buisness-menu-bar">
+                <button id="close-buisness-menu">X</button>
+            </div>
+            <div id="money-display">Ваши деньги: <span id="crupto-money">100</span></div>
+    
+            <div class="businesses">
+                <div class="business locked" id="business1">Бизнес 1 (Цена: 525)</div>
+                <div class="business locked" id="business2">Бизнес 2 (Цена: 1005)</div>
+                <div class="business locked" id="business3">Бизнес 3 (Цена: 1925)</div>
+                <div class="business locked" id="business4">Бизнес 4 (Цена: 3687)</div>
+                <div class="business locked" id="business5">Бизнес 5 (Цена: 7061)</div>
+            </div>
+
+            <div id="business-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close" id="close-business-modal">&times;</span>
+                    <h2 id="business-title">Бизнес</h2>
+                    <p>Уровень: <span id="level">1</span></p>
+                    <p>Инвестировано: <span id="invested">0</span></p>
+                    <p>Заработано: <span id="earnings">0</span></p>
+                    <p>Максимальный вклад: <span id="max-capacity">0</span></p>
+                    <p>Стоимость повышения уровня: <span id="level-up-cost">0</span></p>
+                    <label for="investment-amount">Введите сумму для инвестирования:</label>
+                    <input type="number" id="investment-amount" min="10" step="10" value="10">
+                    <button id="invest-button">Пополнить баланс</button>
+                    <button id="collect-button">Собрать деньги</button>
+                    <button id="level-up-button">Повысить уровень</button>
+                    <p id="timer"></p>
                 </div>
             </div>
         </div>
@@ -57,8 +124,8 @@
             <div id="stash-bar">
                 <button id="closeStash">X</button>
             </div>
-            <div id="stash-list">
-            </div>
+            <div id="stash-list"></div>
+            <button id="upgrade-stash-button">Улучшить</button>
         </div>
     </div>
     <div id="orders-wrap">
@@ -66,54 +133,8 @@
             <div id="orders-bar">
                 <button id="closeOrders">X</button>
             </div>
-            <div id="orders-list">
-                <div class="order">
-                    <h3 class="order-price">50000</h3>
-                    <div class="order-res">
-                        <!-- <div id="res1" class="res-wrap">
-                            <img src="client/assets/pshenica.png" alt="" class="res-img">
-                            <h3>3/5</h3>
-                        </div>
-                        <div id="res1" class="res-wrap">
-                            <img src="client/assets/pshenica.png" alt="" class="res-img">
-                            <h3>3/5</h3>
-                        </div>
-                        <div id="res1" class="res-wrap">
-                            <img src="client/assets/pshenica.png" alt="" class="res-img">
-                            <h3>3/5</h3>
-                        </div>
-                        <div id="res1" class="res-wrap">
-                            <img src="client/assets/pshenica.png" alt="" class="res-img">
-                            <h3>3/5</h3>
-                        </div> -->
-                        
-                    </div>
-                    <button id="complete1" class="complete-order">Complete</button>
-                </div>
-                <div class="order">
-                    <h3 class="order-price">50000</h3>
-                    <div class="order-res">
-                        <!-- <div id="res1" class="res-wrap">
-                            <img src="client/assets/pshenica.png" alt="" class="res-img">
-                            <h3>3/5</h3>
-                        </div>
-                        <div id="res1" class="res-wrap">
-                            <img src="client/assets/pshenica.png" alt="" class="res-img">
-                            <h3>3/5</h3>
-                        </div>
-                        <div id="res1" class="res-wrap">
-                            <img src="client/assets/pshenica.png" alt="" class="res-img">
-                            <h3>3/5</h3>
-                        </div>
-                        <div id="res1" class="res-wrap">
-                            <img src="client/assets/pshenica.png" alt="" class="res-img">
-                            <h3>3/5</h3>
-                        </div> -->
-                        
-                    </div>
-                    <button id="complete1" class="complete-order">Complete</button>
-                </div>
-            </div>
+            <div id="order-details"></div>
+            <div id="orders-list"></div>
         </div>
     </div>
 
@@ -122,15 +143,118 @@
             <div id="building-menu-bar">
                 <button id="close-building-menu">X</button>
             </div>
-            <div id="building-menu-list">
-                
+            <div id="building-visual">
+                <img id="building-img">
+                <div id="building-queue"></div>
             </div>
+            <button id="upgrade-building">улучшить</button>
+            <div id="building-menu-list"></div>
         </div>
     </div>
-    <script src="client/resources.js" type="module"></script>
+    <div id="animal-menu-wrap">
+        <div id="animal-menu">
+            <div id="animal-menu-bar">
+                <button id="close-animal-menu">X</button>
+            </div>
+            <img id="animal-img">
+            <h3 id="animal-timeToFinish"></h3>
+            <div id="animal-process-line"></div>
+        </div>
+    </div>
+    <div id="field-menu-wrap">
+        <div id="field-menu">
+            <div id="field-menu-bar">
+                <button id="close-field-menu">X</button>
+            </div>
+            <div id="field-img-container">
+                <img id="field-img">
+                <img id="overlay-plant-img">
+            </div>
+            <h3 id="field-timeToFinish"></h3>
+            <div id="field-process-line"></div>
+            <div id="field-menu-list"></div>
+        </div>
+    </div>
+    <div id="bush-menu-wrap">
+        <div id="bush-menu">
+            <button id="temp"></button>
+            <div id="bush-menu-bar">
+                <button id="close-bush-menu">X</button>
+            </div>
+            <img id="bush-img">
+            <h3 id="bush-timeToFinish"></h3>
+            <div id="bush-process-line"></div>
+        </div>
+    </div>
+    <!-- <script>
+        let tg = window.Telegram.WebApp;
+        // Дальше вы можете использовать объект tg для взаимодействия с Telegram Web App
+        fetch('https://farmgame-rclc.onrender.com/webapp-data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    chat_id: tg.initDataUnsafe.user.id,
+                    tg_data: tg
+                })
+        });
+    </script>
     <script>
         Telegram.WebApp.ready();
         Telegram.WebApp.expand();
-    </script>
+        document.addEventListener('touchmove', function(event) {
+            event.preventDefault();
+        }, { passive: false });
+        // Prevent app from closing on scroll
+        document.addEventListener('scroll', function(event) {
+            Telegram.WebApp.expand();
+        });
+
+        // Обработка событий прокрутки
+        Telegram.WebApp.onEvent('viewportChanged', function() {
+            Telegram.WebApp.expand();
+        });
+    </script> -->
+    <div id="deals-wrap">
+        <div id="deals">
+            <div id="deals-bar">
+                <div id="balance-wrap">
+                    <div id="ton-wrap">
+                        <h4>TON: 1.000</h4>
+                        <button id="buy-ton">+</button>
+                    </div>
+                    <div id="usdt-wrap">
+                        <h4>USDT: 100.000</h4>
+                        <button id="buy-usdt">+</button>
+                    </div>
+                </div>
+                <button id="close-deals">X</button>
+            </div>
+            <div id="deals-list"></div>
+        </div>
+    </div>
+    <div id="payment-wrap">
+        <div id="payments">
+            <div id="payment-bar">
+                <button id="close-payments">X</button>
+            </div>
+            <h3>Connect TON Connect to conviniently deposit TON</h3>
+            <div id="ton-connect">
+                <div id="ton-connect-button"></div>
+                <input id="ton-amount" type="number">
+                <button id="proceed-to-buy">Deposit</button>
+            </div>
+            <div class="line-with-text">
+                <span>OR</span>
+            </div>
+            <div class="manual-pay">
+                <h3>Send to adress: ... and etc.</h3>
+            </div>
+        </div>
+    </div>
+    <script src="client/tonweb.js"></script>
+    <script defer src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+    <script src="client/init.js" type="module"></script>
 </body>
 </html>

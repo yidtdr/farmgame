@@ -2,11 +2,14 @@ import Sprite from "../sprite/sprite.js";
 import RES from "../../resources.js";
 import { ctx } from "../../globalVars/canvas.js";
 import CVAR from "../../globalVars/const.js";
+import GVAR from "../../globalVars/global.js";
 
 export default class Buildable extends Sprite{
     constructor(x, y, type)
     {
         super(x, y);
+        this._floatX = this._x;
+        this._floatY = this._y;
         this._type = type
         this._image = RES.buildings[type].image
         this._isMoving = false;
@@ -19,8 +22,11 @@ export default class Buildable extends Sprite{
         this._h = this._size.h * CVAR.tileSide;
     }
     move(pos) {
-        this._x = pos.x;
-        this._y = pos.y;
+        this._floatX = pos.x;
+        this._floatY = pos.y;
+        this._x = Math.ceil(this._floatX/CVAR.tileSide)*CVAR.tileSide
+        this._y = Math.ceil(this._floatY/CVAR.tileSide)*CVAR.tileSide
+        GVAR.updateBuildingArr(this)
     }
     draw () {
         const out = (this._image.height - 16 * this._size.h)*CVAR.tileSide/16

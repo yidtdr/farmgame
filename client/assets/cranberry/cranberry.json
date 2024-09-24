@@ -1,0 +1,14 @@
+{
+    "name": "cranberry",
+    "price": 30,
+    "productLimit": 5,
+    "speed": 8,
+    "size": {
+      "w": 1,
+      "h": 1
+    },
+    "products": {
+      "cranberry": 1
+    }
+  }
+  

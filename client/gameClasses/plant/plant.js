@@ -14,8 +14,7 @@ export default class Plant extends Sprite{
         this._image = RES.plants[plantType].image.stages[0]
         this._plantType = plantType;
         this._plantTimeStamp = RES.plants[plantType].growTime * 1000;
-        this._growTimeStamp = Date.now() + RES.plants[plantType].growTime * 1000;
-        this._timeToGrow = RES.plants[plantType].growTime * 1000;
+        this._timeToGrow = this._plantTimeStamp;
         this._grown = false;
     }
     draw(){
@@ -31,9 +30,11 @@ export default class Plant extends Sprite{
     updateGrowTime()
     {
         this._image = RES.plants[this._plantType].image.stages[Math.trunc(3-this._timeToGrow*3/this._plantTimeStamp)]
-        this._timeToGrow = ((this._growTimeStamp - Date.now()) > 0 ? (this._growTimeStamp - Date.now()) : 0);
-        if (this._timeToGrow == 0)
+        this._timeToGrow = (this._timeToGrow != 0 ? (this._timeToGrow - 1000) : 0);
+        console.log(this._growTimeStamp - Date.now(), this._timeToGrow)
+        if (this._growTimeStamp - Date.now() <= 0)
         {
+            this._timeToGrow = 0
             this._grown = true;
         }
     }
@@ -41,13 +42,9 @@ export default class Plant extends Sprite{
     {
         if (this._grown)
         {
-            const index = Calc.CanvasToIndex(this._rect.x, this._rect.y, CVAR.tileSide, CVAR.outlineWidth);
-            tiles[player._chosenTile.i][player._chosenTile.j]._structure.plantCollected();
+            const index = Calc.CanvasToIndex(this._x, this._y, CVAR.tileSide, CVAR.outlineWidth);
             player.pushInventory(this._plantType, RES.plants[this._plantType].collectAmount);
-        }
-        else
-        {
-            console.log(`notgrown ${this._timeToGrow / 1000}`)
+            tiles[player._chosenTile.i][player._chosenTile.j]._structure._plant = 'none';
         }
     }
     move(pos) {
