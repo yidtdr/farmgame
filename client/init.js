@@ -266,7 +266,7 @@ class Init {
             for (let j = 0; j < CVAR.tileCols; j++)
             {
                 let tileCoords = Calc.indexToCanvas(i, j, CVAR.tileSide, CVAR.outlineWidth);
-                tiles[i][j] = new Tile(tileCoords.x, tileCoords.y, CVAR.tileSide, CVAR.tileSide, RES.map[map[i][j]]);
+                tiles[i][j] = new Tile(tileCoords.x, tileCoords.y, CVAR.tileSide, CVAR.tileSide, RES.map.grass[map[i][j]]);
             }
         }
 
@@ -339,12 +339,12 @@ class Init {
                         blocks.push(blockImg);
                     }
                 }
-                blocks.push(await loadImage(`client/assets/map/Water_1.png`));
             
                 return blocks;
             }
 
-            RES.map = await splitImageToBlocks(`client/assets/map/Grass.png`)
+            RES.map.grass = await splitImageToBlocks(`client/assets/map/Grass.png`)
+            RES.map.water = await splitImageToBlocks(`client/assets/map/Water.png`)
         }
   
         const loadAssets = async (type, name) => {

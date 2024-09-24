@@ -5,7 +5,7 @@ class Resources {
     this.items = {};
     this.animals = {};
     this.obstacles = {};
-    this.map = new Array();
+    this.map = {};
     this.names = {};
     this.buildingNames = {}
     this.names.buildings = [];

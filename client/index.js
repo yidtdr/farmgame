@@ -167,6 +167,7 @@ setInterval(() => {
 }, 1000);
 
 //      [ANIMATE]
+let waterInd = 0;
 
 setInterval(() => {
     GVAR.penArr.forEach((el) => {
@@ -180,6 +181,7 @@ setInterval(() => {
         el.changeImage()
     })
     GVAR.redraw = true;
+    waterInd = (waterInd + 1) % 4
 }, 1000);
 
 async function animate(delta){    
@@ -208,11 +210,26 @@ async function animate(delta){
         ctx.translate(-pos.x, -pos.y);
         ctx.scale(GVAR.scale, GVAR.scale);
 
-        ctx.drawImage(RES.buildings['garden'].image, -15, -15, 15, 1000);
-        ctx.drawImage(RES.buildings['garden'].image, -15, -15, 1000, 15);
-        for (let i = 0; i < 10; i++) {
-            ctx.drawImage(RES.map[77], -15 + i*16, -15, 16, 16);
+        for (let i = -2; i < CVAR.tileCols + 3; i++) {
+            const k = (i+2+waterInd)%4
+            ctx.drawImage(RES.map.water[k], i * CVAR.tileSide, -20, CVAR.tileSide, CVAR.tileSide);
+            ctx.drawImage(RES.map.water[k], i * CVAR.tileSide, -10, CVAR.tileSide, CVAR.tileSide);
+            ctx.drawImage(RES.map.water[k], i * CVAR.tileSide, 0, CVAR.tileSide, CVAR.tileSide);
+
+            ctx.drawImage(RES.map.water[k], i * CVAR.tileSide, CVAR.tileRows * CVAR.tileSide - 10, CVAR.tileSide, CVAR.tileSide);
+            ctx.drawImage(RES.map.water[k], i * CVAR.tileSide, CVAR.tileRows * CVAR.tileSide + 0, CVAR.tileSide, CVAR.tileSide);
+            ctx.drawImage(RES.map.water[k], i * CVAR.tileSide, CVAR.tileRows * CVAR.tileSide + 10, CVAR.tileSide, CVAR.tileSide);
         }
+        for (let j = -2; j < CVAR.tileRows + 3; j++) {
+            ctx.drawImage(RES.map.water[waterInd], -20, j * CVAR.tileSide, CVAR.tileSide, CVAR.tileSide);
+            ctx.drawImage(RES.map.water[waterInd], -10, j * CVAR.tileSide, CVAR.tileSide, CVAR.tileSide);
+            ctx.drawImage(RES.map.water[waterInd], 0, j * CVAR.tileSide, CVAR.tileSide, CVAR.tileSide);
+
+            ctx.drawImage(RES.map.water[waterInd], CVAR.tileCols * CVAR.tileSide - 10, j * CVAR.tileSide, CVAR.tileSide, CVAR.tileSide);
+            ctx.drawImage(RES.map.water[waterInd], CVAR.tileRows * CVAR.tileSide + 0, j * CVAR.tileSide, CVAR.tileSide, CVAR.tileSide);
+            ctx.drawImage(RES.map.water[waterInd], CVAR.tileRows * CVAR.tileSide + 10, j * CVAR.tileSide, CVAR.tileSide, CVAR.tileSide);
+        }
+
         const drawBoundingBox = camera.getBoundingBox();
         for (let i = drawBoundingBox.left; i < drawBoundingBox.right; i++)
         {

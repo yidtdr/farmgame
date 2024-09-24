@@ -8,7 +8,7 @@ class GlobalVars{
         this.phantomStructureArr = new Array(0);
         this.obstacleArr = new Array();
 
-        this.scale = 4.5;
+        this.scale = 2.5;
         this.rescale = true
         this.redraw = true;
     }
